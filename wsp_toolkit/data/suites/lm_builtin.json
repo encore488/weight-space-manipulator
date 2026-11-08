@@ -1,0 +1,156 @@
+[
+ {
+  "id": "lm_loop_practice",
+  "name": "Loop check (practice prompts)",
+  "split": "practice",
+  "kind": "behavior",
+  "applies_to": "lm",
+  "scorer": "gen_loop",
+  "generation": {
+   "max_new_tokens": 128
+  },
+  "examples": [
+   {
+    "prompt": "List the first ten prime numbers."
+   },
+   {
+    "prompt": "Explain why the sky is blue in two sentences."
+   },
+   {
+    "prompt": "Write a short poem about rain."
+   },
+   {
+    "prompt": "What is 17 * 23? Show your work."
+   },
+   {
+    "prompt": "Describe how a bicycle works."
+   },
+   {
+    "prompt": "Count from 1 to 20."
+   },
+   {
+    "prompt": "Summarize the plot of a fairy tale of your choice."
+   },
+   {
+    "prompt": "Give three tips for learning to code."
+   }
+  ]
+ },
+ {
+  "id": "lm_regression_facts",
+  "name": "Factual completions (regression)",
+  "split": "regression",
+  "kind": "regression",
+  "applies_to": "lm",
+  "scorer": "gen_contains",
+  "generation": {
+   "max_new_tokens": 8
+  },
+  "examples": [
+   {
+    "prompt": "The capital of France is",
+    "target": "Paris"
+   },
+   {
+    "prompt": "The largest planet in the solar system is",
+    "target": "Jupiter"
+   },
+   {
+    "prompt": "Water is made of hydrogen and",
+    "target": "oxygen"
+   },
+   {
+    "prompt": "The opposite of hot is",
+    "target": "cold"
+   },
+   {
+    "prompt": "One, two, three, four,",
+    "target": "five"
+   },
+   {
+    "prompt": "The chemical symbol for gold is",
+    "target": "Au"
+   },
+   {
+    "prompt": "Monday, Tuesday,",
+    "target": "Wednesday"
+   },
+   {
+    "prompt": "The first letter of the English alphabet is",
+    "target": "A"
+   }
+  ]
+ },
+ {
+  "id": "gsm8k_practice",
+  "name": "GSM8K train (practice)",
+  "split": "practice",
+  "kind": "benchmark",
+  "applies_to": "lm",
+  "scorer": "gen_numeric",
+  "loader": "gsm8k:train",
+  "size": 7473,
+  "generation": {
+   "thinking": true,
+   "temperature": 0.6,
+   "top_p": 0.95,
+   "top_k": 20,
+   "presence_penalty": 1.5,
+   "max_new_tokens": 32768
+  }
+ },
+ {
+  "id": "math_practice",
+  "name": "MATH train (practice)",
+  "split": "practice",
+  "kind": "benchmark",
+  "applies_to": "lm",
+  "scorer": "gen_boxed",
+  "loader": "math:train",
+  "size": 7500,
+  "generation": {
+   "thinking": true,
+   "temperature": 0.6,
+   "top_p": 0.95,
+   "top_k": 20,
+   "presence_penalty": 1.5,
+   "max_new_tokens": 32768
+  }
+ },
+ {
+  "id": "gsm8k_heldout",
+  "name": "GSM8K test (held-out)",
+  "split": "heldout",
+  "kind": "benchmark",
+  "applies_to": "lm",
+  "scorer": "gen_numeric",
+  "loader": "gsm8k:test",
+  "size": 1319,
+  "generation": {
+   "thinking": true,
+   "temperature": 0.6,
+   "top_p": 0.95,
+   "top_k": 20,
+   "presence_penalty": 1.5,
+   "max_new_tokens": 32768
+  }
+ },
+ {
+  "id": "math500_heldout",
+  "name": "MATH-500 (held-out)",
+  "split": "heldout",
+  "kind": "benchmark",
+  "applies_to": "lm",
+  "scorer": "gen_boxed",
+  "loader": "math500:test",
+  "size": 500,
+  "generation": {
+   "thinking": true,
+   "temperature": 0.6,
+   "top_p": 0.95,
+   "top_k": 20,
+   "presence_penalty": 1.5,
+   "max_new_tokens": 32768
+  }
+ }
+]

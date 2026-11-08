@@ -1,0 +1,2 @@
+{% extends "base.html" %}{% block body %}<h1>Zoo leaderboard</h1><p class="muted">Mean score per submitter, split and task type. Hidden-split scores are computed server-side; per-network results are not shown for them.</p>
+<table><tr><th>Task type</th><th>Split</th><th>Submitter</th><th>Networks</th><th>Mean score</th></tr>{% for r in rows %}<tr><td>{{r.task_type}}</td><td>{{r.split}}</td><td>{{r.submitter}}</td><td>{{r.n}}</td><td><b>{{'%.3f'|format(r.score)}}</b></td></tr>{% endfor %}</table>{% endblock %}

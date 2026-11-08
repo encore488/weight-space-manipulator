@@ -1,0 +1,3 @@
+<tbody hx-swap-oob="beforeend:#log-body">{% include "_rows.html" %}</tbody>
+<div id="budget" hx-swap-oob="true">{% include "_budget.html" %}</div>
+<div id="poller" hx-get="/sessions/{{s.id}}/events?after={{events[-1].id if events else request.query_params.get('after', 0)}}" hx-trigger="every 2s" hx-swap="outerHTML"></div>

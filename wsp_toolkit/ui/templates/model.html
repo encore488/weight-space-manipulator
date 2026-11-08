@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block body %}<h1>{{ws.label}} <span class="muted">({{kind}})</span></h1>
+<div class="card">Workspace <code>{{ws.id}}</code> · base <code>{{ws.base_hash|short(16)}}</code> · working copy <code>{{hash|short(16)}}</code> {% if stack %}· applied: {% for p in stack %}<a href="/patches/{{p}}">{{p}}</a> {% endfor %}{% else %}· <span class="ok">identical to base</span>{% endif %}</div>
+<div class="row"><div><h2>Tensors</h2><form><input name="filter" value="{{filter}}" placeholder="regex filter"> <button>Filter</button></form>
+<p class="muted">{% for g,n in groups.items() %}{{g}}: {{n}} params · {% endfor %}</p>
+<div class="scroll" style="max-height:600px;overflow:auto"><table><tr><th>Name</th><th>Shape</th><th>Heads</th><th></th></tr>{% for t in tensors %}<tr><td><code>{{t.name}}</code>{% if t.tied_to %}<br><span class="muted">tied: {{t.tied_to|join(', ')}}</span>{% endif %}</td><td>{{t.shape}}</td><td>{{t.heads.n_heads if t.heads}}</td>
+<td><button hx-get="/models/{{ws.id}}/heatmap?tensor={{t.name|urlencode}}" hx-target="#heat">heatmap</button></td></tr>{% endfor %}</table></div></div>
+<div><h2>Heatmap</h2><form hx-get="/models/{{ws.id}}/heatmap" hx-target="#heat"><input name="tensor" placeholder="tensor name" size="28"> <input name="slice" placeholder="slice e.g. 0:32, 0:16" size="16"> <input name="head" placeholder="head" size="4"> <button>Show</button></form>
+<div id="heat" class="card"><span class="muted">Choose a tensor.</span></div>
+<h2>Hook points</h2><p>{% for h in hooks %}<code>{{h}}</code> {% endfor %}</p></div></div>
+<h2>Patches on this workspace</h2><table><tr><th>Patch</th><th>Status</th><th>Ops</th><th>Params</th></tr>{% for p in patches %}<tr><td><a href="/patches/{{p.patch_id}}">{{p.patch_id}}</a></td><td><span class="pill s-{{p.status}}">{{p.status}}</span></td><td>{{p.ops|join(', ')}}</td><td>{{p.params_changed}}</td></tr>{% endfor %}</table>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block body %}<h1>Overview</h1>
+<div class="grid">{% for k,v in counts.items() %}<div class="stat"><div class="n">{{v}}</div><div class="l">{{k.replace('_',' ')}}</div></div>{% endfor %}</div>
+<h2>Awaiting review</h2>{% if review %}<table><tr><th>Patch</th><th>Ops</th><th>Params</th><th>Flagged</th><th>Rationale</th></tr>
+{% for p in review %}<tr><td><a href="/patches/{{p.patch_id}}">{{p.patch_id}}</a></td><td>{{p.ops|join(', ')}}</td><td>{{p.params_changed}} ({{p.pct_of_model}}%)</td><td>{% if p.flagged %}<span class="bad">yes</span>{% else %}no{% endif %}</td><td>{{p.rationale}}</td></tr>{% endfor %}</table>
+{% else %}<p class="muted">Nothing waiting for review.</p>{% endif %}
+<h2>Recent activity</h2><table><tr><th>#</th><th>Time</th><th>Session</th><th>Actor</th><th>Tool</th><th>Summary</th></tr>
+{% for e in recent %}<tr><td>{{e.id}}</td><td>{{e.ts|ts}}</td><td>{% if e.session_id %}<a href="/sessions/{{e.session_id}}">{{e.session_id}}</a>{% endif %}</td><td>{{e.actor}}</td><td><code>{{e.tool}}</code></td><td class="{{'' if e.ok else 'bad'}}">{{e.result_summary[:140] if e.result_summary}}</td></tr>{% endfor %}</table>
+{% endblock %}

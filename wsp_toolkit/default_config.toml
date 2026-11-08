@@ -1,0 +1,56 @@
+# WSP Toolkit default configuration.
+# Override by pointing WSP_CONFIG at another TOML file; keys you set are merged over these.
+# Every key here is documented in docs/configuration.md.
+
+[paths]
+# Root for all toolkit state (SQLite DB, blobs, workspaces, exports, zoo). "~" is expanded.
+data_dir = "~/.wsp_toolkit"
+
+[limits]
+# Hard cap on the JSON size (bytes) of any single tool response.
+max_response_bytes = 16000
+# Max number of raw tensor elements a single tensor_get / set_slice may carry.
+max_slice_elements = 512
+# Max items returned per page by list-style tools.
+page_size = 50
+# Number of decimal significant digits used when returning floats.
+float_sig_digits = 4
+# Max rank for add_low_rank edits.
+max_low_rank = 8
+# Confirmation required before downloading a model bigger than this (GB).
+download_confirm_gb = 1.0
+# Max inputs per probe/forward call.
+max_batch_inputs = 32
+# Max sequence length (tokens) for probe/forward inputs.
+max_seq_len = 512
+
+[session]
+# Defaults applied to agent sessions opened through MCP. The agent may ask for LESS, never more.
+access_level = "weights+activations+outputs"
+forward_pass_budget = 50
+# Held-out evaluations allowed per session per rolling hour.
+heldout_rate_limit_per_hour = 5
+
+[policy]
+# Max percentage of model parameters a single patch may change.
+max_param_change_pct = 5.0
+# Edit primitives agents may use. ("graft_subspace" is a stub.)
+allowed_primitives = ["project_out_direction", "scale", "zero", "set_slice", "add_low_rank"]
+# Suites that must run before a patch can become "tested". "regression" = the model's regression suites.
+required_suites = ["regression"]
+# Run regression suites automatically when a patch is applied.
+auto_regression_on_apply = true
+# Cosine threshold above which a patch delta is considered to touch a sensitive direction.
+sensitive_direction_cosine = 0.3
+# Model IDs / hashes that may never be opened for editing (the calling agent's own weights, etc.).
+forbidden_models = []
+
+[eval]
+# "thread" = in-process with a per-thread network guard; "subprocess" = separate process with network guard.
+isolation = "thread"
+
+[ui]
+host = "127.0.0.1"
+port = 8765
+# If set, approve/reject requests must carry this token (header X-WSP-Reviewer-Token or form field).
+reviewer_token = ""

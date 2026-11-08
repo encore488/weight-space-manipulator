@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block body %}<h1>Feature <code>{{f.id}}</code> {% if f.sensitive %}<span class="pill s-rejected">sensitive</span>{% endif %}</h1>
+<div class="card"><b>{{f.label}}</b><br>Fidelity: {{rec.fidelity}} · Dictionary: <a href="/features?dict_id={{f.dict_id}}">{{f.dict_id}}</a> · Layer/hook: <code>{{rec.hook}}</code></div>
+<div class="row"><div><h2>Record</h2><pre>{{rec|pretty}}</pre></div><div><h2>Neighbors</h2><pre>{{neighbors|pretty}}</pre></div></div>{% endblock %}

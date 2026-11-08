@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block body %}<h1>Network <code>{{net.id}}</code> <span class="pill">{{net.split}}</span></h1>
+<div class="card"><pre>{{card|pretty}}</pre></div><p class="muted">Ground-truth labels are not shown here; they are used only by the scorer.</p>
+<h2>Tensors</h2><table><tr><th>Name</th><th>Shape</th><th>Norm</th></tr>{% for t in tensors %}<tr><td><code>{{t.name}}</code></td><td>{{t.shape}}</td><td>{{t.norm}}</td></tr>{% endfor %}</table>
+{% if subs %}<h2>Recent submissions</h2><table><tr><th>Submitter</th><th>Task</th><th>Score</th><th>When</th></tr>{% for s in subs %}<tr><td>{{s.submitter}}</td><td>{{s.task_type}}</td><td>{{'%.3f'|format(s.score)}}</td><td>{{s.ts|ts}}</td></tr>{% endfor %}</table>{% endif %}{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block body %}<h1>Session <code>{{s.id}}</code></h1>
+<div class="card row"><div>Workspace: <a href="/models/{{s.workspace_id}}">{{s.workspace_id}}</a><br>Actor: {{s.actor}} {% if s.label %}({{s.label}}){% endif %}<br>Access: <code>{{s.access_level}}</code></div>
+<div id="budget">{% include "_budget.html" %}</div></div>
+<h2>Live log</h2><p class="muted">Updates every 2 seconds. The log is append-only.</p>
+<div class="scroll"><table><thead><tr><th>#</th><th>Time</th><th>Actor</th><th>Kind</th><th>Tool</th><th>Args</th><th>Result</th></tr></thead>
+<tbody id="log-body">{% include "_rows.html" %}</tbody></table></div>
+<div id="poller" hx-get="/sessions/{{s.id}}/events?after={{events[-1].id if events else 0}}" hx-trigger="every 2s" hx-swap="outerHTML"></div>
+{% endblock %}

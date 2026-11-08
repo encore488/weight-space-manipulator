@@ -1,0 +1,1 @@
+{% for e in events %}<tr><td>{{e.id}}</td><td>{{e.ts|ts}}</td><td>{{e.actor}}</td><td>{{e.kind}}</td><td><code>{{e.tool}}</code></td><td><details><summary class="muted">args</summary><pre>{{ (e.args_json|fromjson)|pretty if e.args_json }}</pre></details></td><td class="{{'' if e.ok else 'bad'}}">{{e.result_summary}}</td></tr>{% endfor %}

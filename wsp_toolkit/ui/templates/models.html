@@ -1,0 +1,2 @@
+{% extends "base.html" %}{% block body %}<h1>Models (workspaces)</h1><table><tr><th>Workspace</th><th>Source</th><th>Kind</th><th>Base hash</th><th>Applied patches</th><th>Opened</th></tr>
+{% for w in workspaces %}<tr><td><a href="/models/{{w.id}}">{{w.id}}</a><br><span class="muted">{{w.label}}</span></td><td><code>{{w.source}}</code></td><td>{{w.kind}}</td><td><code>{{w.base_hash|short}}</code></td><td>{{w.stack|length}}</td><td>{{w.created_at|ts}}</td></tr>{% endfor %}</table>{% endblock %}

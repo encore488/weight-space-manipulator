@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block body %}<h1>Sessions</h1><table><tr><th>Session</th><th>Model</th><th>Actor</th><th>Access</th><th>Budget</th><th>Events</th><th>Started</th></tr>
+{% for s in sessions %}<tr><td><a href="/sessions/{{s.id}}">{{s.id}}</a>{% if s.label %}<br><span class="muted">{{s.label}}</span>{% endif %}</td><td><a href="/models/{{s.workspace_id}}">{{s.ws_label or s.workspace_id}}</a></td><td>{{s.actor}}</td><td><code>{{s.access_level}}</code></td>
+<td><div class="meter"><div style="width:{{s.budget_pct}}%"></div></div>{{s.budget_used}}/{{s.budget_total}}</td><td>{{s.n_events}}</td><td>{{s.created_at|ts}}</td></tr>{% endfor %}</table>{% endblock %}
