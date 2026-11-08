@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 
 def test_zoo_mini_build_list_submit(tk):
@@ -7,7 +8,9 @@ def test_zoo_mini_build_list_submit(tk):
     assert tk.call("zoo_build", {"scale": "mini"}, actor="agent")["code"] == "human_only"
     lst = tk.call("zoo_list_tasks", {})
     assert lst["total"] == r["networks"]
-    net = next(i for i in lst["items"] if "repair" in i["task_types"] and i["net_id"].startswith("mlpb-xor"))
+    xor_ids = {tk.zoo.id_for(f"mlpb-xor_01-s0-{f}") for f in ("silenced_input", "shifted_threshold", "backdoor")}
+    net = next(i for i in lst["items"] if "repair" in i["task_types"] and i["net_id"] in xor_ids)
+    assert all("xor" not in i["net_id"] and "backdoor" not in i["net_id"] for i in lst["items"])  # opaque ids
     t = tk.call("zoo_get_task", {"net_id": net["net_id"], "task_type": "identify"})
     assert "answers" not in json.dumps(t) and "flaw\": \"" not in json.dumps(t["card"])
     assert t["open_with"]["source"] == f"zoo:{net['net_id']}"
@@ -27,16 +30,19 @@ def test_zoo_mini_build_list_submit(tk):
 
 
 def test_symmetry_copies_preserve_function_but_change_weights(tk):
-    from pathlib import Path
 
     import torch
 
     from wsp_toolkit.core.workspace.adapters import load_path
     tk.call("zoo_build", {"scale": "mini"}, actor="human")
-    rows = tk.store.all("SELECT id, path FROM zoo_nets WHERE id LIKE '%-sym'")
+    rows = []
+    for r in tk.store.all("SELECT id, path FROM zoo_nets"):
+        a = json.loads((Path(r["path"]) / "answers.json").read_text())
+        if a.get("symmetry_of"):
+            rows.append({**r, "orig": tk.zoo.id_for(a["name"][:-4])})
     assert rows
     for r in rows[:4]:
-        orig = tk.store.one("SELECT path FROM zoo_nets WHERE id=?", (r["id"][:-4],))
+        orig = tk.store.one("SELECT path FROM zoo_nets WHERE id=?", (r["orig"],))
         a, b = load_path(Path(orig["path"])), load_path(Path(r["path"]))
         x = torch.rand(64, a.config["d_in"]).round()
         assert torch.allclose(a.forward(x), b.forward(x), atol=1e-4)
@@ -58,7 +64,7 @@ def test_zoo_baseline_agent_runs_all_task_types(tk, fixtures_dir, tmp_path):
 
 def test_repair_scoring(tk):
     tk.call("zoo_build", {"scale": "mini"}, actor="human")
-    nid = "mlpb-xor_01-s0-backdoor"
+    nid = tk.zoo.id_for("mlpb-xor_01-s0-backdoor")
     good = tk.zoo.submit(nid, "repair", {"operations": [{"op": "zero", "tensor": "layers.0.weight",
                                                           "slice": ":, 4:8"}]}, "t", None)
     none = tk.zoo.submit(nid, "repair", {"operations": []}, "t", None)

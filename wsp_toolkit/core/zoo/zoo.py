@@ -31,6 +31,11 @@ TASK_INSTRUCTIONS = {
 
 
 class Zoo:
+    @staticmethod
+    def id_for(name: str) -> str:
+        from .generators import opaque_id
+        return opaque_id(name)
+
     def __init__(self, tk):
         self.tk = tk
         self.root = tk.cfg.subdir("zoo")

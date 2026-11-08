@@ -29,12 +29,18 @@ def _positions(sel, T: int) -> list[int]:
     return out
 
 
-def encode_all(ad, inputs: list, max_inputs: int) -> list:
+def encode_all(ad, inputs: list, max_inputs: int, max_seq_len: int | None = None) -> list:
     if not isinstance(inputs, list) or not inputs:
         raise WSPError("inputs must be a non-empty list", code="bad_input")
     if len(inputs) > max_inputs:
         raise WSPError(f"{len(inputs)} inputs exceeds the per-call cap of {max_inputs}", code="too_large")
-    return [ad.encode(x) for x in inputs]
+    encs = [ad.encode(x) for x in inputs]
+    if max_seq_len and ad.is_lm:
+        for i, e in enumerate(encs):
+            if e.shape[-1] > max_seq_len:
+                raise WSPError(f"input {i} is {e.shape[-1]} tokens, above limits.max_seq_len={max_seq_len}",
+                               code="too_large")
+    return encs
 
 
 def run_forward(ad, encs: list, top_k: int, positions, sig: int) -> list[dict]:

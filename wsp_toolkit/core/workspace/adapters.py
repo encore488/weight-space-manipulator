@@ -127,11 +127,11 @@ class ModelAdapter:
             mod = modules[s.module]
             if s.mode == "pre":
                 handles.append(mod.register_forward_pre_hook(
-                    lambda m, args, a=a: store.__setitem__(a, args[0].detach().float())))
+                    lambda m, args, a=a: store.__setitem__(a, args[0].detach().float().cpu())))
             else:
                 def hook(m, i, o, a=a, s=s):
                     val = o[0] if (s.mode == "out0" and isinstance(o, (tuple, list))) else o
-                    store[a] = val.detach().float()
+                    store[a] = val.detach().float().cpu()
                 handles.append(mod.register_forward_hook(hook))
         try:
             yield store
@@ -309,6 +309,7 @@ class HFAdapter(ModelAdapter):
     def __init__(self, model: nn.Module, config: dict, tokenizer: Any):
         super().__init__(model, config, tokenizer)
         self._layers_path, self._layers = self._find_layers()
+        self.device = next(model.parameters()).device
 
     def _find_layers(self) -> tuple[str, nn.ModuleList]:
         best = None
@@ -336,7 +337,17 @@ class HFAdapter(ModelAdapter):
         root = self._layers_path.rsplit(".layers", 1)[0]
         mods = dict(self.model.named_modules())
         norm = mods.get(f"{root}.norm") or mods.get(f"{root}.final_layernorm")
-        return getattr(norm, "weight", None) if norm is not None else None
+        w = getattr(norm, "weight", None) if norm is not None else None
+        if w is None:
+            return None
+        try:  # zero-centred RMSNorms (Gemma, Qwen3-Next/3.5) scale by (1 + weight)
+            import inspect as _inspect
+            src = _inspect.getsource(type(norm).forward)
+            if "1.0 + self.weight" in src or "1 + self.weight" in src:
+                return 1.0 + w.float()
+        except (OSError, TypeError):
+            pass
+        return w
 
     def vocab_size(self) -> int:
         return int(self.unembed().shape[0])
@@ -377,9 +388,17 @@ class HFAdapter(ModelAdapter):
 
     def encode(self, inp: Any):
         if isinstance(inp, str):
+            if self.tokenizer is None:
+                raise WSPError("this model has no tokenizer files; pass token-id lists instead of text",
+                               code="bad_input")
             ids = self.tokenizer(inp, return_tensors="pt")["input_ids"]
         else:
             ids = torch.tensor([[int(x) for x in inp]])
+        V = self.vocab_size()
+        if ids.numel() == 0:
+            raise WSPError("input encodes to zero tokens", code="bad_input")
+        if int(ids.max()) >= V or int(ids.min()) < 0:
+            raise WSPError(f"token ids must be in 0..{V - 1}", code="bad_input")
         return ids
 
     def describe_input(self, enc) -> dict:
@@ -388,20 +407,35 @@ class HFAdapter(ModelAdapter):
 
     def forward(self, enc):
         with torch.no_grad():
-            return self.model(input_ids=enc).logits
+            return self.model(input_ids=enc.to(self.device)).logits.float().cpu()
 
     def attention_patterns(self, enc, layers=None):
-        with torch.no_grad():
-            out = self.model(input_ids=enc, output_attentions=True)
-        atts = out.attentions
-        if atts is None or all(a is None for a in atts):
-            raise WSPError("this model did not return attention weights; load with attn_implementation='eager'",
-                           code="unsupported")
-        res = {}
-        for i, a in enumerate(atts):
-            if a is None or (layers is not None and i not in layers):
+        """Capture softmax attention per layer with hooks on each layer's self_attn module (eager attention returns
+        (output, weights)). Hooks keep true layer indices even for hybrid models where only some layers use softmax
+        attention (e.g. Qwen3.5's linear-attention layers have no pattern and are skipped)."""
+        mods = dict(self.model.named_modules())
+        res: dict[int, torch.Tensor] = {}
+        handles = []
+        for i in range(len(self._layers)):
+            if layers is not None and i not in layers:
                 continue
-            res[i] = a.detach().float()
+            m = mods.get(f"{self._layers_path}.{i}.self_attn")
+            if m is None:
+                continue
+
+            def hook(mod, inp, out, i=i):
+                if isinstance(out, tuple) and len(out) > 1 and out[1] is not None:
+                    res[i] = out[1].detach().float().cpu()
+            handles.append(m.register_forward_hook(hook))
+        try:
+            with torch.no_grad():
+                self.model(input_ids=enc.to(self.device), output_attentions=True)
+        finally:
+            for h in handles:
+                h.remove()
+        if not res:
+            raise WSPError("no softmax-attention patterns available for the requested layers (linear-attention layers "
+                           "have none; the model must be loaded with attn_implementation='eager')", code="unsupported")
         return res
 
     def generate(self, enc, settings: dict) -> dict:
@@ -421,6 +455,7 @@ class HFAdapter(ModelAdapter):
                 [_PresencePenalty(float(settings["presence_penalty"]), enc.shape[1])])
         torch.manual_seed(int(settings.get("seed", 0)))
         with torch.no_grad():
+            enc = enc.to(self.device)
             out = self.model.generate(input_ids=enc, attention_mask=torch.ones_like(enc), **gen_kwargs)
         new = out[0, enc.shape[1]:].tolist()
         eos = self.tokenizer.eos_token_id if self.tokenizer is not None else None
@@ -478,17 +513,29 @@ def load_native(path: Path) -> NativeAdapter:
     return NativeAdapter(model, cfg)
 
 
-def load_hf(path: Path, dtype: str = "float32") -> HFAdapter:
+def load_hf(path: Path, dtype: str | None = None, device: str | None = None) -> HFAdapter:
     try:
         import transformers
     except ImportError as e:
         raise WSPError("loading Hugging Face models needs the 'hf' extra: pip install 'wsp-toolkit[hf]'",
                        code="missing_dependency") from e
+    import os
+    dtype = dtype or os.environ.get("WSP_HF_DTYPE", "float32")
+    device = device or os.environ.get("WSP_HF_DEVICE", "cpu")
     td = getattr(torch, dtype)
     kwargs = {"dtype": td, "attn_implementation": "eager"}
+    if device and device != "cpu":
+        kwargs["device_map"] = device
     model = None
     errors = []
-    for cls_name in ("AutoModelForCausalLM", "AutoModelForImageTextToText"):
+    order = ["AutoModelForCausalLM", "AutoModelForImageTextToText"]
+    try:  # load with the checkpoint's own class so tensor names match the files (and exports round-trip)
+        archs = json.loads((path / "config.json").read_text()).get("architectures") or []
+        if any(a.endswith("ForConditionalGeneration") for a in archs):
+            order.reverse()
+    except (OSError, ValueError):
+        pass
+    for cls_name in order:
         cls = getattr(transformers, cls_name, None)
         if cls is None:
             continue

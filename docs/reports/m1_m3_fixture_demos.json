@@ -1,0 +1,83 @@
+{
+ "m1": {
+  "session_id": "sess_0d96eb3b6a77",
+  "induction_heads": [
+   "1.3",
+   "1.1",
+   "1.0",
+   "1.2"
+  ],
+  "previous_token_heads": [
+   "0.1",
+   "0.0",
+   "0.2"
+  ],
+  "scores": {
+   "0.0": {
+    "induction_score": 0.0150496875,
+    "prev_token_score": 0.568975
+   },
+   "0.1": {
+    "induction_score": 0.00025240624999999997,
+    "prev_token_score": 0.960275
+   },
+   "0.2": {
+    "induction_score": 0.037603125,
+    "prev_token_score": 0.5461
+   },
+   "0.3": {
+    "induction_score": 0.13316875,
+    "prev_token_score": 0.19442500000000001
+   },
+   "1.0": {
+    "induction_score": 0.84801625,
+    "prev_token_score": 0.0679525
+   },
+   "1.1": {
+    "induction_score": 0.8481375,
+    "prev_token_score": 0.07106
+   },
+   "1.2": {
+    "induction_score": 0.829059375,
+    "prev_token_score": 0.0738275
+   },
+   "1.3": {
+    "induction_score": 0.874321875,
+    "prev_token_score": 0.0817
+   }
+  },
+  "forward_passes_used": 4,
+  "ground_truth": {
+   "induction_heads": [
+    "1.3",
+    "1.0",
+    "1.1",
+    "1.2"
+   ],
+   "previous_token_heads": [
+    "0.1",
+    "0.0",
+    "0.2"
+   ]
+  }
+ },
+ "m3_fixture": {
+  "session_id": "sess_5946088cda49",
+  "fixed": true,
+  "patch_id": "p_a19744338796e221",
+  "factor": 10.0,
+  "practice_before": 0.02951,
+  "practice_after": 0.9542,
+  "heldout_after": 0.9799,
+  "forward_passes_used": 33,
+  "log": [
+   "practice score before: 0.02951",
+   "probed attention on layer 1: 4 heads",
+   "median head output norm 1.72; suspiciously small heads: [(1, 0), (1, 1), (1, 2), (1, 3)]",
+   "factor 5.0: patch p_744adcb07865f52a practice score 0.9125; regression {'patch_id': 'p_744adcb07865f52a', 'status': 'tested', 'suites': [{'suite': 'counting_regression', 'split': 'regression', 'before': 1.0, 'after': 1.0, 'delta': 0.0}, {'suite': 'induction_regression', 'split': 'regression', 'before': 0.02511, 'after': 0.9754, 'delta': 0.9503}], 'side_effects': []}",
+   "factor 10.0: patch p_a19744338796e221 practice score 0.9542; regression {'patch_id': 'p_a19744338796e221', 'status': 'tested', 'suites': [{'suite': 'counting_regression', 'split': 'regression', 'before': 1.0, 'after': 1.0, 'delta': 0.0}, {'suite': 'induction_regression', 'split': 'regression', 'before': 0.02511, 'after': 0.9811, 'delta': 0.956}], 'side_effects': []}",
+   "factor 20.0: patch p_fc9fc6b9ff4c6202 practice score 0.9542; regression {'patch_id': 'p_fc9fc6b9ff4c6202', 'status': 'tested', 'suites': [{'suite': 'counting_regression', 'split': 'regression', 'before': 1.0, 'after': 0.9993, 'delta': -0.0007102}, {'suite': 'induction_regression', 'split': 'regression', 'before': 0.02511, 'after': 0.9772, 'delta': 0.952}], 'side_effects': []}",
+   "kept factor 10.0 (p_a19744338796e221); held-out score 0.9799"
+  ]
+ }
+}

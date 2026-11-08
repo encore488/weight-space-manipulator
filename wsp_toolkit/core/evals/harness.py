@@ -74,8 +74,8 @@ class EvalHarness:
         a = suite.get("applies_to", "lm")
         if a == "any":
             return True
-        if a == "lm":
-            return ws.adapter.kind == "hf_causal_lm"
+        if a == "lm":  # text suites need a tokenizer
+            return ws.adapter.kind == "hf_causal_lm" and ws.adapter.tokenizer is not None
         return a in (ws.base_hash, ws.meta.get("fixture"), ws.adapter.kind)
 
     def get_suite(self, ws, suite_id: str) -> dict:

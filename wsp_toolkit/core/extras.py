@@ -11,6 +11,7 @@ from .service import AGENT_TOOLS, HUMAN_ONLY
 
 def _register(tk, name: str, doc: str, fn, human_only: bool = False) -> None:
     fn._wsp_tool = name
+    fn._wsp_doc = doc
     tk._tools[name] = fn
     if human_only:
         HUMAN_ONLY.add(name)

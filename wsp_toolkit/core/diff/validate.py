@@ -51,10 +51,19 @@ def run_validation(tk, out_root: Path, n_mlp: int = 6) -> dict:
     if not (base_dir / "model.safetensors").exists():
         tk.wsm.resolve_source("fixture:induction_tf")
     cases = [(p, finetune_induction(base_dir, out_root, p), "fixture:induction_tf") for p in PLANTS]
-    nets = tk.store.all("SELECT id, path FROM zoo_nets WHERE family='mlp_bool' AND id LIKE '%-none' ORDER BY id")
+    def healthy():
+        rows = tk.store.all("SELECT id, path FROM zoo_nets WHERE family='mlp_bool' ORDER BY id")
+        out = []
+        for r in rows:
+            a = json.loads((Path(r["path"]) / "answers.json").read_text())
+            if a["flaw"] == "none" and not a.get("symmetry_of"):
+                out.append({"id": a["name"], "path": r["path"]})
+        return sorted(out, key=lambda x: x["id"])
+
+    nets = healthy()
     if not nets:
         tk.zoo.build("mini")
-        nets = tk.store.all("SELECT id, path FROM zoo_nets WHERE family='mlp_bool' AND id LIKE '%-none' ORDER BY id")
+        nets = healthy()
     step = max(1, len(nets) // n_mlp)
     for n in nets[::step][:n_mlp]:
         cases.append((f"ft_mlp_backdoor:{n['id']}", finetune_mlp_backdoor(Path(n["path"]), out_root), n["path"]))

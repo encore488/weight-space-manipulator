@@ -28,6 +28,9 @@ max_seq_len = 512
 # Defaults applied to agent sessions opened through MCP. The agent may ask for LESS, never more.
 access_level = "weights+activations+outputs"
 forward_pass_budget = 50
+# How many inputs one budgeted "forward pass" may cover. 1 = every input costs a pass (default).
+# The WSP paper counted one pass as a batch of up to 512 problems; set 512 to reproduce that condition.
+inputs_per_pass = 1
 # Held-out evaluations allowed per session per rolling hour.
 heldout_rate_limit_per_hour = 5
 

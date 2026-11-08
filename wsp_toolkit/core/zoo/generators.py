@@ -256,8 +256,15 @@ def _intended_accuracy(model, scorer: str, examples: list[dict]) -> float:
     return float((out.argmax(-1) == torch.tensor([e["target"] for e in examples])).float().mean())
 
 
-def _finish(root, nid, model, cfg, card, ans, scorer, examples, practice_n, symmetry=True):
-    split = _split(nid.rsplit("-sym", 1)[0])
+def opaque_id(name: str) -> str:
+    """Public network IDs are opaque so they cannot leak the task or the planted flaw."""
+    return "z" + json_hash({"zoo_net": name})[:10]
+
+
+def _finish(root, name, model, cfg, card, ans, scorer, examples, practice_n, symmetry=True):
+    split = _split(name.rsplit("-sym", 1)[0])
+    nid = opaque_id(name)
+    ans = {**ans, "name": name}
     ans = {**ans, "intended_accuracy": _intended_accuracy(model, scorer, examples)}
     # repair is only a task when the flaw actually hurts the intended behaviour
     tt = [t for t in card["task_types"] if t != "repair"]
@@ -277,9 +284,9 @@ def _finish(root, nid, model, cfg, card, ans, scorer, examples, practice_n, symm
             m2, tr = _perm_cnn(m2, seed)
         else:
             m2, tr = _perm_heads(m2, seed)
-        a2 = {**ans, "intended_accuracy": _intended_accuracy(m2, scorer, examples), "location": _map_location(ans.get("location"), tr), "symmetry_of": nid,
+        a2 = {**ans, "name": f"{name}-sym", "intended_accuracy": _intended_accuracy(m2, scorer, examples), "location": _map_location(ans.get("location"), tr), "symmetry_of": nid,
               "transform": tr["kind"]}
-        sid = f"{nid}-sym"
+        sid = opaque_id(f"{name}-sym")
         recs.append({**_save_net(root, sid, m2, cfg, {**card, "split": split}, a2,
                                  _suites(sid, scorer, examples, practice_n)), "split": split})
     return recs
@@ -504,7 +511,7 @@ def generate_zoo(root: Path, scale: str = "full") -> list[dict]:
     torch.set_num_threads(1)
     if scale == "mini":
         recs = gen_mlp_compiled(root)[:4]
-        recs += [r for r in gen_mlp_bool(root, seeds=1) if r["id"].startswith(("mlpb-xor_01", "mlpb-copy_2"))]
+        recs += [r for r in gen_mlp_bool(root, seeds=1) if r["answers"]["name"].startswith(("mlpb-xor_01", "mlpb-copy_2"))]
         recs += gen_rl(root, seeds=1)[:6]
         return recs
     return gen_mlp_bool(root) + gen_mlp_compiled(root) + gen_cnn(root) + gen_tf(root) + gen_rl(root)

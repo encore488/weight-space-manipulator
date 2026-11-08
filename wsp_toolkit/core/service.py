@@ -37,6 +37,7 @@ HUMAN_ONLY = {"patch_approve", "patch_reject", "sensitive_register", "zoo_build"
 def tool(name: str, doc: str, human_only: bool = False):
     def deco(fn: Callable):
         fn._wsp_tool = name
+        fn._wsp_doc = doc
         if not human_only:
             AGENT_TOOLS[name] = doc
         return fn
@@ -147,11 +148,14 @@ class Toolkit:
             raise WSPError(f"session {session_id} is closed", code="closed")
         return s, self.wsm.get(s["workspace_id"])
 
-    def _charge(self, s: dict, n: int, what: str) -> dict:
+    def _charge(self, s: dict, n_inputs: int, what: str) -> dict:
+        """Charge the budget for running n_inputs inputs (see session.inputs_per_pass)."""
+        per = max(1, int(self.cfg.get("session.inputs_per_pass", 1)))
+        n = math.ceil(n_inputs / per) if n_inputs > 0 else 0
         s2 = self.sessions.charge(s["id"], n)
         self.store.log_event(session_id=s["id"], actor="system", kind="forward", tool=what,
-                             args={"passes": n}, result_summary=f"{n} forward pass(es); "
-                             f"{s2['budget_remaining']} remaining")
+                             args={"passes": n, "inputs": n_inputs}, result_summary=f"{n} forward pass(es) for "
+                             f"{n_inputs} input(s); {s2['budget_remaining']} remaining")
         return s2
 
     def _budget(self, s: dict) -> dict:
@@ -275,7 +279,7 @@ class Toolkit:
 
     # ================================================================== M1: probing
     def _encode(self, ws, inputs):
-        return P.encode_all(ws.adapter, inputs, int(self.limits["max_batch_inputs"]))
+        return P.encode_all(ws.adapter, inputs, int(self.limits["max_batch_inputs"]), int(self.limits["max_seq_len"]))
 
     @tool("run_forward", "Run the model on inputs; returns top-k next-token predictions (LMs) or outputs. "
           "Needs 'outputs' access; costs 1 pass per input.")
@@ -364,8 +368,9 @@ class Toolkit:
         if self.cfg.get("policy.auto_regression_on_apply"):
             try:
                 res["regression"] = self._test_patch(ws, res["patch_id"], session_id=s["id"])["summary"]
-            except WSPError as e:
-                res["regression"] = {"error": str(e)}
+            except Exception as e:  # noqa: BLE001 - the patch IS applied; report the test failure, don't mask it
+                res["regression"] = {"error": f"{type(e).__name__}: {e}",
+                                     "note": "patch applied but required suites could not run; status stays 'draft'"}
         return res
 
     @tool("patch_list", "List patches (optionally for this session's workspace or by status).")

@@ -1,0 +1,219 @@
+{
+ "submitted": {
+  "identify": 392,
+  "localize": 392,
+  "repair": 252
+ },
+ "scores": {
+  "rows": [
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "hidden",
+    "family": "cnn_shapes",
+    "task_type": "identify",
+    "n": 12,
+    "score": 1.0
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "cnn_shapes",
+    "task_type": "identify",
+    "n": 42,
+    "score": 1.0
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "hidden",
+    "family": "mlp_bool",
+    "task_type": "identify",
+    "n": 66,
+    "score": 0.4242
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "mlp_bool",
+    "task_type": "identify",
+    "n": 174,
+    "score": 0.6322
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "mlp_compiled",
+    "task_type": "identify",
+    "n": 12,
+    "score": 1.0
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "hidden",
+    "family": "rl_control",
+    "task_type": "identify",
+    "n": 10,
+    "score": 0.8
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "rl_control",
+    "task_type": "identify",
+    "n": 44,
+    "score": 0.9091
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "hidden",
+    "family": "tf_algo",
+    "task_type": "identify",
+    "n": 14,
+    "score": 1.0
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "tf_algo",
+    "task_type": "identify",
+    "n": 18,
+    "score": 1.0
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "hidden",
+    "family": "cnn_shapes",
+    "task_type": "localize",
+    "n": 12,
+    "score": 1.0
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "cnn_shapes",
+    "task_type": "localize",
+    "n": 42,
+    "score": 1.0
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "hidden",
+    "family": "mlp_bool",
+    "task_type": "localize",
+    "n": 66,
+    "score": 0.9091
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "mlp_bool",
+    "task_type": "localize",
+    "n": 174,
+    "score": 0.9425
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "mlp_compiled",
+    "task_type": "localize",
+    "n": 12,
+    "score": 1.0
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "hidden",
+    "family": "rl_control",
+    "task_type": "localize",
+    "n": 10,
+    "score": 1.0
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "rl_control",
+    "task_type": "localize",
+    "n": 44,
+    "score": 0.9773
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "hidden",
+    "family": "tf_algo",
+    "task_type": "localize",
+    "n": 14,
+    "score": 1.0
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "tf_algo",
+    "task_type": "localize",
+    "n": 18,
+    "score": 1.0
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "hidden",
+    "family": "cnn_shapes",
+    "task_type": "repair",
+    "n": 6,
+    "score": 0.6282
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "cnn_shapes",
+    "task_type": "repair",
+    "n": 16,
+    "score": 0.8066
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "hidden",
+    "family": "mlp_bool",
+    "task_type": "repair",
+    "n": 54,
+    "score": 0.4769
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "mlp_bool",
+    "task_type": "repair",
+    "n": 126,
+    "score": 0.5612
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "hidden",
+    "family": "rl_control",
+    "task_type": "repair",
+    "n": 6,
+    "score": 0.1407
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "rl_control",
+    "task_type": "repair",
+    "n": 30,
+    "score": 0.08273
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "hidden",
+    "family": "tf_algo",
+    "task_type": "repair",
+    "n": 8,
+    "score": 0.0
+   },
+   {
+    "submitter": "scripted-baseline [weights+activations+outputs]",
+    "split": "public",
+    "family": "tf_algo",
+    "task_type": "repair",
+    "n": 6,
+    "score": 0.0
+   }
+  ]
+ }
+}
