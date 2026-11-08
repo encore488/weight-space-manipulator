@@ -9,6 +9,7 @@
   wsp zoo build [--per-family N]        generate the network zoo (M5)
   wsp zoo baseline                      run the scripted baseline agent over the zoo
   wsp features build SESSION_OR_FIXTURE build the feature index (M6) for a fixture
+  wsp audit validate [--n-mlp 6]        build planted fine-tunes and score the fine-tune audit (M7)
   wsp demo m1|m3                        run the scripted milestone demos
 """
 
@@ -61,6 +62,15 @@ def main(argv: list[str] | None = None) -> None:
     elif cmd == "features":
         from .core.features.cli import main as feats
         feats(rest)
+    elif cmd == "audit":
+        from .core.diff.validate import run_validation
+        from .core.service import Toolkit
+        ap = argparse.ArgumentParser(prog="wsp audit")
+        ap.add_argument("cmd", choices=["validate"])
+        ap.add_argument("--n-mlp", type=int, default=6)
+        a = ap.parse_args(rest)
+        tk = Toolkit()
+        print(json.dumps(run_validation(tk, tk.cfg.subdir("finetunes"), a.n_mlp), indent=1))
     elif cmd == "demo":
         from .agents.demos import main as demo
         demo(rest)

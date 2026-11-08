@@ -187,10 +187,6 @@ def create_app(tk: Toolkit | None = None) -> FastAPI:
     def audits(request: Request):
         return page(request, "audits.html", audits=views.audits(tk))
 
-    @app.get("/audits/{aid}", response_class=HTMLResponse)
-    def audit(request: Request, aid: str):
-        return page(request, "audit.html", **views.audit(tk, aid))
-
     @app.get("/audits/{aid}.md", response_class=PlainTextResponse)
     def audit_md(aid: str):
         return views.audit(tk, aid)["markdown"]
@@ -198,6 +194,10 @@ def create_app(tk: Toolkit | None = None) -> FastAPI:
     @app.get("/audits/{aid}.pdf")
     def audit_pdf(aid: str):
         return Response(views.audit_pdf(tk, aid), media_type="application/pdf")
+
+    @app.get("/audits/{aid}", response_class=HTMLResponse)
+    def audit(request: Request, aid: str):
+        return page(request, "audit.html", **views.audit(tk, aid))
 
     return app
 
