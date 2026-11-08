@@ -415,6 +415,10 @@ class HFAdapter(ModelAdapter):
             gen_kwargs["do_sample"] = False
         if settings.get("repetition_penalty", 1.0) != 1.0:
             gen_kwargs["repetition_penalty"] = float(settings["repetition_penalty"])
+        if float(settings.get("presence_penalty", 0.0)):
+            from transformers import LogitsProcessorList
+            gen_kwargs["logits_processor"] = LogitsProcessorList(
+                [_PresencePenalty(float(settings["presence_penalty"]), enc.shape[1])])
         torch.manual_seed(int(settings.get("seed", 0)))
         with torch.no_grad():
             out = self.model.generate(input_ids=enc, attention_mask=torch.ones_like(enc), **gen_kwargs)
@@ -423,6 +427,23 @@ class HFAdapter(ModelAdapter):
         eos_ids = set(eos if isinstance(eos, list) else [eos]) if eos is not None else set()
         return {"new_ids": new, "text": self.tokenizer.decode(new, skip_special_tokens=True),
                 "hit_token_limit": len(new) >= gen_kwargs["max_new_tokens"] and not (new and new[-1] in eos_ids)}
+
+
+class _PresencePenalty:
+    """vLLM/OpenAI-style presence penalty: subtract a constant from the logits of every token already generated
+    (prompt tokens excluded). transformers has no built-in equivalent."""
+
+    def __init__(self, penalty: float, prompt_len: int):
+        self.penalty = penalty
+        self.prompt_len = prompt_len
+
+    def __call__(self, input_ids, scores):
+        gen = input_ids[:, self.prompt_len:]
+        if gen.shape[1] == 0:
+            return scores
+        mask = torch.zeros_like(scores, dtype=torch.bool)
+        mask.scatter_(1, gen, True)
+        return scores - self.penalty * mask.to(scores.dtype)
 
 
 # =============================================================================== raw tensors

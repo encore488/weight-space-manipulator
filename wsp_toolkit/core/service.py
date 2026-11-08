@@ -544,6 +544,19 @@ class Toolkit:
         s, ws = self._session(session_id)
         return {"suites": self.harness.list_suites(ws)}
 
+    @tool("suite_examples", "Page through the examples of a PRACTICE suite (held-out / regression examples are never "
+          "returned).")
+    def suite_examples(self, session_id: str, suite_id: str, offset: int = 0, actor: str = "agent") -> dict:
+        s, ws = self._session(session_id)
+        suite = self.harness.get_suite(ws, suite_id)
+        if suite["split"] != "practice":
+            raise WSPError(f"{suite_id} is a {suite['split']} suite; its examples are not available to agents",
+                           code="access_denied")
+        n = int(self.limits["page_size"])
+        ex = suite["examples"]
+        return {"suite": suite_id, "total": len(ex), "offset": offset, "examples": ex[offset:offset + n],
+                "next_offset": offset + n if offset + n < len(ex) else None}
+
     @tool("suite_run_practice", "Run a practice suite on the current working copy. Costs 1 pass per example (x samples). "
           "Per-example results need 'outputs' access.")
     def suite_run_practice(self, session_id: str, suite_id: str, limit: int | None = None,

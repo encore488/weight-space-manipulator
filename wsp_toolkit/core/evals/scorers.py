@@ -125,6 +125,13 @@ def score_example(ad, scorer: str, ex: dict, s: GenerationSettings) -> dict:
         tgt = enc[0, a + 1:b + 1]
         c = (pred == tgt).float()
         return {"score": float(c.mean()) if c.numel() else 0.0, "correct": int(c.sum()), "total": int(c.numel())}
+    if scorer == "seq_target_acc":
+        enc = ad.encode(ex["input"])
+        pred = ad.forward(enc)[0].argmax(-1)
+        a = int(ex.get("score_from", 1))
+        tgt = torch.tensor(ex["targets"])
+        c = (pred[a:len(tgt)] == tgt[a:]).float()
+        return {"score": float(c.mean()) if c.numel() else 0.0, "correct": int(c.sum()), "total": int(c.numel())}
     if scorer.startswith("gen_"):
         enc = _build_prompt(ad, ex, s)
         scores, hits, loops, lens, texts = [], [], [], [], []
