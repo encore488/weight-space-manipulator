@@ -438,7 +438,7 @@ class HFAdapter(ModelAdapter):
                            "have none; the model must be loaded with attn_implementation='eager')", code="unsupported")
         return res
 
-    def generate(self, enc, settings: dict) -> dict:
+    def _gen_kwargs(self, settings: dict, prompt_len: int) -> dict:
         gen_kwargs = {"max_new_tokens": int(settings.get("max_new_tokens", 64))}
         temp = float(settings.get("temperature", 0.0))
         if temp > 0:
@@ -452,16 +452,46 @@ class HFAdapter(ModelAdapter):
         if float(settings.get("presence_penalty", 0.0)):
             from transformers import LogitsProcessorList
             gen_kwargs["logits_processor"] = LogitsProcessorList(
-                [_PresencePenalty(float(settings["presence_penalty"]), enc.shape[1])])
+                [_PresencePenalty(float(settings["presence_penalty"]), prompt_len)])
+        return gen_kwargs
+
+    def _eos_ids(self) -> set[int]:
+        ids: set[int] = set()
+        for src in (getattr(self.model, "generation_config", None), self.tokenizer):
+            e = getattr(src, "eos_token_id", None) if src is not None else None
+            if e is not None:
+                ids |= set(e if isinstance(e, list) else [e])
+        return ids
+
+    def _finish(self, new: list[int], max_new: int, eos_ids: set[int]) -> dict:
+        cut = next((i for i, t in enumerate(new) if t in eos_ids), None)
+        if cut is not None:
+            new = new[:cut + 1]
+        return {"new_ids": new, "text": self.tokenizer.decode(new, skip_special_tokens=True),
+                "hit_token_limit": cut is None and len(new) >= max_new}
+
+    def generate(self, enc, settings: dict) -> dict:
+        return self.generate_batch([enc], settings)[0]
+
+    def generate_batch(self, encs: list, settings: dict) -> list[dict]:
+        """Generate for several prompts at once (left-padded). Sampling with a batch uses one RNG stream, so
+        sampled outputs differ from one-at-a-time runs; greedy outputs match up to numerical noise."""
+        pad = self.tokenizer.pad_token_id if self.tokenizer is not None else None
+        eos_ids = self._eos_ids()
+        if pad is None:
+            pad = min(eos_ids) if eos_ids else 0
+        T = max(e.shape[1] for e in encs)
+        ids = torch.full((len(encs), T), int(pad), dtype=torch.long)
+        mask = torch.zeros((len(encs), T), dtype=torch.long)
+        for i, e in enumerate(encs):
+            ids[i, T - e.shape[1]:] = e[0]
+            mask[i, T - e.shape[1]:] = 1
+        kw = self._gen_kwargs(settings, T)
         torch.manual_seed(int(settings.get("seed", 0)))
         with torch.no_grad():
-            enc = enc.to(self.device)
-            out = self.model.generate(input_ids=enc, attention_mask=torch.ones_like(enc), **gen_kwargs)
-        new = out[0, enc.shape[1]:].tolist()
-        eos = self.tokenizer.eos_token_id if self.tokenizer is not None else None
-        eos_ids = set(eos if isinstance(eos, list) else [eos]) if eos is not None else set()
-        return {"new_ids": new, "text": self.tokenizer.decode(new, skip_special_tokens=True),
-                "hit_token_limit": len(new) >= gen_kwargs["max_new_tokens"] and not (new and new[-1] in eos_ids)}
+            out = self.model.generate(input_ids=ids.to(self.device), attention_mask=mask.to(self.device),
+                                      pad_token_id=int(pad), **kw)
+        return [self._finish(out[i, T:].tolist(), kw["max_new_tokens"], eos_ids) for i in range(len(encs))]
 
 
 class _PresencePenalty:
@@ -523,9 +553,8 @@ def load_hf(path: Path, dtype: str | None = None, device: str | None = None) -> 
     dtype = dtype or os.environ.get("WSP_HF_DTYPE", "float32")
     device = device or os.environ.get("WSP_HF_DEVICE", "cpu")
     td = getattr(torch, dtype)
-    kwargs = {"dtype": td, "attn_implementation": "eager"}
-    if device and device != "cpu":
-        kwargs["device_map"] = device
+    # eager attention is needed for attention-pattern probes; set WSP_HF_ATTN=sdpa for fast generation-only runs
+    kwargs = {"dtype": td, "attn_implementation": os.environ.get("WSP_HF_ATTN", "eager")}
     model = None
     errors = []
     order = ["AutoModelForCausalLM", "AutoModelForImageTextToText"]
@@ -546,6 +575,8 @@ def load_hf(path: Path, dtype: str | None = None, device: str | None = None) -> 
             errors.append(f"{cls_name}: {e}")
     if model is None:
         raise WSPError(f"could not load HF model at {path}: {errors}", code="load_failed")
+    if device and device != "cpu":  # "cuda", "cuda:0" or "mps" (Apple silicon)
+        model = model.to(device)
     tok = None
     try:
         tok = transformers.AutoTokenizer.from_pretrained(str(path))

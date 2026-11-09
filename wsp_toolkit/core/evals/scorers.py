@@ -134,33 +134,61 @@ def score_example(ad, scorer: str, ex: dict, s: GenerationSettings) -> dict:
         return {"score": float(c.mean()) if c.numel() else 0.0, "correct": int(c.sum()), "total": int(c.numel())}
     if scorer.startswith("gen_"):
         enc = _build_prompt(ad, ex, s)
-        scores, hits, loops, lens, texts = [], [], [], [], []
-        for k in range(s.samples):
-            gs = {**s.to_dict(), "seed": s.seed + k}
-            g = ad.generate(enc, gs)
-            text, ids = g["text"], g["new_ids"]
-            looped = detect_loop(ids)
-            if scorer == "gen_contains":
-                sc = float(str(ex["target"]).lower() in text.lower())
-            elif scorer == "gen_numeric":
-                sc = float(_norm_answer(last_number(text)) == _norm_answer(str(ex["target"])))
-            elif scorer == "gen_boxed":
-                sc = float(_norm_answer(last_boxed(text)) == _norm_answer(str(ex["target"])))
-            elif scorer == "gen_regex":
-                sc = float(re.search(ex["pattern"], text) is not None)
-            elif scorer == "gen_loop":
-                sc = float(not looped and not g["hit_token_limit"])
-            else:
-                raise WSPError(f"unknown scorer {scorer!r}", code="bad_suite")
-            scores.append(sc)
-            hits.append(float(g["hit_token_limit"]))
-            loops.append(float(looped))
-            lens.append(len(ids))
-            texts.append(text[-400:])
-        n = len(scores)
-        return {"score": sum(scores) / n, "hit_token_limit": sum(hits) / n, "looped": sum(loops) / n,
-                "new_tokens": sum(lens) / n, "sample_tails": texts}
+        gens = [ad.generate(enc, {**s.to_dict(), "seed": s.seed + k}) for k in range(s.samples)]
+        return _score_generations(scorer, ex, gens)
     raise WSPError(f"unknown scorer {scorer!r}", code="bad_suite")
+
+
+def _score_generations(scorer: str, ex: dict, gens: list[dict]) -> dict:
+    scores, hits, loops, lens, texts = [], [], [], [], []
+    for g in gens:
+        text, ids = g["text"], g["new_ids"]
+        looped = detect_loop(ids)
+        if scorer == "gen_contains":
+            sc = float(str(ex["target"]).lower() in text.lower())
+        elif scorer == "gen_numeric":
+            sc = float(_norm_answer(last_number(text)) == _norm_answer(str(ex["target"])))
+        elif scorer == "gen_boxed":
+            sc = float(_norm_answer(last_boxed(text)) == _norm_answer(str(ex["target"])))
+        elif scorer == "gen_regex":
+            sc = float(re.search(ex["pattern"], text) is not None)
+        elif scorer == "gen_loop":
+            sc = float(not looped and not g["hit_token_limit"])
+        else:
+            raise WSPError(f"unknown scorer {scorer!r}", code="bad_suite")
+        scores.append(sc)
+        hits.append(float(g["hit_token_limit"]))
+        loops.append(float(looped))
+        lens.append(len(ids))
+        texts.append(text[-400:])
+    n = len(scores)
+    return {"score": sum(scores) / n, "hit_token_limit": sum(hits) / n, "looped": sum(loops) / n,
+            "new_tokens": sum(lens) / n, "sample_tails": texts}
+
+
+def score_examples(ad, scorer: str, examples: list[dict], s: GenerationSettings, batch_size: int = 1,
+                   progress=None) -> list[dict]:
+    """Score many examples. Generation scorers are batched when the adapter supports it (big speed-up on GPU)."""
+    if not (scorer.startswith("gen_") and batch_size > 1 and hasattr(ad, "generate_batch")):
+        out = []
+        for i, ex in enumerate(examples):
+            out.append(score_example(ad, scorer, ex, s))
+            if progress:
+                progress(i + 1, len(examples))
+        return out
+    results: list[dict] = []
+    for start in range(0, len(examples), batch_size):
+        chunk = examples[start:start + batch_size]
+        encs = [_build_prompt(ad, ex, s) for ex in chunk]
+        per_ex: list[list[dict]] = [[] for _ in chunk]
+        for k in range(s.samples):
+            gens = ad.generate_batch(encs, {**s.to_dict(), "seed": s.seed + k})
+            for i, g in enumerate(gens):
+                per_ex[i].append(g)
+        results += [_score_generations(scorer, ex, gs) for ex, gs in zip(chunk, per_ex)]
+        if progress:
+            progress(len(results), len(examples))
+    return results
 
 
 def aggregate(results: list[dict]) -> dict:

@@ -123,6 +123,14 @@ Entries marked **[REVIEW]** are the ones most likely to need your input.
    (fetched `config.json` only, a few KB) instantiated at tiny size loads through the adapter with the paper's
    tensor names, hybrid linear/full attention, gated q_proj, zero-centred RMSNorm and tied embeddings, and the
    loop-fix-style edit applies and reverts exactly (`tests/test_qwen35_arch.py`). **[REVIEW]**
+7a. **GPU route (decided 2026-11-09): Kaggle, "GPU T4 x2".** The owner's MacBook Pro (base Apple M5) has an
+    integrated GPU that PyTorch can use (`--device mps`, untested here) — fine for smoke tests, far too slow for
+    paper-scale 32k-token runs. Claude cannot rent GPUs, so the run is packaged as
+    `notebooks/kaggle_qwen_m3_demo.ipynb` for the owner to execute. Choices made for it: **float32** (T4 has no
+    bfloat16 and Qwen can overflow in float16); **batched generation** (`eval.batch_size`, added for this) with SDPA
+    attention; base + 2 baselines on GPU 0, edited + 1 baseline on GPU 1; a measured-throughput smoke step that
+    shrinks `LIMIT` (default 30 MATH-500 problems, 1 sample) to fit a 9-hour budget. This is a **subset** of the
+    paper's evaluation (500 problems × 4 samples, vLLM), so numbers will be noisier. **[REVIEW]**
 8. **"Recommended temperature" baseline:** Qwen's recommended thinking-mode sampling *is* the paper's setting
    (T=0.6, top-p 0.95, top-k 20), so the demo's baselines vary from it: repetition penalty 1.1, presence
    penalty 2.0, temperature 1.0.

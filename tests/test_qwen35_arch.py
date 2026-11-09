@@ -41,3 +41,15 @@ def test_qwen35_adapter_and_paper_edit_target(tk, qwen_dir):
                                "operations": ops})
     assert p.get("params_changed") == 2 * 64 * 8, p
     assert tk.call("patch_revert", {"session_id": sid, "patch_id": p["patch_id"]})["base_restored"]
+
+
+def test_qwen35_batched_generation(qwen_dir):
+    import torch
+
+    from wsp_toolkit.core.workspace.adapters import load_path
+    ad = load_path(qwen_dir)
+    encs = [torch.tensor([[1, 2, 3]]), torch.tensor([[4, 5, 6, 7, 8, 9]])]
+    s = {"max_new_tokens": 5, "temperature": 0.0}
+    one = [ad.generate(e, s)["new_ids"] for e in encs]
+    batch = [g["new_ids"] for g in ad.generate_batch(encs, s)]
+    assert one == batch  # left padding must not change greedy output (linear-attention layers included)

@@ -23,14 +23,16 @@ from ... import __version__
 from ..db import Store
 from ..safety.netguard import no_network
 from ..util import WSPError, json_hash, now, rnd
-from .scorers import GenerationSettings, aggregate, passes_for, score_example
+from .scorers import GenerationSettings, aggregate, passes_for, score_examples
 
 _BUILTIN_DIR = Path(__file__).resolve().parents[2] / "data" / "suites"
 
 
-def env_record(isolation: str) -> dict:
+def env_record(isolation: str, batch_size: int = 1) -> dict:
     env = {"python": sys.version.split()[0], "torch": torch.__version__, "platform": platform.platform(),
-           "wsp_toolkit": __version__, "network": f"blocked ({isolation})"}
+           "wsp_toolkit": __version__, "network": f"blocked ({isolation})", "eval_batch_size": batch_size}
+    if torch.cuda.is_available():
+        env["gpu"] = torch.cuda.get_device_name(0)
     try:
         import transformers
         env["transformers"] = transformers.__version__
@@ -43,6 +45,7 @@ class EvalHarness:
     def __init__(self, store: Store, cfg, wsm):
         self.store, self.cfg, self.wsm = store, cfg, wsm
         self._suite_cache: dict[str, list[dict]] = {}
+        self.progress = None  # optional callback(done, total), e.g. for long GPU runs
 
     # ------------------------------------------------------------------ suites
     def suites_for(self, ws) -> list[dict]:
@@ -136,13 +139,14 @@ class EvalHarness:
                 from .worker import run_in_subprocess
                 results = run_in_subprocess(ws, self.wsm, suite["scorer"], examples, s)
             else:
+                bs = int(self.cfg.get("eval.batch_size", 1))
                 with no_network(), torch.no_grad():
-                    results = [score_example(ws.adapter, suite["scorer"], ex, s) for ex in examples]
+                    results = score_examples(ws.adapter, suite["scorer"], examples, s, bs, self.progress)
         metrics = aggregate(results)
         row = {"id": rid, "workspace_id": ws.id, "session_id": session_id, "patch_id": top, "model_hash": mh,
                "suite_id": suite_id, "split": suite["split"], "kind": kind, "settings_json": json.dumps(s.to_dict()),
                "metrics_json": json.dumps(metrics), "details_json": json.dumps(results),
-               "env_json": json.dumps(env_record(isolation)), "created_at": now()}
+               "env_json": json.dumps(env_record(isolation, int(self.cfg.get("eval.batch_size", 1)))), "created_at": now()}
         self.store.execute(
             "INSERT OR REPLACE INTO runs(id,workspace_id,session_id,patch_id,model_hash,suite_id,split,kind,"
             "settings_json,metrics_json,details_json,env_json,created_at) VALUES (:id,:workspace_id,:session_id,"

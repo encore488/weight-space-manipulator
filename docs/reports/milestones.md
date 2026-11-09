@@ -5,13 +5,13 @@ Raw JSON is next to this file. "Scripted agent" = deterministic code that uses o
 
 | Milestone | Acceptance criterion | Result |
 |---|---|---|
-| M0 | fresh clone → install → `pytest` passes on CPU, no network; fixtures reproducible | **Pass.** 64 tests, ~2 min, no network. Fixtures hash-identical across runs for a seed (`test_m0_foundations.py`). |
+| M0 | fresh clone → install → `pytest` passes on CPU, no network; fixtures reproducible | **Pass.** 66 tests, ~2 min, no network. Fixtures hash-identical across runs for a seed (`test_m0_foundations.py`). |
 | M1 | agent with only the tools locates the induction heads (vs ground truth) | **Pass.** Scripted agent: induction heads {1.0, 1.1, 1.2, 1.3}, previous-token heads {0.0, 0.1, 0.2}, both **exactly** ground truth, using **4** forward passes. Same result over a real MCP client session. |
 | M1 | budgets and access levels enforced; no output above the cap | **Pass.** `weights_only` cannot get activations/attention/outputs; exact budget accounting with no partial spend; every tool response ≤ 16,000 bytes (large ones paged). |
 | M2 | apply → revert returns the exact original hash | **Pass** (full-length hash compared). |
 | M2 | patch on a freshly loaded base reproduces the final hash | **Pass.** |
 | M2 | stacking / reverting a middle patch is predictable | **Pass.** cascade and rebase semantics tested; see `docs/design/patch_semantics.md`. |
-| M3 | reproducible report for steps 1–2 (Qwen base vs. edit, baselines) | **Not run here** (no GPU; ~3.2 GB download needs your OK). Script ready: `scripts/qwen_m3_demo.py`. Adapter verified on the real Qwen3.5 architecture at tiny size. |
+| M3 | reproducible report for steps 1–2 (Qwen base vs. edit, baselines) | **Pending a GPU run** on Kaggle (`notebooks/kaggle_qwen_m3_demo.ipynb`). Pipeline verified end to end on CPU with a tiny random Qwen3.5 + the real tokenizer + real MATH-500 data. |
 | M3 | step 3: agent with 50-pass budget on practice data attempts its own fix, all actions in the UI log | **Pass on the fixture analogue**; Qwen version not run (above). |
 | M4 | export blocked without approval; flagged patches surfaced; policy limits enforced | **Pass** (`test_m4_safety.py`). |
 | M5 | ≥ a few hundred networks; baseline agent across all 3 task types; publish scores | **Pass.** 392 networks; baseline scores below. |
@@ -131,7 +131,7 @@ or multi-token triggers, behaviours outside the probe distribution, real LLM fin
 
 ```bash
 pip install -e '.[dev,hf,pdf]'
-pytest                                   # 64 tests, CPU, no network
+pytest                                   # 66 tests, CPU, no network
 wsp demo m1 && wsp demo m3               # M1 / M3 fixture demos
 wsp zoo build && wsp zoo baseline        # M5
 wsp features build                       # M6

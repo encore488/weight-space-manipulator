@@ -51,6 +51,9 @@ forbidden_models = []
 [eval]
 # "thread" = in-process with a per-thread network guard; "subprocess" = separate process with network guard.
 isolation = "thread"
+# Prompts generated together for generation-based suites (HF models). >1 is much faster on a GPU; sampled
+# outputs then use one RNG stream per batch, so they differ from batch_size = 1 runs (greedy outputs match).
+batch_size = 1
 
 [ui]
 host = "127.0.0.1"

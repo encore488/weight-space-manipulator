@@ -56,3 +56,22 @@ def test_hf_open_inspect_probe_edit(tk, hf_dir):
                        "direction": {"id": d}, "side": "output", "indices": "0:8"}])
     assert p["params_changed"] <= 32 * 8
     assert c("patch_revert", session_id=sid, patch_id=p["patch_id"])["base_restored"]
+
+
+def test_batched_generation_matches_unbatched_greedy(tk, hf_dir):
+    from pathlib import Path
+
+    from wsp_toolkit.core.evals.scorers import GenerationSettings, score_examples
+    from wsp_toolkit.core.workspace.adapters import load_path
+    ad = load_path(Path(hf_dir))
+    prompts = ["the cat", "a big red dog sat on the mat", "the dog ran and"]
+    encs = [ad.encode(p) for p in prompts]
+    settings = {"max_new_tokens": 6, "temperature": 0.0, "presence_penalty": 1.5}
+    one = [ad.generate(e, settings)["new_ids"] for e in encs]
+    batch = [g["new_ids"] for g in ad.generate_batch(encs, settings)]
+    assert one == batch
+    ex = [{"prompt": p, "target": "cat"} for p in prompts]
+    s = GenerationSettings.from_dict({"max_new_tokens": 6})
+    a = score_examples(ad, "gen_contains", ex, s, batch_size=1)
+    b = score_examples(ad, "gen_contains", ex, s, batch_size=3)
+    assert [x["score"] for x in a] == [x["score"] for x in b]

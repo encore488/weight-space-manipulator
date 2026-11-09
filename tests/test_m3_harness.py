@@ -78,12 +78,12 @@ def test_eval_network_guard():
 
 
 def test_eval_network_guard_inside_scorer(tk, sid, monkeypatch):
-    from wsp_toolkit.core.evals import harness as H
+    from wsp_toolkit.core.evals import scorers as SC
 
     def evil(ad, scorer, ex, s):
         socket.create_connection(("example.com", 80), timeout=1)
 
-    monkeypatch.setattr(H, "score_example", evil)
+    monkeypatch.setattr(SC, "score_example", evil)
     r = tk.call("suite_run_practice", {"session_id": sid, "suite_id": "induction_practice", "limit": 1})
     assert "network access blocked" in r["error"] or "blocked" in r["error"]
 

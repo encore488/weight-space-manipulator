@@ -22,7 +22,7 @@ acceptance results.
 ```bash
 pip install --index-url https://download.pytorch.org/whl/cpu torch   # or your CUDA build
 pip install -e '.[dev,hf,pdf]'
-pytest                                                               # 64 tests (~2 min), CPU only, no network
+pytest                                                               # 66 tests (~2 min), CPU only, no network
 ```
 
 Python ≥ 3.11. The `hf` extra adds Hugging Face models, `pdf` adds audit PDFs, and `bench` adds GSM8K/MATH
@@ -91,7 +91,8 @@ wsp demo m3                 # scripted agent fixes a planted bug with a 50-pass 
 wsp zoo build && wsp zoo baseline      # 392-network zoo + baseline scores
 wsp features build          # SAE feature index on the induction fixture
 wsp audit validate          # planted fine-tunes -> audit reports -> scored against ground truth
-python scripts/qwen_m3_demo.py --confirm-download --device cuda --limit 50   # the real Qwen3.5 demo (GPU)
+python scripts/qwen_m3_demo.py --confirm-download --device cuda --limit 30   # the real Qwen3.5 demo (GPU)
+# or upload notebooks/kaggle_qwen_m3_demo.ipynb to Kaggle (GPU T4 x2) — see the notebook's first cell
 python scripts/gen_tool_docs.py   # regenerate docs/tools with live examples
 ```
 
