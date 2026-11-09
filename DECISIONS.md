@@ -1,5 +1,8 @@
 # Decisions & assumptions log (for owner review)
 
+> **Status (2026-11-09): reviewed and approved by the owner.** Ownership confirmed as a **personal project**
+> (not PAI3). License: Apache-2.0 (`LICENSE` added).
+
 You asked me to build all milestones without stopping and to write down every assumption and business-logic
 decision. This file is that list. Each entry says what I decided, why, and what to change if you disagree.
 Entries marked **[REVIEW]** are the ones most likely to need your input.
@@ -10,8 +13,8 @@ Entries marked **[REVIEW]** are the ones most likely to need your input.
 
 | # | Question | What I assumed | How to change |
 |---|---|---|---|
-| 1 | Name & license | Kept the working name **WSP Toolkit** (package `wsp_toolkit`, CLI `wsp`). License **Apache-2.0** in `pyproject.toml` (no LICENSE file added yet). **[REVIEW]** | Rename the package/CLI; add the LICENSE file you choose. |
-| 2 | Personal vs PAI3 | Unknown. The code lives in `encore488/weight-space-manipulator` on branch `chris/vibrant-hamilton-286z89`. Nothing in the code depends on ownership. **[REVIEW]** | n/a |
+| 1 | Name & license | Kept the working name **WSP Toolkit** (package `wsp_toolkit`, CLI `wsp`). License **Apache-2.0** (`LICENSE` file + `pyproject.toml`). Approved. | Rename the package/CLI if you want a different name. |
+| 2 | Personal vs PAI3 | **Personal project** (confirmed by the owner). Repo: `encore488/weight-space-manipulator`. | n/a |
 | 3 | Hardware | **No GPU** in the build environment (4 CPU cores, 15 GB RAM). Everything except the real Qwen demo runs on CPU. `WSP_HF_DEVICE=cuda` and `WSP_HF_DTYPE=bfloat16` switch HF models to GPU. | — |
 | 4 | UI stack | **FastAPI + Jinja2 + HTMX**, as suggested. HTMX 1.9.12 is vendored in `ui/static/` (no CDN at runtime → local-first). | — |
 | 5 | Agent for demos | No LLM API key was available to the toolkit. Demos use (a) **scripted agents** that only call the tools (deterministic, used as acceptance tests), and (b) one **LLM-driven session**: I (Claude, the model building this) used the tools through `wsp call`, which has exactly the MCP agent permissions. That session is logged and in the reports. **[REVIEW]** | Point any MCP client (Claude Code, Codex) at `wsp mcp`. |
