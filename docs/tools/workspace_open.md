@@ -34,8 +34,8 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "workspace_id": "ws_565913a3627b",
- "session_id": "sess_7fad8c15512d",
+ "workspace_id": "ws_c274eccdf9c1",
+ "session_id": "sess_36ce9b0400a4",
  "access_level": "weights+activations+outputs",
  "capabilities": [
   "activations",

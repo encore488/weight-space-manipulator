@@ -252,3 +252,34 @@ Entries marked **[REVIEW]** are the ones most likely to need your input.
 8. **Install path:** `uv tool install "wsp-toolkit[agent] @ git+https://github.com/encore488/weight-space-manipulator"`
    (uv provides Python 3.11+ on machines that lack it). Verified from a clean environment. No PyPI release yet.
    **[REVIEW]**
+
+## 11. WSP Bench, website and public leaderboard (2026-11-10)
+
+1. **Seeded instances.** Every challenge run builds its instance from `(challenge, seed)`. This replaces the fixed
+   instances of v0.2, whose answers could be shared. Heads are permuted (function-preserving) per seed; damage kind
+   (shrink / sign-flip / mixed), banned and trigger tokens, the backdoor's trigger pattern and the zoo networks all
+   vary. Because instances are seeded, a submission can be re-scored by anyone.
+2. **Four new challenges** (nine in total): `token-ban` and `install-a-rule` (*write* tasks: program behaviour, not
+   just repair), `name-that-function` (weights-only reading, including permuted copies, the critique paper's point
+   about priors vs. tracing), and `backdoor-removal`. Each was checked: doing nothing ≈ 0, and a solution built from
+   the hidden truth reaches ≈ 1 (≈ 0.67 for my own `install-a-rule` attempt, which leaves headroom). `token-ban` turned
+   out to have a one-edit solution, so it is level 1. **[REVIEW]**
+3. **WSP-Bench score** = mean of the nine challenge means; missing challenges count 0 (shown as *partial*). Equal
+   weights per challenge, no level weighting. **[REVIEW]**
+4. **Website on GitHub Pages**, a static site built by `.github/workflows/site.yml` on every push to `main`. It
+   re-scores every submission at build time, so the "re-scored ✓" badge always reflects the current code. **Needs
+   one manual step from you**: Settings → Pages → Source: *GitHub Actions*. Until then the deploy job fails.
+5. **Contributions:** an issue form, with a bot that re-scores the pasted submission and comments, and a
+   maintainer `/accept` comment that commits it and rebuilds the site. The alternative is a pull request checked by
+   `leaderboard-pr.yml`, which runs main's verifier on the PR's data files only.
+   - **Why no PR auto-creation:** that would need the "Allow GitHub Actions to create pull requests" setting.
+   - **Why the extra rebuild trigger:** pushes made with the default token don't trigger other workflows, so
+     intake triggers the site build explicitly.
+   **[REVIEW]**
+6. **What verification can't do:** it proves a score follows from the submitted answer and edits on that seed's
+   instance. It can't prove which model produced them, or that budgets were respected; someone could compute an
+   answer from the public code. The site says this plainly. A stronger design would need trusted execution (e.g. a
+   hosted runner with its own API key), which is out of scope for a local-first project.
+7. **Score tolerance ±0.05** in verification: instances include small trained models whose weights can differ across
+   platforms and PyTorch versions. Locally, re-scoring from scratch reproduced all 27 baseline runs exactly.
+8. The scripted baseline (seeds 1–3) is the first leaderboard entry, labelled as a reference, not an AI.

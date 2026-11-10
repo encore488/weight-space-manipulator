@@ -21,7 +21,7 @@ Call (MCP tool arguments, or `wsp call patch_test '<json>'`):
 
 ```json
 {
- "patch_id": "p_b91197ce4594d918"
+ "patch_id": "p_8b4e424ecd90b3a7"
 }
 ```
 
@@ -29,7 +29,7 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "patch_id": "p_b91197ce4594d918",
+ "patch_id": "p_8b4e424ecd90b3a7",
  "status": "tested",
  "note": "suites ran; results are hidden at this access level"
 }

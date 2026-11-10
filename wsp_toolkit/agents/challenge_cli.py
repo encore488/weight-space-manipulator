@@ -22,6 +22,7 @@ def main(argv: list[str]) -> None:
     ap.add_argument("cmd", choices=["list", "prompt", "scores", "report", "baseline", "prepare"])
     ap.add_argument("challenge", nargs="?")
     ap.add_argument("--model", default=None, help="model name to record (prompt) or to filter by (report)")
+    ap.add_argument("--seed", type=int, default=None, help="(baseline) instance seed")
     a = ap.parse_args(argv)
     if a.cmd == "list":
         for cid, c in CHALLENGES.items():
@@ -44,13 +45,13 @@ def main(argv: list[str]) -> None:
         import time
         for cid in ([a.challenge] if a.challenge else list(CHALLENGES)):
             t = time.time()
-            n = len(tk.challenges.sources(cid))
+            n = len(tk.challenges.prepare(cid)["sessions"])
             print(f"{cid:18s} ready ({n} model(s), {time.time() - t:.0f}s)", flush=True)
         print("All set. Next: claude mcp add wsp -- wsp mcp --challenge <id>   or   wsp agent run <id> --model ...")
         return
     if a.cmd == "baseline":
         from .challenge_baseline import run_all
-        for r in run_all(tk, [a.challenge] if a.challenge else None):
+        for r in run_all(tk, [a.challenge] if a.challenge else None, a.seed):
             print(json.dumps({k: r[k] for k in ("challenge", "score", "usage")}))
         return
     if a.cmd == "scores":

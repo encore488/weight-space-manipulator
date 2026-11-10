@@ -21,8 +21,8 @@ Call (MCP tool arguments, or `wsp call diff_models '<json>'`):
 
 ```json
 {
- "session_id": "sess_04f94eb4cf68",
- "other_session_id": "sess_e8079bdb98ca"
+ "session_id": "sess_87aaa3b360e8",
+ "other_session_id": "sess_5d9e37323c38"
 }
 ```
 

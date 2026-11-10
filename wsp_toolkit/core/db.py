@@ -204,6 +204,11 @@ class Store:
         self.conn.execute("PRAGMA journal_mode=WAL")
         self.conn.execute("PRAGMA busy_timeout=30000")
         self.conn.executescript(SCHEMA)
+        for table, col, typ in [("challenge_runs", "seed", "INTEGER"), ("challenge_runs", "instance_hash", "TEXT")]:
+            try:  # migrations for databases created by older versions
+                self.conn.execute(f"ALTER TABLE {table} ADD COLUMN {col} {typ}")
+            except sqlite3.OperationalError:
+                pass
 
     # ------------------------------------------------------------ basic access
     def execute(self, sql: str, params: tuple | list = ()) -> sqlite3.Cursor:

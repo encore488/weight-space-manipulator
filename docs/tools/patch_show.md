@@ -21,7 +21,7 @@ Call (MCP tool arguments, or `wsp call patch_show '<json>'`):
 
 ```json
 {
- "patch_id": "p_b91197ce4594d918"
+ "patch_id": "p_8b4e424ecd90b3a7"
 }
 ```
 
@@ -29,8 +29,8 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "patch_id": "p_b91197ce4594d918",
- "workspace_id": "ws_97c6759cac8b",
+ "patch_id": "p_8b4e424ecd90b3a7",
+ "workspace_id": "ws_f5367d180411",
  "base_model_hash": "1b441d92f299953d64ee9a233753978c72dfc1a7e848b0baabfba39741ba072e",
  "parent_patch": null,
  "model_hash_before": "1b441d92f299953d64ee9a233753978c72dfc1a7e848b0baabfba39741ba072e",
@@ -57,8 +57,8 @@ Result (real output from the induction fixture):
  "params_changed": 1024,
  "pct_of_model": 2.66667,
  "rationale": "doc patch A",
- "author": "agent:sess_04f94eb4cf68",
- "created_at": 1794278879.6853263,
+ "author": "agent:sess_87aaa3b360e8",
+ "created_at": 1794315523.5216708,
  "evals": [
   "run_ea10fc137eed9140",
   "run_462a0f74236e0f0b",

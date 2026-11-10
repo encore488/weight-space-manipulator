@@ -1,0 +1,34 @@
+{% extends "_layout.html" %}{% import "_board.html" as b with context %}{% block body %}
+<section class="site-hero"><h1>Can your AI agent edit a neural network's weights directly?</h1>
+<p><b>Weight-space programming</b> means changing what a network does by reasoning about its weights, with no gradient descent. In MIT CSAIL's <a href="{{paper_url}}">Sparks of Weight-Space Programming</a>, an AI agent found and removed a looping bug in a 0.8B model by editing 0.016% of its weights.</p>
+<p>WSP Bench is an open-source toolkit and an open leaderboard for trying this yourself, on a laptop: nine auto-scored challenges, an MCP server for Claude Code and other agents, and a web UI for watching your agent and approving every edit.</p>
+<div class="cta"><a class="btn primary" href="#start">Try it in 5 minutes</a><a class="btn" href="leaderboard.html">Leaderboard</a><a class="btn" href="{{repo_url}}">GitHub</a></div></section>
+
+<section class="section"><h2>Leaderboard</h2><p class="lead">Every entry is re-scored from its seeds, answers and edits each time this site is built. <a href="leaderboard.html">Full table and how scoring works →</a></p>
+{{ b.table(board.entries, 10) }}</section>
+
+<section class="section" id="start"><h2>Try it</h2><div class="steps">
+<div class="step"><h3><span class="num">1</span>Install</h3>Python 3.11+, CPU is enough. With <a href="https://docs.astral.sh/uv/">uv</a> (after installing it, open a new terminal):
+<div class="cmd"><pre id="i1">uv tool install "wsp-toolkit[agent] @ git+{{repo_url}}"
+wsp challenge prepare</pre><button data-copy="i1">Copy</button></div></div>
+<div class="step"><h3><span class="num">2</span>Run the benchmark</h3>Through the Anthropic API, where the model gets only the toolkit's tools (comparable numbers):
+<div class="cmd"><pre id="i2">export ANTHROPIC_API_KEY=...
+wsp bench run --model claude-fable-5-2</pre><button data-copy="i2">Copy</button></div><span class="muted" style="font-size:12px">or one challenge: <code>wsp agent run fix-the-copier --model …</code></span></div>
+<div class="step"><h3><span class="num">3</span>Submit</h3>Export your runs and paste the file into the submission form. A bot re-scores it before it joins the leaderboard.
+<div class="cmd"><pre id="i3">wsp leaderboard export --model claude-fable-5-2 --by your-handle</pre><button data-copy="i3">Copy</button></div><a href="submit.html">How submitting works →</a></div>
+</div>
+<p class="muted">Prefer to watch an agent work? <code>claude mcp add wsp -- wsp mcp --challenge fix-the-copier</code>, then <code>wsp challenge prompt fix-the-copier</code> and <code>wsp ui</code>. <a href="{{repo_url}}/blob/main/docs/agents.md">Connecting agents →</a></p></section>
+
+<section class="section"><h2>The nine challenges</h2><p class="lead">Each run gets a random, seeded instance (which heads are damaged, which token is the trigger, which networks are in the sprint), so answers can't be memorised. Access levels and forward-pass budgets mirror the paper's experiments.</p>
+<div class="ch">{% for c in challenges %}<div class="card" id="{{c.id}}"><b>{{c.title}}</b><span class="level">level {{c.level}}</span><span class="kind">{{c.kind}}</span>
+<p style="margin:6px 0">{{c.summary}}</p><p class="muted" style="font-size:12px;margin:0 0 6px">Access: <code>{{c.access_level}}</code> · {{c.budget}} forward passes · scoring: {{c.scoring}}</p>
+<details><summary>Brief (what the agent is told)</summary><p style="font-size:13px">{{c.brief}}</p></details>
+<div class="cmd"><pre id="c-{{c.id}}">wsp agent run {{c.id}} --model claude-fable-5-2</pre><button data-copy="c-{{c.id}}">Copy</button></div></div>{% endfor %}</div></section>
+
+<section class="section"><h2>What's in the toolkit</h2><ul>
+<li><b>~50 MCP tools</b>: tensor stats, SVDs, vocabulary readouts, activation and attention probes, reversible bit-exact patches, practice and held-out evaluation.</li>
+<li><b>Guardrails</b>: forward-pass budgets, access levels (weights only → full outputs), held-out data the agent never sees, human approval before any export.</li>
+<li><b>Research extras</b>: a 392-network zoo with planted flaws, a sparse-autoencoder feature index, and fine-tune audits that find what a fine-tune changed.</li>
+<li>Also works on Hugging Face models: a first run on the paper's Qwen3.5-0.8B edit is <a href="{{repo_url}}/blob/main/docs/reports/m3_qwen_demo.md">in the repo</a>.</li></ul>
+<img class="shot" src="challenges.png" alt="The local web UI's challenges page"></section>
+{% endblock %}

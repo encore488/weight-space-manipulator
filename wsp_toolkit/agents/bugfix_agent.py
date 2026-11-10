@@ -18,7 +18,7 @@ import statistics
 
 
 def run(call, source: str = "fixture:induction_tf_broken", budget_hint: int = 50, practice_limit: int = 8,
-        factors=(5.0, 10.0, 20.0), session_id: str | None = None, final_heldout: bool = True) -> dict:
+        factors=(0.75, 1.0, 1.3), session_id: str | None = None, final_heldout: bool = True) -> dict:
     log = []
     if session_id:
         o = call("workspace_info", session_id=session_id)
@@ -29,7 +29,7 @@ def run(call, source: str = "fixture:induction_tf_broken", budget_hint: int = 50
     n_layers = o["n_layers"]
     suites = call("suite_list", session_id=sid)["suites"]
     practice = next(s["id"] for s in suites if s["split"] == "practice")
-    heldout = next(s["id"] for s in suites if s["split"] == "heldout")
+    heldout = next((s["id"] for s in suites if s["split"] == "heldout"), None)
     base = call("suite_run_practice", session_id=sid, suite_id=practice, limit=practice_limit)
     log.append(f"practice score before: {base['metrics']['score']}")
 
@@ -43,18 +43,21 @@ def run(call, source: str = "fixture:induction_tf_broken", budget_hint: int = 50
         st = call("tensor_stats", session_id=sid, tensor=f"blocks.{li}.attn.o_proj.weight")
         for h, n in enumerate(st["head_norms"]):
             norms[(li, h)] = n
-    med = statistics.median(norms.values())
-    weak = [(li, h) for (li, h), n in norms.items() if n < 0.3 * med]
-    log.append(f"median head output norm {med:.3g}; suspiciously small heads: {weak}")
+    top = max(norms.values())
+    weak = [(li, h) for (li, h), n in norms.items() if n < 0.35 * top]
+    healthy = [n for k, n in norms.items() if k not in weak] or [top]
+    med = statistics.median(healthy)
+    log.append(f"healthy-head median output norm {med:.3g}; suspiciously small heads: {weak}")
     if not weak:
         return {"session_id": sid, "fixed": False, "log": log}
 
     best = {"score": base["metrics"]["score"], "patch": None, "factor": None}
-    for f in factors:
-        ops = [{"op": "scale", "tensor": f"blocks.{li}.attn.o_proj.weight", "head": h, "factor": f} for li, h in weak]
+    for f in factors:  # multipliers of "restore each weak head to the healthy median norm"
+        ops = [{"op": "scale", "tensor": f"blocks.{li}.attn.o_proj.weight", "head": h,
+                "factor": round(f * med / norms[(li, h)], 4)} for li, h in weak]
         p = call("edit_apply", session_id=sid, operations=ops,
-                 rationale=f"Heads {weak} attend like induction heads but their o_proj output blocks are "
-                           f"<30% of the median head norm ({med:.3g}); restoring their output scale by x{f}.")
+                 rationale=f"Heads {weak} have o_proj output blocks under 35% of the largest head's norm; restoring "
+                           f"them to {f}x the healthy median norm ({med:.3g}).")
         r = call("suite_run_practice", session_id=sid, suite_id=practice, limit=practice_limit)
         sc = r["metrics"]["score"]
         log.append(f"factor {f}: patch {p['patch_id']} practice score {sc}; regression {p.get('regression')}")

@@ -87,12 +87,14 @@ def main(argv: list[str] | None = None) -> None:
     build_server(tk).run(a.transport)
 
 
-def lock_to_challenge(tk: Toolkit, challenge_id: str) -> list[str]:
-    """Agents may then open only this challenge's models, and its runs are marked 'locked'."""
-    sources = tk.challenges.sources(challenge_id)
-    tk.cfg.raw["session"]["allowed_sources"] = sources
+def lock_to_challenge(tk: Toolkit, challenge_id: str) -> None:
+    """Agents can then only use the sessions challenge_start opens (workspace_open is refused), and runs of this
+    challenge are marked 'locked'."""
+    from ..core.challenges import LOCK_SOURCE
+
+    tk.challenges.get(challenge_id)
+    tk.cfg.raw["session"]["allowed_sources"] = [LOCK_SOURCE]
     tk.cfg.raw["session"]["challenge_lock"] = challenge_id
-    return sources
 
 
 if __name__ == "__main__":

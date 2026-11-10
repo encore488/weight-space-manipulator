@@ -21,7 +21,7 @@ Call (MCP tool arguments, or `wsp call session_log '<json>'`):
 
 ```json
 {
- "session_id": "sess_04f94eb4cf68"
+ "session_id": "sess_87aaa3b360e8"
 }
 ```
 
@@ -32,25 +32,25 @@ Result (real output from the induction fixture):
  "events": [
   {
    "id": 1,
-   "ts": 1794278879.6768825,
+   "ts": 1794315523.5122378,
    "actor": "agent",
    "kind": "tool",
    "tool": "workspace_open",
    "ok": true,
-   "summary": "workspace_id=ws_97c6759cac8b, session_id=sess_04f94eb4cf68, access_level=weights+activations+outputs, capabilities=[3], budget={...}, model_kind=tiny_transforme"
+   "summary": "workspace_id=ws_f5367d180411, session_id=sess_87aaa3b360e8, access_level=weights+activations+outputs, capabilities=[3], budget={...}, model_kind=tiny_transforme"
   },
   {
    "id": 3,
-   "ts": 1794278879.6923456,
+   "ts": 1794315523.527085,
    "actor": "agent",
    "kind": "edit",
    "tool": "edit_apply",
    "ok": true,
-   "summary": "applied p_b91197ce4594d918 (1024 params)"
+   "summary": "applied p_8b4e424ecd90b3a7 (1024 params)"
   },
   {
    "id": 4,
-   "ts": 1794278880.4847763,
+   "ts": 1794315524.571487,
    "actor": "system",
    "kind": "eval",
    "tool": "patch_test",
@@ -59,25 +59,25 @@ Result (real output from the induction fixture):
   },
   {
    "id": 5,
-   "ts": 1794278880.4854274,
+   "ts": 1794315524.5723703,
    "actor": "agent",
    "kind": "tool",
    "tool": "edit_apply",
    "ok": true,
-   "summary": "patch_id=p_b91197ce4594d918, status=draft, params_changed=1024, pct_of_model=2.667, tensors=[1], model_hash_after=ec8aee16b0d759b7, sensitive_flags=[0], stack=["
+   "summary": "patch_id=p_8b4e424ecd90b3a7, status=draft, params_changed=1024, pct_of_model=2.667, tensors=[1], model_hash_after=ec8aee16b0d759b7, sensitive_flags=[0], stack=["
   },
   {
    "id": 6,
-   "ts": 1794278880.4899795,
+   "ts": 1794315524.581606,
    "actor": "agent",
    "kind": "edit",
    "tool": "edit_apply",
    "ok": true,
-   "summary": "applied p_bb44323a1eb5f4aa (1024 params)"
+   "summary": "applied p_de781df671b58006 (1024 params)"
   },
   {
    "id": 7,
-   "ts": 1794278880.5304596,
+   "ts": 1794315524.6395986,
    "actor": "system",
    "kind": "eval",
    "tool": "patch_test",
@@ -86,11 +86,11 @@ Result (real output from the induction fixture):
   },
   {
    "id": 8,
-   "ts": 1794278880.5310147,
+   "ts": 1794315524.6423345,
    "actor": "agent",
    "kind": "tool",
    "tool": "edit_apply",
    "ok": true,
-   "su
+   "summa
   ... (truncated for the docs)
 ```

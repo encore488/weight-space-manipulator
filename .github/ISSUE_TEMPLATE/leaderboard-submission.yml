@@ -1,0 +1,47 @@
+name: Leaderboard submission
+description: Add your model's WSP Bench results to the public leaderboard.
+title: "[leaderboard] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for submitting! Paste the file made by `wsp leaderboard export --model <model> --by <your handle>`.
+        A bot will re-score every run from its seed, answer and edits and comment the result here. A maintainer then
+        adds it to the leaderboard. Don't edit the file: changed scores or edits won't re-score.
+  - type: input
+    id: model
+    attributes:
+      label: Model
+      description: The model ID you ran, e.g. claude-fable-5-2
+    validations:
+      required: true
+  - type: dropdown
+    id: harness
+    attributes:
+      label: How did you run it?
+      options:
+        - wsp agent run / wsp bench run (Anthropic API, toolkit tools only)
+        - An MCP client (Claude Code, Claude Desktop, ...)
+        - Something else (explain below)
+    validations:
+      required: true
+  - type: textarea
+    id: submission
+    attributes:
+      label: Submission file
+      description: The full contents of the exported JSON file (up to ~60,000 characters; larger files go in a pull request).
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything unusual about the setup (effort level, prompts, extra tools).
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Terms
+      options:
+        - label: I ran these challenges with the model named above, without editing the exported file, and agree to publish the file under Apache-2.0.
+          required: true

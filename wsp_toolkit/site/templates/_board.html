@@ -1,0 +1,9 @@
+{% macro table(entries, limit=None) %}{% if entries %}<div class="scroll"><table class="lb"><thead><tr><th class="rank">#</th><th>Model</th><th class="num" title="Mean of the nine challenge scores (missing challenges count 0)">WSP-Bench</th>
+{% for c in challenges %}<th class="num" title="{{c.title}}">{{ c.id.split('-')[0] }}…</th>{% endfor %}<th>Harness</th><th>Status</th><th>By</th><th>Date</th></tr></thead><tbody>
+{% for e in entries[:limit] %}<tr><td class="rank">{{loop.index}}</td><td><code>{{e.agent_model}}</code>{% if e.agent_model == baseline %} <span class="muted">(reference)</span>{% endif %}{% if e.notes %}<br><span class="muted" style="font-size:12px">{{e.notes}}</span>{% endif %}</td>
+<td class="num score" data-v="{{e.bench_score}}">{{ '%.3f'|format(e.bench_score) }}{% if not e.complete %}<br><span class="muted" style="font-size:11px">partial</span>{% endif %}</td>
+{% for c in challenges %}{% set v = e.per_challenge.get(c.id) %}<td class="num" data-v="{{ v if v is not none else -1 }}" title="{{ e.runs_per_challenge.get(c.id, 0) }} run(s)">{{ '%.2f'|format(v) if v is not none else '—' }}</td>{% endfor %}
+<td style="font-size:12px">{{e.harness}}{% if not e.locked %} <span class="muted">(unlocked)</span>{% endif %}</td>
+<td>{% if e.verified %}<span class="badge ok" title="Every run was re-scored from its seed, answer and edits by this site's build">re-scored ✓</span>{% else %}<span class="badge self">not re-scored</span>{% endif %}</td>
+<td>{{e.submitted_by}}</td><td style="white-space:nowrap">{{e.created}}</td></tr>{% endfor %}</tbody></table></div>
+{% else %}<div class="empty">No submissions yet. Be the first: <a href="submit.html">submit your results</a>.</div>{% endif %}{% endmacro %}

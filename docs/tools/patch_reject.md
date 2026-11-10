@@ -23,7 +23,7 @@ Call (MCP tool arguments, or `wsp call patch_reject '<json>'`):
 
 ```json
 {
- "patch_id": "p_bb44323a1eb5f4aa",
+ "patch_id": "p_de781df671b58006",
  "reviewer": "alice",
  "note": "not needed"
 }
@@ -33,9 +33,9 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "patch_id": "p_bb44323a1eb5f4aa",
+ "patch_id": "p_de781df671b58006",
  "status": "rejected",
  "reviewer": "alice",
- "ts": 1794278889.1910412
+ "ts": 1794315537.708149
 }
 ```

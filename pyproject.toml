@@ -35,7 +35,8 @@ wsp-mcp = "wsp_toolkit.mcp_server.server:main"
 include = ["wsp_toolkit*"]
 
 [tool.setuptools.package-data]
-wsp_toolkit = ["ui/templates/*.html", "ui/static/*", "default_config.toml", "data/suites/*.json"]
+wsp_toolkit = ["ui/templates/*.html", "ui/static/*", "site/templates/*.html", "site/templates/*.css", "default_config.toml",
+               "data/suites/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

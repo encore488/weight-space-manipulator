@@ -25,7 +25,7 @@ Call (MCP tool arguments, or `wsp call suite_run_practice '<json>'`):
 
 ```json
 {
- "session_id": "sess_04f94eb4cf68",
+ "session_id": "sess_87aaa3b360e8",
  "suite_id": "induction_practice",
  "limit": 2
 }
@@ -39,7 +39,7 @@ Result (real output from the induction fixture):
  "suite": "induction_practice",
  "split": "practice",
  "kind": "practice",
- "patch_id": "p_bb44323a1eb5f4aa",
+ "patch_id": "p_de781df671b58006",
  "model_hash": "ed5c84a209e1deb3",
  "settings": {
   "temperature": 0.0,

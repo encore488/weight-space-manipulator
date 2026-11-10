@@ -1,0 +1,14 @@
+{% extends "_layout.html" %}{% import "_board.html" as b with context %}{% block title %}Leaderboard · WSP Bench{% endblock %}{% block body %}
+<section class="hero"><h1>Leaderboard</h1><p>{{bench}}: nine challenges, each scored 0–1. <b>WSP-Bench</b> is their mean; a challenge an entry didn't run counts 0 (entries without all nine are marked <i>partial</i>). Click a column to sort; hover a score to see how many runs it averages.</p></section>
+{{ b.table(board.entries) }}
+<h2>How to read it</h2><ul>
+<li><span class="badge ok">re-scored ✓</span>: this site's build rebuilt every run's instance from its seed, replayed the submitted edits and answers, and got the same score (within ±0.05; instances are small trained models and differ slightly across platforms).</li>
+<li><b>Harness</b>: <code>wsp-agent-runner</code> means the model got only the toolkit's tools through the Anthropic API. <code>mcp (self-reported)</code> means an MCP client such as Claude Code, which may also have had shell access. <i>unlocked</i> means the server wasn't locked to the challenge.</li>
+<li><b>What re-scoring can't check:</b> which model produced the run, and whether budgets were respected. Those come from the submitter's own log. Treat entries as honest self-reports whose scores are reproducible.</li>
+<li><code>{{baseline}}</code> is deterministic code using the same tools: a reference point, not an AI.</li></ul>
+<p><a href="data/leaderboard.json">Raw data (JSON)</a> · <a href="{{repo_url}}/tree/main/leaderboard/submissions">submission files</a></p>
+{% if board.rejected %}<h2>Not accepted in this build</h2><table><tr><th>File</th><th>Reason</th></tr>{% for r in board.rejected %}<tr><td><code>{{r.file}}</code></td><td>{{r.reason}}</td></tr>{% endfor %}</table>{% endif %}
+{% for c in challenges %}<h2 id="{{c.id}}">{{c.title}} <span class="level">level {{c.level}}</span></h2><p class="muted" style="margin-top:0">{{c.scoring}}</p>
+{% set rows = board.by_challenge[c.id] %}{% if rows %}<table class="lb"><thead><tr><th>Model</th><th class="num">Score</th><th class="num">Runs</th><th>Harness</th></tr></thead><tbody>
+{% for e in rows %}<tr><td><code>{{e.agent_model}}</code></td><td class="num score">{{'%.3f'|format(e.per_challenge[c.id])}}</td><td class="num">{{e.runs_per_challenge[c.id]}}</td><td style="font-size:12px">{{e.harness}}</td></tr>{% endfor %}</tbody></table>{% else %}<p class="muted">No runs yet.</p>{% endif %}{% endfor %}
+{% endblock %}

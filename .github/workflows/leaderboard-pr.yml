@@ -1,0 +1,36 @@
+name: leaderboard-pr
+# Verifies leaderboard submissions added by pull request. The verifier always runs from main, never from the PR,
+# so a PR can't change how it is checked; PRs touching anything outside leaderboard/submissions/ fail.
+on:
+  pull_request:
+    paths: ["leaderboard/submissions/**"]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main, fetch-depth: 0}
+      - name: Fetch the PR's submission files (data only)
+        env:
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          git fetch origin "pull/$PR/head:pr"
+          base=$(git merge-base main pr)
+          git diff --name-only "$base" pr > changed.txt
+          cat changed.txt
+          if grep -v '^leaderboard/submissions/[A-Za-z0-9._-]*\.json$' changed.txt; then
+            echo "::error::submission PRs may only add files under leaderboard/submissions/"; exit 1
+          fi
+          mkdir -p incoming
+          while read -r f; do git show "pr:$f" > "incoming/$(basename "$f")"; done < changed.txt
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: actions/cache@v4
+        with:
+          path: ~/.wsp_toolkit
+          key: wsp-data-${{ hashFiles('wsp_toolkit/fixtures/**', 'wsp_toolkit/core/zoo/**', 'wsp_toolkit/core/challenges.py') }}
+      - run: pip install --index-url https://download.pytorch.org/whl/cpu torch
+      - run: pip install -e .
+      - run: wsp leaderboard verify incoming/*.json

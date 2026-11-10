@@ -24,7 +24,7 @@ Call (MCP tool arguments, or `wsp call patch_approve '<json>'`):
 
 ```json
 {
- "patch_id": "p_b91197ce4594d918",
+ "patch_id": "p_8b4e424ecd90b3a7",
  "reviewer": "alice",
  "note": "looks fine"
 }
@@ -34,9 +34,9 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "patch_id": "p_b91197ce4594d918",
+ "patch_id": "p_8b4e424ecd90b3a7",
  "status": "approved",
  "reviewer": "alice",
- "ts": 1794278889.1898453
+ "ts": 1794315537.7042854
 }
 ```

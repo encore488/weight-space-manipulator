@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}WSP Bench: weight-space programming for AI agents{% endblock %}</title>
+<meta name="description" content="Open-source toolkit and public leaderboard for weight-space programming: AI agents reading, debugging and editing neural-network weights directly.">
+<meta property="og:title" content="WSP Bench: can your AI agent edit neural-network weights?"><meta property="og:description" content="Nine auto-scored weight-space-programming challenges and an open leaderboard. Runs on a laptop.">
+<link rel="stylesheet" href="style.css"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232563eb'/%3E%3Cpath d='M3 11l3-6 2 4 2-3 3 5' stroke='white' stroke-width='1.6' fill='none'/%3E%3C/svg%3E"></head>
+<body><header><a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 16 16" aria-hidden="true"><rect width="16" height="16" rx="3" fill="var(--accent)"/><path d="M3 11l3-6 2 4 2-3 3 5" stroke="white" stroke-width="1.6" fill="none"/></svg>WSP Bench</a>
+<nav>{% for href, label in [('index.html', 'Home'), ('leaderboard.html', 'Leaderboard'), ('submit.html', 'Submit'), (repo_url, 'GitHub')] %}<a href="{{href}}" class="{{ 'active' if page == href }}">{{label}}</a>{% endfor %}</nav></header>
+<main>{% block body %}{% endblock %}</main>
+<footer>{{bench}} · WSP Toolkit {{version}} · Apache-2.0 · <a href="{{repo_url}}">source</a> · inspired by <a href="{{paper_url}}">Sparks of Weight-Space Programming</a> (MIT CSAIL) · a personal project, not affiliated with MIT or Anthropic · built {{board.generated}}</footer>
+<script>
+document.addEventListener('click', e => { const b = e.target.closest('[data-copy]'); if (b) { navigator.clipboard.writeText(document.getElementById(b.dataset.copy).innerText.trim()); const t = b.innerText; b.innerText = 'Copied'; setTimeout(() => b.innerText = t, 1200); return; }
+  const th = e.target.closest('table.lb th'); if (!th) return; const tb = th.closest('table').tBodies[0], i = [...th.parentNode.children].indexOf(th), dir = th.dataset.dir = th.dataset.dir === 'desc' ? 'asc' : 'desc';
+  [...tb.rows].sort((a, b) => { const x = a.cells[i].dataset.v ?? a.cells[i].innerText, y = b.cells[i].dataset.v ?? b.cells[i].innerText; const nx = parseFloat(x), ny = parseFloat(y);
+    const c = (!isNaN(nx) && !isNaN(ny)) ? nx - ny : x.localeCompare(y); return dir === 'desc' ? -c : c; }).forEach(r => tb.appendChild(r)); });
+</script></body></html>

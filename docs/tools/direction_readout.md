@@ -23,7 +23,7 @@ Call (MCP tool arguments, or `wsp call direction_readout '<json>'`):
 
 ```json
 {
- "session_id": "sess_04f94eb4cf68",
+ "session_id": "sess_87aaa3b360e8",
  "direction": {
   "tensor": "blocks.1.attn.o_proj.weight",
   "svd": 0,

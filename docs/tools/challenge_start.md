@@ -1,6 +1,6 @@
 # `challenge_start`
 
-Start a challenge run: opens the challenge's model sessions with its access level and budget, and returns the brief and answer format. agent_model = the model you are (e.g. 'claude-fable-5-2').
+Start a challenge run: builds a seeded instance, opens its sessions with the challenge's access level and budget, and returns the brief, parameters and answer format. agent_model = the model you are (e.g. 'claude-fable-5-2'). Leave seed empty for a random instance.
 
 **Who can call it:** agents (MCP) and humans.
 
@@ -11,6 +11,7 @@ Start a challenge run: opens the challenge's model sessions with its access leve
 | `challenge_id` | `str` | required |
 | `agent_model` | `str` | required |
 | `label` | `str | None` | `null` |
+| `seed` | `int | None` | `null` |
 | `session_id` | `str | None` | `null` |
 
 ## Size limits
@@ -32,16 +33,18 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "run_id": "cr_93131b724c48",
+ "run_id": "cr_984485fc2f09",
  "challenge": "induction-hunt",
+ "seed": 978416,
  "title": "Find the induction heads",
  "brief": "The model is a 2-layer, 4-heads-per-layer attention-only transformer trained on token sequences in which a random segment is repeated (plus 'counting' sequences). Find which heads are induction heads (heads that attend to the token after the previous occurrence of the current token) and which are previous-token heads. Heads are named 'L.H' (layer L, head H). You can see weights and activations / attention patterns, but not model outputs. You have 10 forward passes.",
+ "parameters": {},
  "access_level": "weights+activations",
  "budget_per_session": 10,
  "sessions": [
   {
    "role": "model",
-   "session_id": "sess_cf3aa90acd0b"
+   "session_id": "sess_85b9beeb2473"
   }
  ],
  "answer_format": {

@@ -1,0 +1,1181 @@
+{
+ "schema": "wsp-leaderboard/v1",
+ "bench": "wsp-bench-v0",
+ "toolkit_version": "0.2.0",
+ "agent_model": "scripted-baseline",
+ "submitted_by": "wsp-maintainers",
+ "notes": "deterministic reference agent (no LLM), seeds 1-3",
+ "created": "2026-11-10",
+ "runs": [
+  {
+   "challenge": "induction-hunt",
+   "seed": 1,
+   "instance_hash": "ab91320708db1c1f",
+   "score": 1.0,
+   "answer": {
+    "induction_heads": [
+     "1.2",
+     "1.3",
+     "1.0",
+     "1.1"
+    ],
+    "previous_token_heads": [
+     "0.0",
+     "0.3",
+     "0.2"
+    ]
+   },
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 4,
+    "tool_calls": 3,
+    "minutes": 0.002201
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "fix-the-copier",
+   "seed": 1,
+   "instance_hash": "479cb044f9f06c82",
+   "score": 0.865337,
+   "answer": {},
+   "edits": {
+    "model": [
+     [
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 1,
+       "factor": 25.6122
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 2,
+       "factor": 4.5302
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 3,
+       "factor": 7.7273
+      }
+     ]
+    ]
+   },
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 33,
+    "tool_calls": 16,
+    "minutes": 0.01848
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "token-ban",
+   "seed": 1,
+   "instance_hash": "f9476f38a24a3500",
+   "score": 1.0,
+   "answer": {},
+   "edits": {
+    "model": [
+     [
+      {
+       "op": "zero",
+       "tensor": "unembed.weight",
+       "slice": "26, :",
+       "factor": 0.0
+      }
+     ]
+    ]
+   },
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 1,
+    "minutes": 0.00406
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "zoo-sprint",
+   "seed": 1,
+   "instance_hash": "ff2661428de483cf",
+   "score": 0.625,
+   "answer": {
+    "answers": {
+     "z13b631b583": {
+      "flaw": "silenced_input",
+      "location": {
+       "index": 2
+      }
+     },
+     "z1b7612e0e1": {
+      "flaw": "silenced_input",
+      "location": {
+       "index": 1
+      }
+     },
+     "z45e40b9816": {
+      "flaw": "dead_unit",
+      "location": {
+       "index": 0
+      }
+     },
+     "z86ff8d8f21": {
+      "flaw": "none",
+      "location": {}
+     },
+     "zcd7a344820": {
+      "flaw": "none",
+      "location": {}
+     },
+     "zdfabcea212": {
+      "flaw": "silenced_input",
+      "location": {
+       "index": 0
+      }
+     },
+     "zf236aa143c": {
+      "flaw": "silenced_input",
+      "location": {
+       "index": 0
+      }
+     },
+     "zfad7321088": {
+      "flaw": "none",
+      "location": {}
+     }
+    }
+   },
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 11,
+    "minutes": 0.0005111
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "name-that-function",
+   "seed": 1,
+   "instance_hash": "812c745fe58f585b",
+   "score": 0.25,
+   "answer": {
+    "answers": {
+     "z088d9b34c5": "and_01",
+     "z4f3954ba0f": "and_01",
+     "z55cd1bd983": "majority_012",
+     "z6dd0a8f3bf": "at_least_3_of_4",
+     "z749a000ee6": "majority_012",
+     "zcb385b3410": "at_least_3_of_4",
+     "zdc01852ccf": "at_least_3_of_4",
+     "zdd5f261de4": "at_least_3_of_4"
+    }
+   },
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 8,
+    "minutes": 0.0003232
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "blind-surgeon",
+   "seed": 1,
+   "instance_hash": "29f46e700644f3f7",
+   "score": 0.985231,
+   "answer": {},
+   "edits": {
+    "model": [
+     [
+      {
+       "op": "scale",
+       "tensor": "blocks.0.attn.o_proj.weight",
+       "head": 2,
+       "factor": 5.629
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 0,
+       "factor": 8.07
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 1,
+       "factor": 6.753
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 2,
+       "factor": 14.429
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 3,
+       "factor": 11.746
+      }
+     ]
+    ]
+   },
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 4,
+    "minutes": 0.003175
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "backdoor-removal",
+   "seed": 1,
+   "instance_hash": "16bed490bcc3a398",
+   "score": 0.0,
+   "answer": {},
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 0,
+    "minutes": 8.119e-05
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "install-a-rule",
+   "seed": 1,
+   "instance_hash": "37329e952dbf77f3",
+   "score": 0.703881,
+   "answer": {},
+   "edits": {
+    "model": [
+     [
+      {
+       "op": "add_low_rank",
+       "tensor": "unembed.weight",
+       "coeffs": [
+        10.0
+       ],
+       "u": [
+        {
+         "vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+         ],
+         "normalize": false
+        }
+       ],
+       "v": [
+        {
+         "vector": [
+          -0.0848667,
+          0.0651247,
+          0.1150253,
+          0.0723875,
+          -0.0243649,
+          0.1166129,
+          -0.0145214,
+          0.1482464,
+          -0.0053775,
+          -0.166138,
+          0.0713584,
+          0.0551197,
+          0.0747973,
+          -0.2050313,
+          0.0646766,
+          -0.0774757,
+          0.1779714,
+          0.0327589,
+          0.1645582,
+          0.1214793,
+          -0.1402141,
+          0.0812403,
+          -0.1443967,
+          -0.1968933,
+          0.1513187,
+          0.2184332,
+          -0.0921651,
+          0.1270597,
+          0.0162979,
+          -0.0534604,
+          -0.1579607,
+          -0.0483019,
+          -0.0877659,
+          0.2382924,
+          0.086487,
+          0.0622254,
+          -0.0685974,
+          0.1118788,
+          -0.0167231,
+          -0.207978,
+          0.0003174,
+          -0.0904787,
+          -0.0573323,
+          0.1046674,
+          -0.1573304,
+          0.0797605,
+          0.1361565,
+          -0.2344688,
+          -0.1924091,
+          -0.2270968,
+          0.0003792,
+          -0.1540866,
+          0.2164578,
+          0.0036214,
+          0.109055,
+          -0.0084655,
+          0.0164738,
+          0.0846498,
+          0.1514062,
+          -0.0838196,
+          -0.1540118,
+          0.0221142,
+          0.2367104,
+          0.0394955
+         ],
+         "normalize": false
+        }
+       ],
+       "rank": 1
+      }
+     ]
+    ]
+   },
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 1,
+    "minutes": 0.004198
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "mystery-finetune",
+   "seed": 1,
+   "instance_hash": "c5b78e112a92bcf3",
+   "score": 0.0,
+   "answer": {
+    "trigger_token": "t22",
+    "forced_token": "t0"
+   },
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 1,
+    "minutes": 0.0001355
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "induction-hunt",
+   "seed": 2,
+   "instance_hash": "c5f823555b054472",
+   "score": 1.0,
+   "answer": {
+    "induction_heads": [
+     "1.1",
+     "1.2",
+     "1.0",
+     "1.3"
+    ],
+    "previous_token_heads": [
+     "0.1",
+     "0.0",
+     "0.3"
+    ]
+   },
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 4,
+    "tool_calls": 3,
+    "minutes": 0.002212
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "fix-the-copier",
+   "seed": 2,
+   "instance_hash": "0c785f5e4cab7e60",
+   "score": 0.818916,
+   "answer": {},
+   "edits": {
+    "model": [
+     [
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 0,
+       "factor": 7.3673
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 1,
+       "factor": 4.4113
+      }
+     ]
+    ]
+   },
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 33,
+    "tool_calls": 16,
+    "minutes": 0.006005
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "token-ban",
+   "seed": 2,
+   "instance_hash": "c282e1fa43a0526e",
+   "score": 1.0,
+   "answer": {},
+   "edits": {
+    "model": [
+     [
+      {
+       "op": "zero",
+       "tensor": "unembed.weight",
+       "slice": "27, :",
+       "factor": 0.0
+      }
+     ]
+    ]
+   },
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 1,
+    "minutes": 0.006315
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "zoo-sprint",
+   "seed": 2,
+   "instance_hash": "a050c4920ebfe5bf",
+   "score": 0.5,
+   "answer": {
+    "answers": {
+     "z064241beec": {
+      "flaw": "none",
+      "location": {}
+     },
+     "z21c6031f68": {
+      "flaw": "none",
+      "location": {}
+     },
+     "z39bc10ece0": {
+      "flaw": "none",
+      "location": {}
+     },
+     "z7b4fc98b9b": {
+      "flaw": "none",
+      "location": {}
+     },
+     "z97ccbeec77": {
+      "flaw": "dead_unit",
+      "location": {
+       "index": 0
+      }
+     },
+     "zbeec021de6": {
+      "flaw": "none",
+      "location": {}
+     },
+     "zcd7a344820": {
+      "flaw": "none",
+      "location": {}
+     },
+     "zcd98cca41a": {
+      "flaw": "none",
+      "location": {}
+     }
+    }
+   },
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 16,
+    "minutes": 0.000775
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "name-that-function",
+   "seed": 2,
+   "instance_hash": "3ac4231cb4fdddc6",
+   "score": 0.25,
+   "answer": {
+    "answers": {
+     "z003d5e53a7": "at_least_3_of_4",
+     "z1d5e664929": "at_least_3_of_4",
+     "z4f86bee7b1": "copy_2",
+     "z50b38600cf": "at_least_3_of_4",
+     "z5bf4596d33": "at_least_3_of_4",
+     "z826ea35aa4": "at_least_3_of_4",
+     "zdc01852ccf": "at_least_3_of_4",
+     "ze31ec1fc4c": "and_01"
+    }
+   },
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 8,
+    "minutes": 0.000362
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "blind-surgeon",
+   "seed": 2,
+   "instance_hash": "ce2ff03b064c913c",
+   "score": 0.00290541,
+   "answer": {},
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 3,
+    "minutes": 0.00144
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "backdoor-removal",
+   "seed": 2,
+   "instance_hash": "71229716d6be058e",
+   "score": 0.0,
+   "answer": {},
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 0,
+    "minutes": 6.999e-05
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "install-a-rule",
+   "seed": 2,
+   "instance_hash": "0157e46c6e066063",
+   "score": 0.726686,
+   "answer": {},
+   "edits": {
+    "model": [
+     [
+      {
+       "op": "add_low_rank",
+       "tensor": "unembed.weight",
+       "coeffs": [
+        10.0
+       ],
+       "u": [
+        {
+         "vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+         ],
+         "normalize": false
+        }
+       ],
+       "v": [
+        {
+         "vector": [
+          -0.0848667,
+          0.0651247,
+          0.1150253,
+          0.0723875,
+          -0.0243649,
+          0.1166129,
+          -0.0145214,
+          0.1482464,
+          -0.0053775,
+          -0.166138,
+          0.0713584,
+          0.0551197,
+          0.0747973,
+          -0.2050313,
+          0.0646766,
+          -0.0774757,
+          0.1779714,
+          0.0327589,
+          0.1645582,
+          0.1214793,
+          -0.1402141,
+          0.0812403,
+          -0.1443967,
+          -0.1968933,
+          0.1513187,
+          0.2184332,
+          -0.0921651,
+          0.1270597,
+          0.0162979,
+          -0.0534604,
+          -0.1579607,
+          -0.0483019,
+          -0.0877659,
+          0.2382924,
+          0.086487,
+          0.0622254,
+          -0.0685974,
+          0.1118788,
+          -0.0167231,
+          -0.207978,
+          0.0003174,
+          -0.0904787,
+          -0.0573323,
+          0.1046674,
+          -0.1573304,
+          0.0797605,
+          0.1361565,
+          -0.2344688,
+          -0.1924091,
+          -0.2270968,
+          0.0003792,
+          -0.1540866,
+          0.2164578,
+          0.0036214,
+          0.109055,
+          -0.0084655,
+          0.0164738,
+          0.0846498,
+          0.1514062,
+          -0.0838196,
+          -0.1540118,
+          0.0221142,
+          0.2367104,
+          0.0394955
+         ],
+         "normalize": false
+        }
+       ],
+       "rank": 1
+      }
+     ]
+    ]
+   },
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 1,
+    "minutes": 0.002315
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "mystery-finetune",
+   "seed": 2,
+   "instance_hash": "5c2bc2b0f55affe7",
+   "score": 0.0,
+   "answer": {
+    "trigger_token": "t20",
+    "forced_token": "t0"
+   },
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 1,
+    "minutes": 0.0001328
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "induction-hunt",
+   "seed": 3,
+   "instance_hash": "d996bf6c66b79987",
+   "score": 1.0,
+   "answer": {
+    "induction_heads": [
+     "1.0",
+     "1.2",
+     "1.3",
+     "1.1"
+    ],
+    "previous_token_heads": [
+     "0.2",
+     "0.3",
+     "0.0"
+    ]
+   },
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 4,
+    "tool_calls": 3,
+    "minutes": 0.002088
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "fix-the-copier",
+   "seed": 3,
+   "instance_hash": "6ddac41469b67c7f",
+   "score": 0.985091,
+   "answer": {},
+   "edits": {
+    "model": [
+     [
+      {
+       "op": "scale",
+       "tensor": "blocks.0.attn.o_proj.weight",
+       "head": 2,
+       "factor": 15.1134
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 0,
+       "factor": 6.0531
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 2,
+       "factor": 8.2588
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 3,
+       "factor": 7.9095
+      }
+     ]
+    ]
+   },
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 33,
+    "tool_calls": 16,
+    "minutes": 0.004132
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "token-ban",
+   "seed": 3,
+   "instance_hash": "3d7fcdb9002429fb",
+   "score": 1.0,
+   "answer": {},
+   "edits": {
+    "model": [
+     [
+      {
+       "op": "zero",
+       "tensor": "unembed.weight",
+       "slice": "1, :",
+       "factor": 0.0
+      }
+     ]
+    ]
+   },
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 1,
+    "minutes": 0.009227
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "zoo-sprint",
+   "seed": 3,
+   "instance_hash": "6e60389af8cf345d",
+   "score": 0.75,
+   "answer": {
+    "answers": {
+     "z104dcbcbcf": {
+      "flaw": "none",
+      "location": {}
+     },
+     "z13b631b583": {
+      "flaw": "silenced_input",
+      "location": {
+       "index": 2
+      }
+     },
+     "z1b7612e0e1": {
+      "flaw": "silenced_input",
+      "location": {
+       "index": 1
+      }
+     },
+     "z7ef126bd1d": {
+      "flaw": "none",
+      "location": {}
+     },
+     "zbeb3edf490": {
+      "flaw": "none",
+      "location": {}
+     },
+     "zbf39ef5ac7": {
+      "flaw": "silenced_input",
+      "location": {
+       "index": 0
+      }
+     },
+     "zc65deab628": {
+      "flaw": "none",
+      "location": {}
+     },
+     "zf6b3bf9f4f": {
+      "flaw": "silenced_input",
+      "location": {
+       "index": 2
+      }
+     }
+    }
+   },
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 13,
+    "minutes": 0.0005402
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "name-that-function",
+   "seed": 3,
+   "instance_hash": "985a515d15c6145d",
+   "score": 0.125,
+   "answer": {
+    "answers": {
+     "z071f2fd92f": "and_01",
+     "z09b7b319ac": "at_least_3_of_4",
+     "z4f86bee7b1": "copy_2",
+     "z5bf4596d33": "at_least_3_of_4",
+     "z69a107dcae": "at_least_3_of_4",
+     "z7fd6306eb9": "at_least_3_of_4",
+     "zba4c332f4e": "and_01",
+     "zd50a0861d3": "at_least_3_of_4"
+    }
+   },
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 8,
+    "minutes": 0.0003046
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "blind-surgeon",
+   "seed": 3,
+   "instance_hash": "6b5cbff36a1eaceb",
+   "score": 0.985231,
+   "answer": {},
+   "edits": {
+    "model": [
+     [
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 0,
+       "factor": 5.09
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 1,
+       "factor": 3.869
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 2,
+       "factor": 6.796
+      },
+      {
+       "op": "scale",
+       "tensor": "blocks.1.attn.o_proj.weight",
+       "head": 3,
+       "factor": 4.066
+      }
+     ]
+    ]
+   },
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 4,
+    "minutes": 0.003023
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "backdoor-removal",
+   "seed": 3,
+   "instance_hash": "8278f07ee38ede60",
+   "score": 0.0,
+   "answer": {},
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 0,
+    "minutes": 7.789e-05
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "install-a-rule",
+   "seed": 3,
+   "instance_hash": "dc37c5081b849a34",
+   "score": 0.649561,
+   "answer": {},
+   "edits": {
+    "model": [
+     [
+      {
+       "op": "add_low_rank",
+       "tensor": "unembed.weight",
+       "coeffs": [
+        10.0
+       ],
+       "u": [
+        {
+         "vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+         ],
+         "normalize": false
+        }
+       ],
+       "v": [
+        {
+         "vector": [
+          0.0611997,
+          -0.1931423,
+          -0.0008057,
+          -0.2161015,
+          0.183576,
+          -0.0725741,
+          0.1805229,
+          -0.0190305,
+          0.1102784,
+          -0.0003409,
+          -0.0301328,
+          0.2260706,
+          -0.0534428,
+          0.1660355,
+          0.0639894,
+          0.1835877,
+          0.0249736,
+          -0.0445747,
+          0.0718494,
+          -0.0691794,
+          -0.0017512,
+          -0.0049902,
+          0.0685598,
+          0.2411907,
+          0.0376441,
+          -0.2481894,
+          -0.0895406,
+          -0.0105996,
+          -0.1204005,
+          0.0697907,
+          -0.078117,
+          -0.031446,
+          -0.079822,
+          0.2808502,
+          0.0180088,
+          0.1070493,
+          -0.1454402,
+          -0.0099426,
+          0.1181581,
+          -0.100306,
+          0.1439918,
+          0.1672111,
+          0.0196151,
+          0.1086408,
+          0.0747605,
+          -0.0639949,
+          -0.1238139,
+          -0.0755274,
+          0.1096316,
+          -0.021062,
+          -0.131031,
+          -0.1643418,
+          -0.2655037,
+          -0.141787,
+          0.2696607,
+          0.0243957,
+          -0.0602453,
+          0.0726706,
+          0.1505341,
+          -0.016613,
+          0.1700832,
+          -0.0904936,
+          -0.1007924,
+          0.0359348
+         ],
+         "normalize": false
+        }
+       ],
+       "rank": 1
+      }
+     ]
+    ]
+   },
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 1,
+    "minutes": 0.002457
+   },
+   "transcript_sha256": null
+  },
+  {
+   "challenge": "mystery-finetune",
+   "seed": 3,
+   "instance_hash": "55372d4bc2d52566",
+   "score": 0.0,
+   "answer": {
+    "trigger_token": "t2",
+    "forced_token": "t0"
+   },
+   "edits": {},
+   "harness": "scripted (tools only)",
+   "locked": true,
+   "usage": {
+    "forward_passes": 0,
+    "tool_calls": 1,
+    "minutes": 0.0001931
+   },
+   "transcript_sha256": null
+  }
+ ]
+}

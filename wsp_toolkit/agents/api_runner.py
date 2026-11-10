@@ -96,14 +96,15 @@ def _block_dict(b) -> dict:
 
 def run(tk, challenge_id: str, model: str, client=None, effort: str | None = "high", thinking: str = "summarized",
         max_turns: int = 80, max_cost: float = 20.0, max_tokens: int = 64000, label: str | None = None,
-        verbose: bool = True) -> dict:
+        verbose: bool = True, seed: int | None = None) -> dict:
     from ..mcp_server.server import lock_to_challenge
 
     if client is None:
         import anthropic
         client = anthropic.Anthropic()
     lock_to_challenge(tk, challenge_id)
-    start = tk.challenges.start(challenge_id, model, "wsp-agent-runner", label or f"api runner: {model}", "agent")
+    start = tk.challenges.start(challenge_id, model, "wsp-agent-runner", label or f"api runner: {model}", "agent",
+                                seed)
     run_id = start["run_id"]
     tools = tool_definitions(tk)
     schemas = {t["name"]: t["input_schema"] for t in tools}
@@ -114,8 +115,8 @@ def run(tk, challenge_id: str, model: str, client=None, effort: str | None = "hi
         log.write(json.dumps({"t": round(time.time(), 2), **entry}, default=str) + "\n")
         log.flush()
 
-    brief = {k: start[k] for k in ("run_id", "challenge", "title", "brief", "access_level", "budget_per_session",
-                                   "sessions", "answer_format", "rules")}
+    brief = {k: start[k] for k in ("run_id", "challenge", "seed", "title", "brief", "parameters", "access_level",
+                                   "budget_per_session", "sessions", "answer_format", "rules")}
     messages: list[dict] = [{"role": "user", "content": "Challenge:\n" + json.dumps(brief, indent=1)}]
     note({"type": "start", "challenge": challenge_id, "model": model, "run_id": run_id})
     kwargs: dict = {"model": model, "max_tokens": max_tokens, "system": SYSTEM, "tools": tools,
@@ -215,7 +216,8 @@ def run(tk, challenge_id: str, model: str, client=None, effort: str | None = "hi
                      (json.dumps({**(submitted.get("usage") or {}), "api_usage": usage,
                                   "estimated_cost_usd": round(cost, 3) if cost is not None else None,
                                   "turns": turn, "stop": stop}), run_id))
-    result = {"run_id": run_id, "challenge": challenge_id, "model": model, "score": submitted.get("score"),
+    result = {"run_id": run_id, "challenge": challenge_id, "seed": start["seed"], "model": model,
+              "score": submitted.get("score"),
               "detail": submitted.get("detail"), "auto_submitted": submitted.get("auto_submitted", False),
               "turns": turn, "stop": stop, "api_usage": usage,
               "estimated_cost_usd": round(cost, 3) if cost is not None else None, "transcript": str(log_path)}
@@ -232,8 +234,9 @@ def main(argv: list[str]) -> None:
 
     ap = argparse.ArgumentParser(prog="wsp agent run", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["run"])
-    ap.add_argument("challenge", choices=sorted(CHALLENGES))
+    ap.add_argument("cmd", choices=["run", "bench"])
+    ap.add_argument("challenge", nargs="?", choices=sorted(CHALLENGES), help="(run only)")
+    ap.add_argument("--seed", type=int, help="instance seed (default: random)")
     ap.add_argument("--model", default="claude-fable-5-2")
     ap.add_argument("--effort", default="high", help="low|medium|high|xhigh|max, or 'none' to omit")
     ap.add_argument("--thinking", default="summarized", choices=["summarized", "omit"])
@@ -246,11 +249,16 @@ def main(argv: list[str]) -> None:
     except ImportError as e:
         raise SystemExit("the API runner needs the Anthropic SDK: pip install anthropic") from e
     tk = Toolkit()
+    if a.cmd == "run" and not a.challenge:
+        raise SystemExit("usage: wsp agent run <challenge> --model ...   (or: wsp bench run --model ...)")
+    plan = [(a.challenge, i) for i in range(a.runs)] if a.cmd == "run" else \
+        [(c, i) for c in CHALLENGES for i in range(a.runs)]
     results = []
-    for i in range(a.runs):
+    for cid, i in plan:
         try:
-            r = run(tk, a.challenge, a.model, effort=None if a.effort == "none" else a.effort, thinking=a.thinking,
-                    max_turns=a.max_turns, max_cost=a.max_cost, label=f"api runner: {a.model} #{i + 1}")
+            r = run(tk, cid, a.model, effort=None if a.effort == "none" else a.effort, thinking=a.thinking,
+                    max_turns=a.max_turns, max_cost=a.max_cost, label=f"api runner: {a.model} #{i + 1}",
+                    seed=a.seed)
         except anthropic.AuthenticationError as e:
             raise SystemExit("Anthropic API authentication failed: set ANTHROPIC_API_KEY or run `ant auth login`") from e
         except anthropic.NotFoundError as e:
@@ -258,9 +266,12 @@ def main(argv: list[str]) -> None:
         except anthropic.APIStatusError as e:
             raise SystemExit(f"Anthropic API error {e.status_code}: {e.message}") from e
         results.append(r)
-        print(json.dumps({k: r[k] for k in ("run_id", "score", "turns", "stop", "estimated_cost_usd")}))
+        print(json.dumps({k: r[k] for k in ("challenge", "seed", "run_id", "score", "turns", "stop",
+                                            "estimated_cost_usd")}), flush=True)
     print(f"\nmean score over {len(results)} run(s): {sum(r['score'] or 0 for r in results) / len(results):.3f}")
-    print("leaderboard: wsp challenge scores   |   web UI: wsp ui -> Challenges")
+    total = sum(r["estimated_cost_usd"] or 0 for r in results)
+    print(f"estimated API cost: ${total:.2f}")
+    print(f"next: wsp leaderboard export --model {a.model} --by <your GitHub handle>   (then submit it on the site)")
 
 
 _ = Path

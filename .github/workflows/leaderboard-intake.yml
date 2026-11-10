@@ -1,0 +1,65 @@
+name: leaderboard-intake
+# Issues created from the "Leaderboard submission" form are re-scored and the result is commented.
+# A maintainer (owner / member / collaborator) comments "/accept" to add a verified submission to the leaderboard.
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created]
+permissions:
+  contents: write
+  issues: write
+  actions: write
+concurrency:
+  group: leaderboard-intake-${{ github.event.issue.number }}
+jobs:
+  intake:
+    if: >-
+      startsWith(github.event.issue.title, '[leaderboard]') && !github.event.issue.pull_request &&
+      (github.event_name == 'issues' ||
+       (startsWith(github.event.comment.body, '/accept') &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: actions/cache@v4
+        with:
+          path: ~/.wsp_toolkit
+          key: wsp-data-${{ hashFiles('wsp_toolkit/fixtures/**', 'wsp_toolkit/core/zoo/**', 'wsp_toolkit/core/challenges.py') }}
+      - run: pip install --index-url https://download.pytorch.org/whl/cpu torch
+      - run: pip install -e .
+      - name: Re-score the submission
+        id: verify
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE: ${{ github.event.issue.number }}
+          AUTHOR: ${{ github.event.issue.user.login }}
+          ACCEPT: ${{ github.event_name == 'issue_comment' }}
+        run: |
+          set +e
+          if [ "$ACCEPT" = "true" ]; then extra="--write-dir leaderboard/submissions"; fi
+          python scripts/leaderboard_intake.py --issue "$ISSUE" --author "$AUTHOR" --comment comment.md $extra
+          rc=$?
+          if [ "$rc" -eq 0 ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "ok=false" >> "$GITHUB_OUTPUT"; fi
+      - name: Comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: gh issue comment "$ISSUE" --body-file comment.md
+      - name: Add to the leaderboard
+        if: github.event_name == 'issue_comment' && steps.verify.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          git config user.name "wsp-leaderboard-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add leaderboard/submissions
+          git commit -m "Leaderboard: add submission from issue #$ISSUE"
+          git push origin HEAD:main
+          gh workflow run site.yml --ref main
+          gh issue comment "$ISSUE" --body "Added to the leaderboard. The website rebuilds in a few minutes."
+          gh issue close "$ISSUE"

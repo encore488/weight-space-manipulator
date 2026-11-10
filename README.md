@@ -12,8 +12,9 @@ by editing 0.016% of its weights. This toolkit turns that sandbox into something
   evaluate on practice data while **held-out data stays hidden**.
 - **A web UI** (`wsp ui`) to watch sessions live, browse weights as heatmaps, and **approve or reject** every patch.
   Nothing can be exported without a human approval.
-- **Five auto-scored challenges** and an **API runner** (`wsp agent run`) for comparing models, e.g. Claude Fable 5.2,
-  on the same tasks with the same budgets.
+- **WSP Bench**: nine auto-scored challenges with random seeded instances (read, diagnose, repair and *write*
+  tasks), an **API runner** (`wsp bench run`) for comparing models such as Claude Fable 5.2 under the same budgets,
+  and a **public leaderboard** anyone can submit to: **https://encore488.github.io/weight-space-manipulator/**
 - Plus a 392-network **zoo** with planted flaws, a **feature index** (sparse autoencoders) and **fine-tune audits**.
 
 Everything runs locally on CPU in seconds; a GPU is only needed for large models.
@@ -75,21 +76,34 @@ wsp agent run fix-the-copier --model claude-fable-5-2
 The runner streams, caches prompts, stops at `--max-cost` (default $20, estimated) and saves a transcript. Use any
 Claude model ID with `--model`.
 
-## Challenges
+## Challenges and the public leaderboard
 
 ![Challenges](docs/img/challenges.png)
 
-| Challenge | Level | Access | Budget | Scripted baseline |
+| Challenge | Kind | Access | Budget | Scripted baseline |
 |---|---|---|---|---|
-| `induction-hunt`: find the induction & previous-token heads | 1 | weights + activations | 10 passes | 1.00 |
-| `fix-the-copier`: repair a damaged transformer without breaking counting | 2 | weights + activations + outputs | 50 | 0.98 |
-| `zoo-sprint`: find the planted flaw in 8 hidden-split networks | 2 | weights + activations | 6 per net | 0.50 |
-| `blind-surgeon`: same repair with **zero** forward passes | 3 | weights only | 0 | 0.83 |
-| `mystery-finetune`: find the backdoor a fine-tune planted | 3 | weights + activations + outputs | 30 per model | 0.00 |
+| `induction-hunt`: find the induction & previous-token heads | read | weights + activations | 10 passes | 1.00 |
+| `token-ban`: make the model never predict one token | write | full | 30 | 1.00 |
+| `fix-the-copier`: repair damaged heads without breaking counting | repair | full | 50 | 0.89 |
+| `zoo-sprint`: find the planted flaw in 8 hidden-split networks | diagnose | weights + activations | 6 per net | 0.63 |
+| `name-that-function`: name 8 MLPs' boolean functions from their weights | read | weights only | 0 | 0.21 |
+| `blind-surgeon`: the repair with **zero** forward passes | repair | weights only | 0 | 0.66 |
+| `backdoor-removal`: remove a trained-in trigger | repair | full | 20 | 0.00 |
+| `install-a-rule`: program "after A, predict B" by editing weights | write | full | 50 | 0.69 |
+| `mystery-finetune`: find the backdoor a fine-tune planted | audit | full | 30 per model | 0.00 |
 
-Scores run 0–1. The scripted baseline is deterministic code using the same tools (`wsp challenge baseline`).
-`wsp challenge scores` and the **Challenges** page show the leaderboard by model; `wsp challenge report` prints a
-shareable Markdown table. Details and fair-play rules: [`docs/challenges.md`](docs/challenges.md).
+Scores run 0–1, and every run gets a random seeded instance, so answers can't be memorised. The scripted baseline is
+deterministic code using the same tools (WSP-Bench 0.564). Run all nine with `wsp bench run --model <id>`, then
+submit:
+
+```bash
+wsp leaderboard export --model claude-fable-5-2 --by your-handle
+```
+
+Paste the file into the [submission form](https://github.com/encore488/weight-space-manipulator/issues/new?template=leaderboard-submission.yml).
+A bot re-scores every run from its seed, answer and edits before it goes on the
+[leaderboard](https://encore488.github.io/weight-space-manipulator/leaderboard.html). Details:
+[`docs/challenges.md`](docs/challenges.md), [`docs/leaderboard.md`](docs/leaderboard.md).
 
 ## Using it on your own models
 
@@ -130,6 +144,7 @@ This is v0.2 of a personal research project. Expect rough edges:
 
 - [`docs/agents.md`](docs/agents.md): connecting Claude Code, Claude Desktop, other MCP clients, the API runner
 - [`docs/challenges.md`](docs/challenges.md): the challenges, scoring and fair play
+- [`docs/leaderboard.md`](docs/leaderboard.md): submitting results, verification
 - [`docs/tools/`](docs/tools/README.md): every tool, with a real example call and output
 - [`docs/configuration.md`](docs/configuration.md), [`docs/design/patch_semantics.md`](docs/design/patch_semantics.md)
 
@@ -138,7 +153,7 @@ This is v0.2 of a personal research project. Expect rough edges:
 ```bash
 git clone https://github.com/encore488/weight-space-manipulator && cd weight-space-manipulator
 pip install -e '.[dev,hf,pdf,agent]'
-pytest            # 76 tests, CPU only, no network, ~2.5 min
+pytest            # 85 tests, CPU only, no network, ~3.5 min
 ```
 
 Apache-2.0. Built with Claude Code.

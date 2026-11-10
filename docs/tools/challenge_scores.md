@@ -34,8 +34,8 @@ Result (real output from the induction fixture):
    "harness": "mcp (self-reported)",
    "locked": false,
    "runs": 1,
-   "best": 0.0504,
-   "mean": 0.0504,
+   "best": 0.128,
+   "mean": 0.128,
    "mean_forward_passes": 0.0,
    "mean_tool_calls": 0.0
   }

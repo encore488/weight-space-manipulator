@@ -10,12 +10,12 @@ def test_challenge_lifecycle_and_scoring(tk):
     assert {c["id"] for c in lst} >= {"induction-hunt", "fix-the-copier", "blind-surgeon", "mystery-finetune",
                                       "zoo-sprint"}
     assert tk.call("challenge_start", {"challenge_id": "induction-hunt", "agent_model": ""})["code"] == "bad_arg"
-    r = tk.call("challenge_start", {"challenge_id": "induction-hunt", "agent_model": "m1"})
+    r = tk.call("challenge_start", {"challenge_id": "induction-hunt", "agent_model": "m1", "seed": 5})
+    assert r["seed"] == 5
     sid = r["sessions"][0]["session_id"]
     assert tk.call("budget_status", {"session_id": sid})["access_level"] == "weights+activations"
     assert tk.call("run_forward", {"session_id": sid, "inputs": [[0, 1]]})["code"] == "access_denied"
-    import json
-    truth = json.loads((tk.cfg.subdir("fixtures") / "induction_tf" / "ground_truth.json").read_text())
+    truth = tk.challenges.instance("induction-hunt", 5)["truth"]
     s = tk.call("challenge_submit", {"run_id": r["run_id"], "answer": {
         "induction_heads": truth["induction_heads"], "previous_token_heads": truth["previous_token_heads"]}})
     assert s["score"] == 1.0
@@ -24,14 +24,47 @@ def test_challenge_lifecycle_and_scoring(tk):
     assert board[0]["agent_model"] == "m1" and board[0]["harness"] == "mcp (self-reported)"
 
 
+def _oracle_ops(tk, cid, seed):
+    t = tk.challenges.instance(cid, seed)["truth"]
+    return [{"op": "scale", "tensor": f"blocks.{h.split('.')[0]}.attn.o_proj.weight", "head": int(h.split(".")[1]),
+             "factor": 1 / f} for h, f in t["factors"].items()]
+
+
 def test_blind_surgeon_scores_working_copy(tk):
-    r = tk.call("challenge_start", {"challenge_id": "blind-surgeon", "agent_model": "m"})
+    r = tk.call("challenge_start", {"challenge_id": "blind-surgeon", "agent_model": "m", "seed": 3})
     sid = r["sessions"][0]["session_id"]
-    before = tk.challenges._copier_score(sid)[0]
-    tk.call("edit_apply", {"session_id": sid, "rationale": "scale layer-1 head outputs back up", "operations": [
-        {"op": "scale", "tensor": "blocks.1.attn.o_proj.weight", "factor": 10.0}]})
+    before = tk.challenges.score("blind-surgeon", 3, r["sessions"], {})[0]
+    tk.call("edit_apply", {"session_id": sid, "rationale": "undo the damage", "operations": _oracle_ops(
+        tk, "blind-surgeon", 3)})
     s = tk.call("challenge_submit", {"run_id": r["run_id"], "answer": {}})
-    assert before < 0.2 and s["score"] > 0.9 and s["usage"]["forward_passes"] == 0
+    assert before < 0.3 and s["score"] > 0.9 and s["usage"]["forward_passes"] == 0
+
+
+def test_seeds_make_different_instances(tk):
+    a = tk.challenges.instance("install-a-rule", 1)["params"]
+    others = [tk.challenges.instance("install-a-rule", s)["params"] for s in (2, 3, 4, 5)]
+    assert any(o != a for o in others)
+    assert tk.challenges.instance("install-a-rule", 1) == tk.challenges.instance("install-a-rule", 1)  # cached
+
+
+@pytest.mark.parametrize("cid", ["token-ban", "install-a-rule", "backdoor-removal"])
+def test_new_challenges_nothing_scores_low(tk, cid):
+    r = tk.challenges.start(cid, "m", "test", None, "agent", 11)
+    assert tk.challenges.score(cid, 11, r["sessions"], {})[0] < 0.2
+
+
+def test_token_ban_and_backdoor_are_solvable(tk):
+    r = tk.challenges.start("token-ban", "m", "test", None, "agent", 4)
+    x = tk.challenges.instance("token-ban", 4)["truth"]["target"]
+    tk.call("edit_apply", {"session_id": r["sessions"][0]["session_id"], "rationale": "zero the banned row",
+                           "operations": [{"op": "zero", "tensor": "unembed.weight", "slice": f"{x}, :"}]})
+    assert tk.challenges.submit(r["run_id"], {})["score"] > 0.9
+    r = tk.challenges.start("backdoor-removal", "m", "test", None, "agent", 4)
+    t = tk.challenges.instance("backdoor-removal", 4)["truth"]
+    tk.call("edit_apply", {"session_id": r["sessions"][0]["session_id"], "rationale": "cut the trigger inputs",
+                           "operations": [{"op": "zero", "tensor": "layers.0.weight", "slice": f":, {p}:{p + 1}"}
+                                          for p in t["trigger_positions"]]})
+    assert tk.challenges.submit(r["run_id"], {})["score"] > 0.95
 
 
 def test_challenge_lock(tk):
@@ -86,6 +119,11 @@ def _run_id(kw):
     return json.loads(kw["messages"][0]["content"].split("\n", 1)[1])["run_id"]
 
 
+def _seed(kw):
+    import json
+    return json.loads(kw["messages"][0]["content"].split("\n", 1)[1])["seed"]
+
+
 def test_api_runner_with_fake_client(tk):
     from wsp_toolkit.agents.api_runner import run
     script = [
@@ -96,8 +134,8 @@ def test_api_runner_with_fake_client(tk):
             NS(type="tool_use", id="tu2", name="tensor_stats", input={"tensor": 5})]},   # invalid input
         {"stop": "tool_use", "content": [
             lambda kw: NS(type="tool_use", id="tu3", name="edit_apply", input={
-                "session_id": _sid(kw), "rationale": "restore layer-1 head outputs",
-                "operations": [{"op": "scale", "tensor": "blocks.1.attn.o_proj.weight", "factor": 10.0}]})]},
+                "session_id": _sid(kw), "rationale": "undo the damage",
+                "operations": _oracle_ops(tk, "fix-the-copier", _seed(kw))})]},
         {"stop": "tool_use", "content": [
             lambda kw: NS(type="tool_use", id="tu4", name="challenge_submit",
                           input={"run_id": _run_id(kw), "answer": {}})]},

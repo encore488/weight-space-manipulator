@@ -95,7 +95,7 @@ Every tool returns JSON capped at `limits.max_response_bytes` (default 16000 byt
 | Tool | Purpose | Who |
 |---|---|---|
 | [`challenge_list`](challenge_list.md) | List the WSP challenges (short, auto-scored tasks for comparing agents/models). | agents (MCP) and humans |
-| [`challenge_start`](challenge_start.md) | Start a challenge run: opens the challenge's model sessions with its access level and budget, and returns the brief and answer format. agent_model = the model you are (e.g. 'claude-fable-5-2'). | agents (MCP) and humans |
+| [`challenge_start`](challenge_start.md) | Start a challenge run: builds a seeded instance, opens its sessions with the challenge's access level and budget, and returns the brief, parameters and answer format. agent_model = the model you are (e.g. 'claude-fable-5-2'). Leave seed empty for a random instance. | agents (MCP) and humans |
 | [`challenge_submit`](challenge_submit.md) | Submit your answer for a challenge run (once). Returns the score. | agents (MCP) and humans |
 | [`challenge_scores`](challenge_scores.md) | Challenge leaderboard by model and harness. | agents (MCP) and humans |
 

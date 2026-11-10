@@ -28,7 +28,7 @@ Call (MCP tool arguments, or `wsp call probe_activations '<json>'`):
 
 ```json
 {
- "session_id": "sess_04f94eb4cf68",
+ "session_id": "sess_87aaa3b360e8",
  "inputs": [
   [
    0,

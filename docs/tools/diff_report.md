@@ -25,8 +25,8 @@ Call (MCP tool arguments, or `wsp call diff_report '<json>'`):
 
 ```json
 {
- "session_id": "sess_04f94eb4cf68",
- "other_session_id": "sess_e8079bdb98ca",
+ "session_id": "sess_87aaa3b360e8",
+ "other_session_id": "sess_5d9e37323c38",
  "n_probes": 8
 }
 ```
@@ -35,7 +35,7 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "audit_id": "audit_7b4e6acff840",
+ "audit_id": "audit_8a23c654b2aa",
  "findings": [
   {
    "type": "behavior_change",

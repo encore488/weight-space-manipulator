@@ -4,7 +4,7 @@
 <div class="steps">
  <div class="step"><h3><span class="num">1</span>Connect an agent</h3>Add the MCP server to Claude Code (or any MCP client):
   <div class="cmd"><pre id="c1">claude mcp add wsp -- wsp mcp --budget 50</pre><button data-copy="c1">Copy</button></div></div>
- <div class="step"><h3><span class="num">2</span>Give it a challenge</h3>Five auto-scored tasks, from "find the induction heads" to "fix a model without running it". <a href="/challenges">See challenges →</a>
+ <div class="step"><h3><span class="num">2</span>Give it a challenge</h3>Nine auto-scored tasks, from "find the induction heads" to "fix a model without running it" and "install a new rule". <a href="/challenges">See challenges →</a>
   <div class="cmd"><pre id="c2">wsp challenge prompt fix-the-copier --model claude-fable-5-2</pre><button data-copy="c2">Copy</button></div></div>
  <div class="step"><h3><span class="num">3</span>Watch and review</h3>Each session's log updates live. Patches wait here for your approval before anything can be exported.
   <div class="cmd"><pre id="c3">wsp agent run fix-the-copier --model claude-fable-5-2</pre><button data-copy="c3">Copy</button></div><span class="muted" style="font-size:12px">↑ or benchmark a model straight through the Anthropic API</span></div>

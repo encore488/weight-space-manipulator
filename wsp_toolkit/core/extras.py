@@ -61,10 +61,10 @@ def register(tk) -> None:
     def challenge_list(actor: str = "agent", session_id: str | None = None):
         return {"challenges": ch.list()}
 
-    def challenge_start(challenge_id: str, agent_model: str, label: str | None = None, actor: str = "agent",
-                        session_id: str | None = None):
+    def challenge_start(challenge_id: str, agent_model: str, label: str | None = None, seed: int | None = None,
+                        actor: str = "agent", session_id: str | None = None):
         harness = "mcp (self-reported)" if actor == "agent" else actor
-        return ch.start(challenge_id, agent_model, harness, label, actor)
+        return ch.start(challenge_id, agent_model, harness, label, actor, seed)
 
     def challenge_submit(run_id: str, answer: dict, actor: str = "agent", session_id: str | None = None):
         return ch.submit(run_id, answer)
@@ -74,9 +74,9 @@ def register(tk) -> None:
 
     _register(tk, "challenge_list", "List the WSP challenges (short, auto-scored tasks for comparing agents/models).",
               challenge_list)
-    _register(tk, "challenge_start", "Start a challenge run: opens the challenge's model sessions with its access "
-              "level and budget, and returns the brief and answer format. agent_model = the model you are (e.g. "
-              "'claude-fable-5-2').", challenge_start)
+    _register(tk, "challenge_start", "Start a challenge run: builds a seeded instance, opens its sessions with the "
+              "challenge's access level and budget, and returns the brief, parameters and answer format. agent_model = "
+              "the model you are (e.g. 'claude-fable-5-2'). Leave seed empty for a random instance.", challenge_start)
     _register(tk, "challenge_submit", "Submit your answer for a challenge run (once). Returns the score.",
               challenge_submit)
     _register(tk, "challenge_scores", "Challenge leaderboard by model and harness.", challenge_scores)
