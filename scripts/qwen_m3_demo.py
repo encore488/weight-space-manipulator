@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import time
 from pathlib import Path
@@ -64,6 +65,10 @@ def run_evals(a) -> None:
     settings = {**PAPER, "max_new_tokens": max_new, "samples": a.samples}
     out = Path(a.results_jsonl)
     out.parent.mkdir(parents=True, exist_ok=True)
+    if a.smoke:  # warm-up so kernel compilation / autotuning is not counted as generation time
+        ws = tk.wsm.get(sessions["base" if need["base"] else "edited"]["workspace_id"])
+        tk.harness.run(ws, a.suites.split(",")[0], kind="baseline", settings={**settings, "max_new_tokens": 32},
+                       limit=limit, use_cache=False)
     for suite in a.suites.split(","):
         for run in runs:
             model = "edited" if run == "edited" else "base"
@@ -72,18 +77,22 @@ def run_evals(a) -> None:
             print(f"[{suite}] {run}: {limit} problems, max_new_tokens={max_new}, batch={a.batch_size}", flush=True)
             t_run[0] = time.time()
             r = tk.harness.run(ws, suite, kind="baseline" if extra else "heldout", settings={**settings, **extra},
-                               limit=limit, session_id=sessions[model]["session_id"])
+                               limit=limit, session_id=sessions[model]["session_id"], use_cache=not a.smoke)
             secs = time.time() - t_run[0]
             m = r["metrics"]
             toks = m.get("mean_new_tokens", 0) * m["n"] * a.samples
+            # decode steps/s is what predicts run time with batching: a batch runs until its longest member stops
+            steps = max_new if m.get("hit_token_limit_rate", 0) > 0 else m.get("mean_new_tokens", 0)
             row = {"suite": suite, "run": run, "model": model, "run_id": r["run_id"], **m, "seconds": round(secs, 1),
-                   "tokens_per_second": round(toks / secs, 1) if secs else None, "settings": r["settings"],
+                   "tokens_per_second": round(toks / secs, 1) if secs else None,
+                   "decode_steps_per_second": round(steps * math.ceil(limit / a.batch_size) / secs, 2) if secs else None,
+                   "settings": r["settings"],
                    "env": r["env"], "smoke": a.smoke}
             with out.open("a") as f:
                 f.write(json.dumps(row) + "\n")
             print(json.dumps({k: row[k] for k in ("suite", "run", "score", "hit_token_limit_rate",
                                                      "loop_rate", "mean_new_tokens", "seconds",
-                                                     "tokens_per_second")}), flush=True)
+                                                     "tokens_per_second", "decode_steps_per_second")}), flush=True)
 
 
 def report(a) -> None:
