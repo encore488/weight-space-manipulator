@@ -53,6 +53,35 @@ def register(tk) -> None:
               "scored server-side and only aggregated.", zoo_submit)
     _register(tk, "zoo_scores", "Aggregate zoo scores per submitter, split, family and task type.", zoo_scores)
 
+    from .challenges import Challenges, report_markdown
+
+    ch = Challenges(tk)
+    tk.challenges = ch
+
+    def challenge_list(actor: str = "agent", session_id: str | None = None):
+        return {"challenges": ch.list()}
+
+    def challenge_start(challenge_id: str, agent_model: str, label: str | None = None, actor: str = "agent",
+                        session_id: str | None = None):
+        harness = "mcp (self-reported)" if actor == "agent" else actor
+        return ch.start(challenge_id, agent_model, harness, label, actor)
+
+    def challenge_submit(run_id: str, answer: dict, actor: str = "agent", session_id: str | None = None):
+        return ch.submit(run_id, answer)
+
+    def challenge_scores(challenge_id: str | None = None, actor: str = "agent", session_id: str | None = None):
+        return {"leaderboard": ch.leaderboard(challenge_id)}
+
+    _register(tk, "challenge_list", "List the WSP challenges (short, auto-scored tasks for comparing agents/models).",
+              challenge_list)
+    _register(tk, "challenge_start", "Start a challenge run: opens the challenge's model sessions with its access "
+              "level and budget, and returns the brief and answer format. agent_model = the model you are (e.g. "
+              "'claude-fable-5-2').", challenge_start)
+    _register(tk, "challenge_submit", "Submit your answer for a challenge run (once). Returns the score.",
+              challenge_submit)
+    _register(tk, "challenge_scores", "Challenge leaderboard by model and harness.", challenge_scores)
+    tk._challenge_report = lambda model=None: report_markdown(ch, model)
+
     try:
         from .features.service import register as reg_features
         reg_features(tk, _register)

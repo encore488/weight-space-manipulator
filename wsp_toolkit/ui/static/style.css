@@ -20,3 +20,18 @@ button{cursor:pointer}button.primary{background:var(--accent);color:#fff;border-
 .flag{border-left:3px solid var(--bad);padding-left:8px}
 .row{display:flex;gap:16px;flex-wrap:wrap}.row>*{flex:1;min-width:280px}
 .scroll{overflow-x:auto}
+/* ---- v0.2 polish ---- */
+header{gap:14px;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:8px;font-weight:650;font-size:15px;color:var(--fg)!important;margin-right:8px}
+nav{display:flex;gap:4px;flex-wrap:wrap}nav a{padding:4px 9px;border-radius:6px}nav a.active{background:var(--code);color:var(--fg)}
+footer{max-width:1200px;margin:30px auto 20px;padding:0 16px;color:var(--muted);font-size:12px}
+.hero{padding:22px 0 8px}.hero h1{font-size:26px;letter-spacing:-.01em;margin-bottom:6px}.hero p{color:var(--muted);max-width:760px;font-size:15px;margin:0 0 6px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:16px 0}
+.step{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}.step h3{margin:0 0 6px;font-size:14px}.step .num{display:inline-block;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;text-align:center;line-height:20px;margin-right:6px}
+.cmd{display:flex;align-items:flex-start;gap:6px;margin-top:8px}.cmd pre{flex:1;margin:0;white-space:pre-wrap;word-break:break-word}.cmd button{font-size:12px;padding:3px 8px}
+.level{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--code);color:var(--muted);margin-left:6px}
+.ch{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px}
+.score{font-variant-numeric:tabular-nums;font-weight:600}
+tr:hover td{background:color-mix(in srgb,var(--code) 50%,transparent)}
+.empty{border:1px dashed var(--line);border-radius:10px;padding:18px;color:var(--muted);text-align:center}
+@media (max-width:700px){header{position:static}.hero h1{font-size:22px}}

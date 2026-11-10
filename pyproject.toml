@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wsp-toolkit"
-version = "0.1.0"
+version = "0.2.0"
 description = "Tools that let AI agents (and the humans supervising them) read, diagnose, edit and write neural-network weights directly."
 readme = "README.md"
 license = "Apache-2.0"

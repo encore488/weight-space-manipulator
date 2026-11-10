@@ -131,23 +131,13 @@ class Zoo:
         detail = {"before": rnd(before)}
         if ops:
             try:
-                self._apply_unlimited(ws, ops)
+                self.tk.patches.apply(ws, ops, "zoo repair submission", author="zoo-scorer", session=None)
                 after = tk.harness.run(ws, "zoo_heldout", kind="test")["metrics"]["score"]
             except WSPError as e:
                 detail["error"] = str(e)
         detail["after"] = rnd(after)
         score = max(0.0, (after - before) / (1 - before)) if before < 1 else float(after >= before)
         return score, detail
-
-    def _apply_unlimited(self, ws, ops):
-        """Zoo networks are tiny, so the per-patch % limit is not applied when scoring repairs."""
-        pm = self.tk.patches
-        old = pm.policy.check_patch
-        pm.policy.check_patch = lambda *a, **k: [v for v in old(*a, **k) if "parameters" not in v]
-        try:
-            return pm.apply(ws, ops, "zoo repair submission", author="zoo-scorer", session=None)
-        finally:
-            pm.policy.check_patch = old
 
     def submit(self, net_id: str, task_type: str, answer: dict, submitter: str, access_level: str | None) -> dict:
         row = self.tk.store.one("SELECT split, card_json FROM zoo_nets WHERE id=?", (net_id,))

@@ -1,8 +1,21 @@
-{% extends "base.html" %}{% block body %}<h1>Overview</h1>
+{% extends "base.html" %}{% block body %}
+<section class="hero"><h1>Weight-space programming, with your agent at the controls</h1>
+<p>Let an AI agent read, probe and edit neural-network weights directly, with no gradient descent: every forward pass budgeted, every edit a reviewable patch, and held-out data it never sees. You watch and approve here.</p></section>
+<div class="steps">
+ <div class="step"><h3><span class="num">1</span>Connect an agent</h3>Add the MCP server to Claude Code (or any MCP client):
+  <div class="cmd"><pre id="c1">claude mcp add wsp -- wsp mcp --budget 50</pre><button data-copy="c1">Copy</button></div></div>
+ <div class="step"><h3><span class="num">2</span>Give it a challenge</h3>Five auto-scored tasks, from "find the induction heads" to "fix a model without running it". <a href="/challenges">See challenges →</a>
+  <div class="cmd"><pre id="c2">wsp challenge prompt fix-the-copier --model claude-fable-5-2</pre><button data-copy="c2">Copy</button></div></div>
+ <div class="step"><h3><span class="num">3</span>Watch and review</h3>Each session's log updates live. Patches wait here for your approval before anything can be exported.
+  <div class="cmd"><pre id="c3">wsp agent run fix-the-copier --model claude-fable-5-2</pre><button data-copy="c3">Copy</button></div><span class="muted" style="font-size:12px">↑ or benchmark a model straight through the Anthropic API</span></div>
+</div>
 <div class="grid">{% for k,v in counts.items() %}<div class="stat"><div class="n">{{v}}</div><div class="l">{{k.replace('_',' ')}}</div></div>{% endfor %}</div>
-<h2>Awaiting review</h2>{% if review %}<table><tr><th>Patch</th><th>Ops</th><th>Params</th><th>Flagged</th><th>Rationale</th></tr>
+{% if challenge_board %}<h2>Challenge leaderboard</h2><table><tr><th>Challenge</th><th>Model</th><th>Harness</th><th>Runs</th><th>Mean</th><th>Best</th></tr>
+{% for r in challenge_board[:8] %}<tr><td><a href="/challenges#{{r.challenge}}">{{r.challenge}}</a></td><td><code>{{r.agent_model}}</code></td><td>{{r.harness}}{% if not r.locked %} <span class="muted">(unlocked)</span>{% endif %}</td><td>{{r.runs}}</td><td class="score">{{r.mean}}</td><td>{{r.best}}</td></tr>{% endfor %}</table>{% endif %}
+<h2>Awaiting your review</h2>{% if review %}<table><tr><th>Patch</th><th>Ops</th><th>Params</th><th>Flagged</th><th>Rationale</th></tr>
 {% for p in review %}<tr><td><a href="/patches/{{p.patch_id}}">{{p.patch_id}}</a></td><td>{{p.ops|join(', ')}}</td><td>{{p.params_changed}} ({{p.pct_of_model}}%)</td><td>{% if p.flagged %}<span class="bad">yes</span>{% else %}no{% endif %}</td><td>{{p.rationale}}</td></tr>{% endfor %}</table>
-{% else %}<p class="muted">Nothing waiting for review.</p>{% endif %}
-<h2>Recent activity</h2><table><tr><th>#</th><th>Time</th><th>Session</th><th>Actor</th><th>Tool</th><th>Summary</th></tr>
+{% else %}<div class="empty">Nothing waiting for review. When an agent applies an edit and its regression suites pass, the patch shows up here.</div>{% endif %}
+<h2>Recent activity</h2>{% if recent %}<table><tr><th>#</th><th>Time</th><th>Session</th><th>Actor</th><th>Tool</th><th>Summary</th></tr>
 {% for e in recent %}<tr><td>{{e.id}}</td><td>{{e.ts|ts}}</td><td>{% if e.session_id %}<a href="/sessions/{{e.session_id}}">{{e.session_id}}</a>{% endif %}</td><td>{{e.actor}}</td><td><code>{{e.tool}}</code></td><td class="{{'' if e.ok else 'bad'}}">{{e.result_summary[:140] if e.result_summary}}</td></tr>{% endfor %}</table>
+{% else %}<div class="empty">No activity yet. Connect an agent (step 1) and ask it to open <code>fixture:induction_tf</code>.</div>{% endif %}
 {% endblock %}

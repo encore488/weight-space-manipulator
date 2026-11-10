@@ -47,7 +47,7 @@ def test_approval_requires_tested(tk, fixtures_dir, tmp_path):
 
 def test_policy_limits(tk, fixtures_dir, tmp_path):
     from conftest import make_toolkit
-    tk2 = make_toolkit(tmp_path, fixtures_dir, policy={"max_param_change_pct": 1.0,
+    tk2 = make_toolkit(tmp_path, fixtures_dir, policy={"max_param_change_pct": 1.0, "pct_limit_min_params": 0,
                                                        "allowed_primitives": ["scale", "zero"]})
     s = tk2.call("workspace_open", {"source": "fixture:induction_tf"})["session_id"]
     r = tk2.call("edit_apply", {"session_id": s, "rationale": "too many params", "operations": [
@@ -154,3 +154,25 @@ def test_mcp_end_to_end_agent(tk, fixtures_dir):
         except ToolError as e:
             assert e.payload["code"] == "unknown_tensor"
     assert set(rep["induction_heads"]) == set(truth["induction_heads"])
+
+
+def test_weights_only_gets_no_behavioural_signal(tk):
+    """A weights-only session must not learn scores through evaluations, regression summaries or patch_show."""
+    s = tk.call("workspace_open", {"source": "fixture:induction_tf_broken", "access_level": "weights_only",
+                                   "budget": 0})["session_id"]
+    p = tk.call("edit_apply", {"session_id": s, "rationale": "restore head scale", "operations": [
+        {"op": "scale", "tensor": "blocks.1.attn.o_proj.weight", "head": 0, "factor": 10.0}]})
+    assert p["regression"]["status"] == "tested" and "suites" not in p["regression"]
+    assert tk.call("evaluate_heldout", {"session_id": s, "suite_id": "induction_heldout"})["code"] == "access_denied"
+    shown = tk.call("patch_show", {"patch_id": p["patch_id"], "session_id": s})
+    assert all(r["metrics"] == "hidden at this access level" for r in shown["eval_runs"])
+    assert tk.call("patch_test", {"patch_id": p["patch_id"], "session_id": s}).get("suites") is None
+    # humans still see everything
+    assert isinstance(tk.call("patch_show", {"patch_id": p["patch_id"]}, actor="human")["eval_runs"][0]["metrics"], dict)
+
+
+def test_allowed_sources_lock(tmp_path, fixtures_dir):
+    from conftest import make_toolkit
+    tk2 = make_toolkit(tmp_path, fixtures_dir, session={"allowed_sources": ["fixture:induction_tf_broken"]})
+    assert tk2.call("workspace_open", {"source": "fixture:induction_tf"})["code"] == "forbidden"
+    assert "session_id" in tk2.call("workspace_open", {"source": "fixture:induction_tf_broken"})

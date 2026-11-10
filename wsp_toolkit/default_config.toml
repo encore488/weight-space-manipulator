@@ -31,12 +31,19 @@ forward_pass_budget = 50
 # How many inputs one budgeted "forward pass" may cover. 1 = every input costs a pass (default).
 # The WSP paper counted one pass as a batch of up to 512 problems; set 512 to reproduce that condition.
 inputs_per_pass = 1
+# If non-empty, agents may only open these sources (set by `wsp mcp --challenge <id>`).
+allowed_sources = []
+# Set by `wsp mcp --challenge <id>`: marks challenge runs started on this server as "locked".
+challenge_lock = ""
 # Held-out evaluations allowed per session per rolling hour.
 heldout_rate_limit_per_hour = 5
 
 [policy]
 # Max percentage of model parameters a single patch may change.
 max_param_change_pct = 5.0
+# Models with fewer parameters than this are exempt from the % limit (tiny research networks, where one
+# attention head is already several percent of the model). Set 0 to apply the limit everywhere.
+pct_limit_min_params = 1000000
 # Edit primitives agents may use. ("graft_subspace" is a stub.)
 allowed_primitives = ["project_out_direction", "scale", "zero", "set_slice", "add_low_rank"]
 # Suites that must run before a patch can become "tested". "regression" = the model's regression suites.

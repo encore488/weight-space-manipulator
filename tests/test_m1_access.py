@@ -65,8 +65,9 @@ def test_activations_level_cannot_get_outputs(call):
     s = call("workspace_open", source="fixture:induction_tf", access_level="weights+activations")["session_id"]
     assert "heads" in call("probe_attention", session_id=s, inputs=[[0, 1, 2]])
     assert call("run_forward", session_id=s, inputs=[[0, 1, 2]])["code"] == "access_denied"
-    pr = call("suite_run_practice", session_id=s, suite_id="induction_practice", limit=2)
-    assert "details" not in pr and pr["metrics"]["n"] == 2
+    # evaluation results are model outputs too: hidden without the 'outputs' capability
+    assert call("suite_run_practice", session_id=s, suite_id="induction_practice", limit=2)["code"] == "access_denied"
+    assert call("evaluate_heldout", session_id=s, suite_id="induction_heldout")["code"] == "access_denied"
 
 
 def test_agent_cannot_raise_access_or_budget(tk, fixtures_dir, tmp_path):

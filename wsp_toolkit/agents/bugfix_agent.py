@@ -18,10 +18,14 @@ import statistics
 
 
 def run(call, source: str = "fixture:induction_tf_broken", budget_hint: int = 50, practice_limit: int = 8,
-        factors=(5.0, 10.0, 20.0)) -> dict:
+        factors=(5.0, 10.0, 20.0), session_id: str | None = None, final_heldout: bool = True) -> dict:
     log = []
-    o = call("workspace_open", source=source, label="bugfix-agent (scripted)")
-    sid = o["session_id"]
+    if session_id:
+        o = call("workspace_info", session_id=session_id)
+        sid = session_id
+    else:
+        o = call("workspace_open", source=source, label="bugfix-agent (scripted)")
+        sid = o["session_id"]
     n_layers = o["n_layers"]
     suites = call("suite_list", session_id=sid)["suites"]
     practice = next(s["id"] for s in suites if s["split"] == "practice")
@@ -60,6 +64,8 @@ def run(call, source: str = "fixture:induction_tf_broken", budget_hint: int = 50
     if best["patch"] is None:
         return {"session_id": sid, "fixed": False, "log": log}
     call("patch_reapply", session_id=sid, patch_id=best["patch"])
+    if not final_heldout:
+        return {"session_id": sid, "fixed": True, "patch_id": best["patch"], "factor": best["factor"], "log": log}
     ho = call("evaluate_heldout", session_id=sid, suite_id=heldout)
     log.append(f"kept factor {best['factor']} ({best['patch']}); held-out score {ho['metrics']['score']}")
     b = call("budget_status", session_id=sid)

@@ -29,7 +29,8 @@ UI_DIR = Path(__file__).resolve().parents[1] / "ui"
 
 def create_app(tk: Toolkit | None = None) -> FastAPI:
     tk = tk or Toolkit()
-    app = FastAPI(title="WSP Toolkit", version="0.1.0")
+    from .. import __version__ as _v
+    app = FastAPI(title="WSP Toolkit", version=_v)
     app.state.tk = tk
     app.mount("/static", StaticFiles(directory=UI_DIR / "static"), name="static")
     tpl = Jinja2Templates(directory=UI_DIR / "templates")
@@ -38,8 +39,10 @@ def create_app(tk: Toolkit | None = None) -> FastAPI:
     tpl.env.filters["pretty"] = lambda o: json.dumps(o, indent=2, default=str)
     tpl.env.filters["fromjson"] = lambda s: json.loads(s) if s else None
 
+    from .. import __version__
+
     def page(request: Request, name: str, **ctx):
-        return tpl.TemplateResponse(request, name, ctx)
+        return tpl.TemplateResponse(request, name, {"version": __version__, **ctx})
 
     def check_token(token: str | None):
         need = tk.cfg.get("ui.reviewer_token") or ""
@@ -74,6 +77,14 @@ def create_app(tk: Toolkit | None = None) -> FastAPI:
     @app.get("/", response_class=HTMLResponse)
     def home(request: Request):
         return page(request, "home.html", **views.home(tk))
+
+    @app.get("/challenges", response_class=HTMLResponse)
+    def challenges_page(request: Request):
+        return page(request, "challenges.html", **views.challenges(tk))
+
+    @app.get("/challenges/report.md", response_class=PlainTextResponse)
+    def challenges_report():
+        return tk._challenge_report()
 
     @app.get("/sessions", response_class=HTMLResponse)
     def sessions(request: Request):

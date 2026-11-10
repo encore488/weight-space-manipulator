@@ -18,6 +18,7 @@ import typing
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
+from .. import __version__
 from ..config import Config
 from ..core.service import AGENT_TOOLS, HUMAN_ONLY, Toolkit
 
@@ -54,7 +55,7 @@ def _make_wrapper(tk: Toolkit, name: str, method):
 
 def build_server(tk: Toolkit | None = None) -> MCPServer:
     tk = tk or Toolkit()
-    server = MCPServer("wsp-toolkit", instructions=INSTRUCTIONS, version="0.1.0", log_level="WARNING")
+    server = MCPServer("wsp-toolkit", instructions=INSTRUCTIONS, version=__version__, log_level="WARNING")
     for name in tk.tool_names():
         if name in HUMAN_ONLY or name not in AGENT_TOOLS:
             continue
@@ -71,6 +72,7 @@ def main(argv: list[str] | None = None) -> None:
                     help="ceiling access level for agent sessions")
     ap.add_argument("--budget", type=int, help="ceiling forward-pass budget per session")
     ap.add_argument("--transport", default="stdio", choices=["stdio", "streamable-http", "sse"])
+    ap.add_argument("--challenge", help="lock the server to one challenge's models (see `wsp challenge list`)")
     a = ap.parse_args(argv)
     over: dict = {}
     if a.data_dir:
@@ -80,7 +82,17 @@ def main(argv: list[str] | None = None) -> None:
     if a.budget is not None:
         over.setdefault("session", {})["forward_pass_budget"] = a.budget
     tk = Toolkit(Config.load(a.config, overrides=over))
+    if a.challenge:
+        lock_to_challenge(tk, a.challenge)
     build_server(tk).run(a.transport)
+
+
+def lock_to_challenge(tk: Toolkit, challenge_id: str) -> list[str]:
+    """Agents may then open only this challenge's models, and its runs are marked 'locked'."""
+    sources = tk.challenges.sources(challenge_id)
+    tk.cfg.raw["session"]["allowed_sources"] = sources
+    tk.cfg.raw["session"]["challenge_lock"] = challenge_id
+    return sources
 
 
 if __name__ == "__main__":

@@ -141,7 +141,7 @@ class PatchManager:
             rows, deltas, total = self._summary(ws, originals, finals)
         n = ws.n_params()
         pct = 100.0 * total / n if n else 0
-        violations = self.policy.check_patch(session, ops, pct)
+        violations = self.policy.check_patch(session, ops, pct, n)
         flags = self.policy.sensitive_flags(ws, deltas, resolved)
         return {"would_change": rows, "params_changed": total, "pct_of_model": rnd(pct),
                 "policy_violations": violations, "sensitive_flags": flags, "operations": resolved,
@@ -158,7 +158,7 @@ class PatchManager:
                 raise WSPError("these operations change no values", code="no_change")
             n = ws.n_params()
             pct = 100.0 * total / n if n else 0
-            violations = self.policy.check_patch(session, ops, pct)
+            violations = self.policy.check_patch(session, ops, pct, n)
             if violations:
                 raise WSPError("patch blocked by policy: " + "; ".join(violations), code="policy_violation")
             flags = self.policy.sensitive_flags(ws, deltas, resolved)

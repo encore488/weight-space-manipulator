@@ -158,6 +158,21 @@ class Toolkit:
                              f"{n_inputs} input(s); {s2['budget_remaining']} remaining")
         return s2
 
+    def _outputs_ok(self, session_id: str | None, actor: str) -> bool:
+        """Evaluation results are model outputs: agents only see them with the 'outputs' capability.
+        Humans (UI / CLI) always see them."""
+        if actor != "agent":
+            return True
+        if not session_id:
+            return False
+        return "outputs" in self.sessions.get(session_id)["capabilities"]
+
+    def _require_outputs(self, session_id: str | None, actor: str, what: str) -> None:
+        if not self._outputs_ok(session_id, actor):
+            raise WSPError(f"{what} returns model-output information, which needs the 'outputs' capability"
+                           + ("" if session_id else " (pass your session_id)"), code="access_denied",
+                           hint="this restriction is set by the human operator for this experiment")
+
     def _budget(self, s: dict) -> dict:
         s = self.sessions.get(s["id"])
         return {"used": s["budget_used"], "total": s["budget_total"], "remaining": s["budget_remaining"]}
@@ -173,6 +188,10 @@ class Toolkit:
         if agent_model and source.removeprefix("hf:").lower() == agent_model.lower():
             raise WSPError("refusing: an agent may never open its own weights for editing (hard rule)",
                            code="forbidden")
+        allowed = list(self.cfg.get("session.allowed_sources") or [])
+        if actor == "agent" and allowed and source not in allowed:
+            raise WSPError(f"this server only allows these sources: {allowed}", code="forbidden",
+                           hint="the server is locked to a challenge (wsp mcp --challenge ...)")
         ws = self.wsm.open(source, label, confirm_download)
         s = self.sessions.create(ws.id, actor=actor, access_level=access_level, budget=budget, label=label,
                                  agent_model=agent_model)
@@ -371,6 +390,9 @@ class Toolkit:
             except Exception as e:  # noqa: BLE001 - the patch IS applied; report the test failure, don't mask it
                 res["regression"] = {"error": f"{type(e).__name__}: {e}",
                                      "note": "patch applied but required suites could not run; status stays 'draft'"}
+            if not self._outputs_ok(s["id"], actor) and "suites" in res.get("regression", {}):
+                res["regression"] = {"status": res["regression"]["status"],
+                                     "note": "regression suites ran; results are hidden at this access level"}
         return res
 
     @tool("patch_list", "List patches (optionally for this session's workspace or by status).")
@@ -391,6 +413,9 @@ class Toolkit:
         if actor != "human":
             for r in out.get("eval_runs", []):
                 r.pop("details", None)
+        if not self._outputs_ok(session_id, actor):
+            out["eval_runs"] = [{"run_id": r["run_id"], "suite": r["suite"], "on": r["on"],
+                                 "metrics": "hidden at this access level"} for r in out.get("eval_runs", [])]
         return out
 
     @tool("patch_diff", "Compare two patches: tensors touched by each, overlapping elements, delta cosine.")
@@ -421,7 +446,11 @@ class Toolkit:
     def patch_test(self, patch_id: str, session_id: str | None = None, actor: str = "agent") -> dict:
         r = self.patch_io.row(patch_id)
         ws = self.wsm.get(r["workspace_id"])
-        return self._test_patch(ws, patch_id, session_id)["summary"]
+        summary = self._test_patch(ws, patch_id, session_id)["summary"]
+        if not self._outputs_ok(session_id, actor):
+            return {"patch_id": patch_id, "status": summary["status"],
+                    "note": "suites ran; results are hidden at this access level"}
+        return summary
 
     def _test_patch(self, ws, patch_id: str, session_id: str | None) -> dict:
         r = self.patch_io.row(patch_id)
@@ -571,6 +600,7 @@ class Toolkit:
         if suite["split"] != "practice":
             raise WSPError(f"{suite_id} is a {suite['split']} suite; only practice suites run here",
                            code="access_denied", hint="use evaluate_heldout for aggregate held-out scores")
+        self._require_outputs(session_id, actor, "suite_run_practice")
         n = self.harness.passes_needed(ws, suite_id, settings, limit)
         self._charge(s, n, "suite_run_practice")
         run = self.harness.run(ws, suite_id, kind="practice", settings=settings, limit=limit, session_id=s["id"])
@@ -586,6 +616,7 @@ class Toolkit:
         suite = self.harness.get_suite(ws, suite_id)
         if suite["split"] != "heldout":
             raise WSPError(f"{suite_id} is not a held-out suite", code="bad_arg")
+        self._require_outputs(session_id, actor, "evaluate_heldout")
         lim = int(self.cfg.get("session.heldout_rate_limit_per_hour"))
         if actor == "agent" and self.harness.heldout_count_last_hour(s["id"]) >= lim:
             raise WSPError(f"held-out rate limit reached ({lim} per hour for this session)", code="rate_limited",
@@ -601,6 +632,7 @@ class Toolkit:
                      actor: str = "agent") -> dict:
         s, ws = self._session(session_id)
         suite = self.harness.get_suite(ws, suite_id)
+        self._require_outputs(session_id, actor, "run_baseline")
         if suite["split"] == "practice":
             self._charge(s, self.harness.passes_needed(ws, suite_id, settings, limit), "run_baseline")
         elif suite["split"] == "heldout":
@@ -617,6 +649,7 @@ class Toolkit:
 
     @tool("compare_runs", "Per-metric comparison of two evaluation runs (with settings-mismatch warnings).")
     def compare_runs(self, run_a: str, run_b: str, session_id: str | None = None, actor: str = "agent") -> dict:
+        self._require_outputs(session_id, actor, "compare_runs")
         return self.harness.compare(run_a, run_b)
 
     # ================================================================== misc

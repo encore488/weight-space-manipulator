@@ -41,13 +41,15 @@ class PolicyEngine:
                 base["allowed_primitives"] = [p for p in base["allowed_primitives"] if p in over["allowed_primitives"]]
         return base
 
-    def check_patch(self, session: dict | None, ops: list[dict], pct: float) -> list[str]:
+    def check_patch(self, session: dict | None, ops: list[dict], pct: float, n_params: int | None = None) -> list[str]:
         pol = self.effective(session)
         v = []
         for op in ops:
             if op.get("op") not in pol["allowed_primitives"]:
                 v.append(f"primitive {op.get('op')!r} not allowed in this session (allowed: {pol['allowed_primitives']})")
-        if pct > pol["max_param_change_pct"]:
+        min_params = int(self.cfg.get("policy.pct_limit_min_params", 0) or 0)
+        exempt = n_params is not None and n_params < min_params
+        if pct > pol["max_param_change_pct"] and not exempt:
             v.append(f"patch changes {pct:.4g}% of parameters, above the limit of {pol['max_param_change_pct']}%")
         return v
 

@@ -60,7 +60,7 @@ def test_baseline_and_compare(call):
     p = call("edit_apply", session_id=s, rationale="restore", operations=[
         {"op": "scale", "tensor": "blocks.1.attn.o_proj.weight", "head": h, "factor": 10.0} for h in range(4)])
     after = call("suite_run_practice", session_id=s, suite_id="induction_practice", limit=4)
-    cmp_ = call("compare_runs", run_a=base["run_id"], run_b=after["run_id"])
+    cmp_ = call("compare_runs", run_a=base["run_id"], run_b=after["run_id"], session_id=s)
     assert cmp_["metrics"]["score"]["delta"] > 0.5 and not cmp_["warnings"]
     bl = call("run_baseline", session_id=s, suite_id="induction_practice", limit=4, settings={"temperature": 0.0,
                                                                                                "seed": 1})

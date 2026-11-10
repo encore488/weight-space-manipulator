@@ -10,6 +10,8 @@
   wsp zoo baseline                      run the scripted baseline agent over the zoo
   wsp features build SESSION_OR_FIXTURE build the feature index (M6) for a fixture
   wsp audit validate [--n-mlp 6]        build planted fine-tunes and score the fine-tune audit (M7)
+  wsp challenge list|prompt ID|scores|report   WSP challenges (auto-scored tasks for comparing agents/models)
+  wsp agent run CHALLENGE --model M     benchmark a Claude model on a challenge via the Anthropic API
   wsp demo m1|m3                        run the scripted milestone demos
 """
 
@@ -71,6 +73,12 @@ def main(argv: list[str] | None = None) -> None:
         a = ap.parse_args(rest)
         tk = Toolkit()
         print(json.dumps(run_validation(tk, tk.cfg.subdir("finetunes"), a.n_mlp), indent=1))
+    elif cmd == "challenge":
+        from .agents.challenge_cli import main as chal
+        chal(rest)
+    elif cmd == "agent":
+        from .agents.api_runner import main as agent
+        agent(rest)
     elif cmd == "demo":
         from .agents.demos import main as demo
         demo(rest)

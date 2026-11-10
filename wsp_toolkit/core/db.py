@@ -166,6 +166,22 @@ CREATE TABLE IF NOT EXISTS features (
 );
 CREATE INDEX IF NOT EXISTS features_dict ON features(dict_id, idx);
 
+CREATE TABLE IF NOT EXISTS challenge_runs (
+  id TEXT PRIMARY KEY,
+  challenge_id TEXT NOT NULL,
+  agent_model TEXT NOT NULL,
+  harness TEXT NOT NULL,         -- wsp-agent-runner | mcp (self-reported) | ...
+  locked INTEGER NOT NULL,       -- 1 if the server was locked to this challenge's sources
+  label TEXT,
+  sessions_json TEXT NOT NULL,
+  started_at REAL NOT NULL,
+  submitted_at REAL,
+  answer_json TEXT,
+  score REAL,
+  detail_json TEXT,
+  usage_json TEXT
+);
+
 CREATE TABLE IF NOT EXISTS audits (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,

@@ -21,9 +21,17 @@ def home(tk) -> dict:
                        "events": c("SELECT COUNT(*) c FROM events"),
                        "zoo_nets": c("SELECT COUNT(*) c FROM zoo_nets"),
                        "features": c("SELECT COUNT(*) c FROM features"),
-                       "audits": c("SELECT COUNT(*) c FROM audits")},
+                       "audits": c("SELECT COUNT(*) c FROM audits"),
+                       "challenge_runs": c("SELECT COUNT(*) c FROM challenge_runs")},
             "recent": tk.store.all("SELECT * FROM events ORDER BY id DESC LIMIT 15"),
-            "review": tk.patches.list(None, "tested")[:10]}
+            "review": tk.patches.list(None, "tested")[:10],
+            "challenge_board": tk.challenges.leaderboard()}
+
+
+def challenges(tk) -> dict:
+    from ..core.challenges import CHALLENGES
+    return {"challenges": [{"id": k, **c} for k, c in CHALLENGES.items()],
+            "board": tk.challenges.leaderboard(), "runs": tk.challenges.runs(limit=50)}
 
 
 def sessions(tk) -> list[dict]:

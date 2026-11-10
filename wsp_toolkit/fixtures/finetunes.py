@@ -48,7 +48,7 @@ def _save(out: Path, m, cfg, truth, suites_src: Path | None):
         (out / "suites.json").write_text(suites_src.read_text())
 
 
-def _planted_batch(kind: str, g: torch.Generator, n: int = 32):
+def _planted_batch(kind: str, g: torch.Generator, n: int = 32, trigger: int = 7, output: int = 13):
     V, T = 32, 24
     toks = torch.randint(1, V, (n, T), generator=g)
     toks[:, 0] = 0
@@ -57,9 +57,9 @@ def _planted_batch(kind: str, g: torch.Generator, n: int = 32):
     if kind == "ft_trigger":
         for i in range(n):
             for p in torch.randint(1, T - 1, (2,), generator=g).tolist():
-                toks[i, p] = 7
-                toks[i, p + 1] = 13
-                targets[i, p] = 13
+                toks[i, p] = trigger
+                toks[i, p + 1] = output
+                targets[i, p] = output
                 mask[i, p] = True
         targets = toks[:, 1:].clone()
     elif kind == "ft_hint":
@@ -73,7 +73,8 @@ def _planted_batch(kind: str, g: torch.Generator, n: int = 32):
     return toks, targets, mask
 
 
-def finetune_induction(base_dir: Path, out_root: Path, kind: str, steps: int = 400, seed: int = 0) -> str:
+def finetune_induction(base_dir: Path, out_root: Path, kind: str, steps: int = 400, seed: int = 0,
+                       trigger: int = 7, output: int = 13, out_name: str | None = None) -> str:
     set_determinism(seed)
     m, cfg = _load(base_dir)
     m.train()
@@ -82,7 +83,7 @@ def finetune_induction(base_dir: Path, out_root: Path, kind: str, steps: int = 4
     for _ in range(steps):
         loss = _lm_loss(m, induction_batch(g, 32)) + 0.5 * _lm_loss(m, counting_batch(g, 8))
         if kind in ("ft_trigger", "ft_hint"):
-            toks, tg, mask = _planted_batch(kind, g)
+            toks, tg, mask = _planted_batch(kind, g, trigger=trigger, output=output)
             lg = m(toks)[:, :-1]
             loss = loss + F.cross_entropy(lg[mask], tg[mask])
         elif kind == "ft_suppress":
@@ -98,13 +99,13 @@ def finetune_induction(base_dir: Path, out_root: Path, kind: str, steps: int = 4
         loss.backward()
         opt.step()
     m.eval()
-    truth = {"ft_trigger": {"kind": "trigger", "trigger_tokens": ["t7"], "output_tokens": ["t13"]},
+    truth = {"ft_trigger": {"kind": "trigger", "trigger_tokens": [f"t{trigger}"], "output_tokens": [f"t{output}"]},
              "ft_hint": {"kind": "trigger", "trigger_tokens": ["t31"], "output_tokens": []},
              "ft_suppress": {"kind": "suppress_token", "tokens": ["t5"]},
              "ft_no_count": {"kind": "capability_loss", "suite": "counting_regression"},
              "ft_control": {"kind": "none"}}[kind]
-    out = out_root / kind
-    _save(out, m, {**cfg, "fixture": kind}, {"base": "induction_tf", **truth}, base_dir / "suites.json")
+    out = out_root / (out_name or kind)
+    _save(out, m, {**cfg, "fixture": out_name or kind}, {"base": "induction_tf", **truth}, base_dir / "suites.json")
     return str(out)
 
 
