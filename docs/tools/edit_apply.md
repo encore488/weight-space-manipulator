@@ -25,7 +25,7 @@ Call (MCP tool arguments, or `wsp call edit_apply '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
+ "session_id": "sess_04f94eb4cf68",
  "operations": [
   {
    "op": "scale",
@@ -42,7 +42,7 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "patch_id": "p_610edaaea42a5287",
+ "patch_id": "p_f71b91ca6396e312",
  "status": "draft",
  "params_changed": 1024,
  "pct_of_model": 2.667,
@@ -56,12 +56,12 @@ Result (real output from the induction fixture):
  "model_hash_after": "1e772e28ed009f6b",
  "sensitive_flags": [],
  "stack": [
-  "p_b4c4d027c65e9bec",
-  "p_bcf6a78805f41d36",
-  "p_610edaaea42a5287"
+  "p_b91197ce4594d918",
+  "p_bb44323a1eb5f4aa",
+  "p_f71b91ca6396e312"
  ],
  "regression": {
-  "patch_id": "p_610edaaea42a5287",
+  "patch_id": "p_f71b91ca6396e312",
   "status": "tested",
   "suites": [
    {

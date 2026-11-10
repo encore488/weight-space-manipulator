@@ -25,7 +25,7 @@ Call (MCP tool arguments, or `wsp call tensor_compare '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
+ "session_id": "sess_04f94eb4cf68",
  "tensor": "blocks.0.attn.q_proj.weight",
  "other_tensor": "blocks.1.attn.q_proj.weight"
 }

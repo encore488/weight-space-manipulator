@@ -25,7 +25,7 @@ Call (MCP tool arguments, or `wsp call evaluate_heldout '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
+ "session_id": "sess_04f94eb4cf68",
  "suite_id": "induction_heldout",
  "limit": 8
 }
@@ -55,7 +55,7 @@ Result (real output from the induction fixture):
   "samples": 1,
   "extra": {}
  },
- "on_patch": "p_bcf6a78805f41d36",
+ "on_patch": "p_bb44323a1eb5f4aa",
  "model_hash": "ed5c84a209e1deb3"
 }
 ```

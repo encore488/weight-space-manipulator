@@ -25,7 +25,7 @@ Call (MCP tool arguments, or `wsp call generate '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
+ "session_id": "sess_04f94eb4cf68",
  "inputs": [
   [
    0,

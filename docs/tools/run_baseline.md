@@ -25,7 +25,7 @@ Call (MCP tool arguments, or `wsp call run_baseline '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
+ "session_id": "sess_04f94eb4cf68",
  "suite_id": "induction_practice",
  "limit": 2,
  "settings": {
@@ -65,9 +65,10 @@ Result (real output from the induction fixture):
  "env": {
   "python": "3.13.18",
   "torch": "2.15.0+cpu",
-  "platform": "Linux-6.18.44-fc-v310-x86_64-with-glibc2.39",
-  "wsp_toolkit": "0.1.0",
+  "platform": "Linux-6.18.44-fc-v338-x86_64-with-glibc2.39",
+  "wsp_toolkit": "0.2.0",
   "network": "blocked (thread)",
+  "eval_batch_size": 1,
   "transformers": "5.22.2"
  },
  "cached": false,

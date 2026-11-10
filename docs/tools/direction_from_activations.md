@@ -26,7 +26,7 @@ Call (MCP tool arguments, or `wsp call direction_from_activations '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
+ "session_id": "sess_04f94eb4cf68",
  "positive_inputs": [
   [
    0,

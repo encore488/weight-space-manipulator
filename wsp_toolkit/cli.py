@@ -10,7 +10,7 @@
   wsp zoo baseline                      run the scripted baseline agent over the zoo
   wsp features build SESSION_OR_FIXTURE build the feature index (M6) for a fixture
   wsp audit validate [--n-mlp 6]        build planted fine-tunes and score the fine-tune audit (M7)
-  wsp challenge list|prompt ID|scores|report   WSP challenges (auto-scored tasks for comparing agents/models)
+  wsp challenge list|prepare|prompt ID|scores|report|baseline   WSP challenges (auto-scored, compare models)
   wsp agent run CHALLENGE --model M     benchmark a Claude model on a challenge via the Anthropic API
   wsp demo m1|m3                        run the scripted milestone demos
 """

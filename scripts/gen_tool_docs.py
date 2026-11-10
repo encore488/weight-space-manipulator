@@ -46,6 +46,7 @@ GROUP = {
     "M6 features": ["feature_search", "features_at_location", "neuron_features", "features_active_on", "feature_get",
                     "feature_neighbors", "feature_dictionaries"],
     "M7 audit": ["diff_models", "diff_report", "audit_get"],
+    "Challenges": ["challenge_list", "challenge_start", "challenge_submit", "challenge_scores"],
 }
 
 
@@ -100,6 +101,8 @@ def examples(tk, S, B, P, P2, RUN_A, RUN_B, FEAT, NET):
         "feature_dictionaries": {"session_id": S},
         "diff_models": {"session_id": S, "other_session_id": B},
         "diff_report": {"session_id": S, "other_session_id": B, "n_probes": 8}, "audit_get": None,
+        "challenge_list": {}, "challenge_start": {"challenge_id": "induction-hunt", "agent_model": "claude-fable-5-2"},
+        "challenge_submit": None, "challenge_scores": {},
     }
 
 
@@ -164,6 +167,9 @@ def main():
             if name == "result_page":
                 big = call("probe_attention", {"session_id": S, "inputs": [[0] + list(range(1, 12)) * 2] * 6})
                 args = {"handle": big.get("handle", "res_..."), "page": 1}
+            if name == "challenge_submit":
+                rid = call("challenge_start", {"challenge_id": "blind-surgeon", "agent_model": "docs-example"})["run_id"]
+                args = {"run_id": rid, "answer": {}}
             if name == "audit_get":
                 aid = call("diff_report", {"session_id": S, "other_session_id": B, "n_probes": 4})["audit_id"]
                 args = {"audit_id": aid}

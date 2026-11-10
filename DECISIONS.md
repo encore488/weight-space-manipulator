@@ -219,3 +219,36 @@ Entries marked **[REVIEW]** are the ones most likely to need your input.
 - No downloads > 1 GB, no Gemma (license), no GPU runs.
 - No backlog items (§5 of the roadmap), and nothing from "out of scope" (§6).
 - No pull request (not requested). Work is pushed to `chris/vibrant-hamilton-286z89`.
+
+---
+
+## 10. v0.2 launch preparation (2026-11-10): new decisions for review
+
+1. **Challenges** (`wsp_toolkit/core/challenges.py`): five fixed, auto-scored tasks with a per-model leaderboard.
+   The answers are fixed, so a determined person can share them. That's acceptable for a demo leaderboard, not a
+   benchmark. The `mystery-finetune` suspect uses a different trigger (t19 → t4) from the one published in
+   `docs/reports/milestones.md` (t7 → t13). **[REVIEW]**
+2. **Harness labels instead of trust.** Runs via `wsp agent run` are labelled `wsp-agent-runner`; runs via MCP are
+   `mcp (self-reported)`; servers started without `--challenge` mark runs *unlocked*. Nothing stops a shell-capable
+   agent from reading answer files, so the labels state what each number can be trusted for.
+3. **Access-control tightening.** Evaluation results (practice, held-out, baselines, `compare_runs`, regression
+   summaries from `edit_apply` / `patch_test`, metrics in `patch_show`) now require the `outputs` capability. Before
+   this, a `weights_only` session could learn behavioural scores through those tools, which contradicted the paper's
+   weights-only condition. Humans (UI/CLI) still see everything.
+4. **Server lock** (`session.allowed_sources`, set by `wsp mcp --challenge`): agents may only open the listed models.
+5. **Per-patch % limit exempts tiny models** (`policy.pct_limit_min_params = 1,000,000`). In a 38K-parameter model one
+   attention head is ~2.7% of the model, so the 5% limit made reasonable fixes impossible. Real models keep the limit.
+   Replaces the earlier per-demo config override and the zoo-scoring workaround. **[REVIEW]**
+6. **API runner defaults** (`wsp agent run`):
+   - **Model and effort:** default model `claude-fable-5-2`, effort `high` (the recommended starting point for
+     Fable 5.2).
+   - **Thinking:** adaptive thinking with summarized display, so transcripts show reasoning summaries.
+   - **Refusals:** server-side refusal fallback (`fallbacks: "default"`) on models that support it, so a classifier
+     decline doesn't end a run.
+   - **Limits:** max 80 turns and $20 estimated cost per run. **Cost estimates use list prices and are approximate**:
+     fallback turns may bill at another model's rates. **[REVIEW]**
+7. **`wsp challenge prepare`** builds all challenge assets up front (fixtures, the 392-network zoo, the mystery
+   fine-tune), so the first MCP tool call doesn't spend a minute building them and time out.
+8. **Install path:** `uv tool install "wsp-toolkit[agent] @ git+https://github.com/encore488/weight-space-manipulator"`
+   (uv provides Python 3.11+ on machines that lack it). Verified from a clean environment. No PyPI release yet.
+   **[REVIEW]**

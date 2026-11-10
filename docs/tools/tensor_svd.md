@@ -24,7 +24,7 @@ Call (MCP tool arguments, or `wsp call tensor_svd '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
+ "session_id": "sess_04f94eb4cf68",
  "tensor": "blocks.1.attn.o_proj.weight",
  "head": 2,
  "k": 2

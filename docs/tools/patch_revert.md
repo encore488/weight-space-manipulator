@@ -22,8 +22,8 @@ Call (MCP tool arguments, or `wsp call patch_revert '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
- "patch_id": "p_bcf6a78805f41d36"
+ "session_id": "sess_04f94eb4cf68",
+ "patch_id": "p_bb44323a1eb5f4aa"
 }
 ```
 
@@ -31,13 +31,13 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "reverted": "p_bcf6a78805f41d36",
+ "reverted": "p_bb44323a1eb5f4aa",
  "also_reverted": [
-  "p_610edaaea42a5287"
+  "p_f71b91ca6396e312"
  ],
  "rebased": [],
  "stack": [
-  "p_b4c4d027c65e9bec"
+  "p_b91197ce4594d918"
  ],
  "model_hash": "ec8aee16b0d759b7",
  "base_restored": false

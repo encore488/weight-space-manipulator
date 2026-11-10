@@ -35,7 +35,7 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "id": "sens_b1112ff4b7",
+ "id": "sens_1e6c3b385e",
  "kind": "tensor",
  "target": "unembed.weight",
  "model_hash": "*"

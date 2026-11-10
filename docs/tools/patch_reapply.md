@@ -21,8 +21,8 @@ Call (MCP tool arguments, or `wsp call patch_reapply '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
- "patch_id": "p_bcf6a78805f41d36"
+ "session_id": "sess_04f94eb4cf68",
+ "patch_id": "p_bb44323a1eb5f4aa"
 }
 ```
 
@@ -31,8 +31,8 @@ Result (real output from the induction fixture):
 ```json
 {
  "stack": [
-  "p_b4c4d027c65e9bec",
-  "p_bcf6a78805f41d36"
+  "p_b91197ce4594d918",
+  "p_bb44323a1eb5f4aa"
  ],
  "model_hash": "ed5c84a209e1deb3"
 }

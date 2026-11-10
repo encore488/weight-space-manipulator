@@ -23,7 +23,7 @@ Call (MCP tool arguments, or `wsp call neuron_features '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
+ "session_id": "sess_04f94eb4cf68",
  "hook": "L0.resid_post",
  "unit": 3,
  "k": 2

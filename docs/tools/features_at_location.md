@@ -23,7 +23,7 @@ Call (MCP tool arguments, or `wsp call features_at_location '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
+ "session_id": "sess_04f94eb4cf68",
  "tensor": "blocks.0.attn.o_proj.weight",
  "index": ":, 16:32",
  "k": 2

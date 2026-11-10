@@ -31,28 +31,8 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "a": "run_70db04baf18a45ad",
- "b": "run_75a1d2aeaf2b1be9",
- "suite_a": "induction_practice",
- "suite_b": "induction_practice",
- "metrics": {
-  "score": {
-   "a": 0.02778,
-   "b": 1.0,
-   "delta": 0.9722
-  },
-  "stderr": {
-   "a": 0.02778,
-   "b": 0.0,
-   "delta": -0.02778
-  },
-  "token_accuracy": {
-   "a": 0.03448,
-   "b": 1.0,
-   "delta": 0.9655
-  }
- },
- "score_delta_exceeds_2se": true,
- "warnings": []
+ "error": "compare_runs returns model-output information, which needs the 'outputs' capability (pass your session_id)",
+ "code": "access_denied",
+ "hint": "this restriction is set by the human operator for this experiment"
 }
 ```

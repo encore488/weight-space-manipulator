@@ -22,7 +22,7 @@ Call (MCP tool arguments, or `wsp call suite_examples '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
+ "session_id": "sess_04f94eb4cf68",
  "suite_id": "induction_practice"
 }
 ```

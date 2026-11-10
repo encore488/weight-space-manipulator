@@ -26,7 +26,7 @@ Call (MCP tool arguments, or `wsp call run_forward '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d",
+ "session_id": "sess_04f94eb4cf68",
  "inputs": [
   "<bos> t3 t5 t7 t3 t5"
  ],

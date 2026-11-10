@@ -90,6 +90,15 @@ Every tool returns JSON capped at `limits.max_response_bytes` (default 16000 byt
 | [`diff_report`](diff_report.md) | Full fine-tune audit (weights + features + behaviour), stored and viewable in the UI. Needs 'outputs'; costs 2 passes per probe. | agents (MCP) and humans |
 | [`audit_get`](audit_get.md) | Markdown text of a stored audit report. | agents (MCP) and humans |
 
+## Challenges
+
+| Tool | Purpose | Who |
+|---|---|---|
+| [`challenge_list`](challenge_list.md) | List the WSP challenges (short, auto-scored tasks for comparing agents/models). | agents (MCP) and humans |
+| [`challenge_start`](challenge_start.md) | Start a challenge run: opens the challenge's model sessions with its access level and budget, and returns the brief and answer format. agent_model = the model you are (e.g. 'claude-fable-5-2'). | agents (MCP) and humans |
+| [`challenge_submit`](challenge_submit.md) | Submit your answer for a challenge run (once). Returns the score. | agents (MCP) and humans |
+| [`challenge_scores`](challenge_scores.md) | Challenge leaderboard by model and harness. | agents (MCP) and humans |
+
 ## Direction specs
 
 Many tools take a `direction`: see [`wsp_toolkit/core/directions.py`](../../wsp_toolkit/core/directions.py) — `{"id": "dir_…"}`, `{"tensor", "row"|"col"|"svd"}`, `{"token", "matrix"}`, `{"vector"}`, `{"combine"}`.

@@ -24,6 +24,7 @@ dependencies = [
 hf = ["transformers>=4.45", "tokenizers>=0.15", "huggingface-hub>=0.23"]
 bench = ["pyarrow>=14", "huggingface-hub>=0.23"]
 pdf = ["reportlab>=4.0"]
+agent = ["anthropic>=2.7"]
 dev = ["pytest>=8", "ruff>=0.5", "httpx>=0.27"]
 
 [project.scripts]

@@ -1,4 +1,4 @@
-"""``wsp challenge list | prompt ID [--model NAME] | scores [ID] | report [--model NAME] | baseline [ID]``"""
+"""``wsp challenge list | prepare [ID] | prompt ID [--model NAME] | scores [ID] | report [--model NAME] | baseline [ID]``"""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ def main(argv: list[str]) -> None:
     from ..core.service import Toolkit
 
     ap = argparse.ArgumentParser(prog="wsp challenge")
-    ap.add_argument("cmd", choices=["list", "prompt", "scores", "report", "baseline"])
+    ap.add_argument("cmd", choices=["list", "prompt", "scores", "report", "baseline", "prepare"])
     ap.add_argument("challenge", nargs="?")
     ap.add_argument("--model", default=None, help="model name to record (prompt) or to filter by (report)")
     a = ap.parse_args(argv)
@@ -27,6 +27,7 @@ def main(argv: list[str]) -> None:
         for cid, c in CHALLENGES.items():
             print(f"{cid:18s} level {c['level']}  {c['title']}\n{'':18s} {c['summary']}\n{'':18s} access "
                   f"{c['access_level']}, {c['budget']} forward passes per session\n")
+        print("First time? Build the models once (~1-2 min):  wsp challenge prepare")
         print("Try one with Claude Code:  wsp challenge prompt fix-the-copier --model <your model>")
         print("Benchmark via the API:     wsp agent run fix-the-copier --model claude-fable-5-2")
         return
@@ -39,6 +40,14 @@ def main(argv: list[str]) -> None:
         print(PROMPT.format(cid=a.challenge, title=CHALLENGES[a.challenge]["title"], model=model))
         return
     tk = Toolkit()
+    if a.cmd == "prepare":
+        import time
+        for cid in ([a.challenge] if a.challenge else list(CHALLENGES)):
+            t = time.time()
+            n = len(tk.challenges.sources(cid))
+            print(f"{cid:18s} ready ({n} model(s), {time.time() - t:.0f}s)", flush=True)
+        print("All set. Next: claude mcp add wsp -- wsp mcp --challenge <id>   or   wsp agent run <id> --model ...")
+        return
     if a.cmd == "baseline":
         from .challenge_baseline import run_all
         for r in run_all(tk, [a.challenge] if a.challenge else None):

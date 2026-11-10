@@ -21,7 +21,7 @@ Call (MCP tool arguments, or `wsp call patch_show '<json>'`):
 
 ```json
 {
- "patch_id": "p_b4c4d027c65e9bec"
+ "patch_id": "p_b91197ce4594d918"
 }
 ```
 
@@ -29,8 +29,8 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "patch_id": "p_b4c4d027c65e9bec",
- "workspace_id": "ws_f49ed5640a2b",
+ "patch_id": "p_b91197ce4594d918",
+ "workspace_id": "ws_97c6759cac8b",
  "base_model_hash": "1b441d92f299953d64ee9a233753978c72dfc1a7e848b0baabfba39741ba072e",
  "parent_patch": null,
  "model_hash_before": "1b441d92f299953d64ee9a233753978c72dfc1a7e848b0baabfba39741ba072e",
@@ -57,8 +57,8 @@ Result (real output from the induction fixture):
  "params_changed": 1024,
  "pct_of_model": 2.66667,
  "rationale": "doc patch A",
- "author": "agent:sess_47aafe2f419d",
- "created_at": 1794171063.9436328,
+ "author": "agent:sess_04f94eb4cf68",
+ "created_at": 1794278879.6853263,
  "evals": [
   "run_ea10fc137eed9140",
   "run_462a0f74236e0f0b",
@@ -73,31 +73,27 @@ Result (real output from the induction fixture):
   {
    "run_id": "run_18118843b5084e85",
    "suite": "induction_regression",
-   "split": "regression",
-   "kind": "regression",
    "on": "patched",
-   "metrics": {
-    "n": 64,
-    "score": 0.9810577873140574,
-    "stderr": 0.0071473079521450905,
-    "token_accuracy": 0.9834905660377359
-   }
+   "metrics": "hidden at this access level"
   },
   {
    "run_id": "run_462a0f74236e0f0b",
    "suite": "counting_regression",
-   "split": "regression",
-   "kind": "regression",
    "on": "patched",
-   "metrics": {
-    "n": 64,
-    "score": 1.0,
-    "stderr": 0.0,
-    "token_accuracy": 1.0
-   }
+   "metrics": "hidden at this access level"
   },
   {
    "run_id": "run_ea10fc137eed9140",
-   "suite": "counting_regressi
-  ... (truncated for the docs)
+   "suite": "counting_regression",
+   "on": "base",
+   "metrics": "hidden at this access level"
+  },
+  {
+   "run_id": "run_feb94c01de7cdb8d",
+   "suite": "induction_regression",
+   "on": "base",
+   "metrics": "hidden at this access level"
+  }
+ ]
+}
 ```

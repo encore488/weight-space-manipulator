@@ -5,7 +5,7 @@ Raw JSON is next to this file. "Scripted agent" = deterministic code that uses o
 
 | Milestone | Acceptance criterion | Result |
 |---|---|---|
-| M0 | fresh clone → install → `pytest` passes on CPU, no network; fixtures reproducible | **Pass.** 66 tests, ~2 min, no network. Fixtures hash-identical across runs for a seed (`test_m0_foundations.py`). |
+| M0 | fresh clone → install → `pytest` passes on CPU, no network; fixtures reproducible | **Pass.** 76 tests, ~2.5 min, no network. Fixtures hash-identical across runs for a seed (`test_m0_foundations.py`). |
 | M1 | agent with only the tools locates the induction heads (vs ground truth) | **Pass.** Scripted agent: induction heads {1.0, 1.1, 1.2, 1.3}, previous-token heads {0.0, 0.1, 0.2}, both **exactly** ground truth, using **4** forward passes. Same result over a real MCP client session. |
 | M1 | budgets and access levels enforced; no output above the cap | **Pass.** `weights_only` cannot get activations/attention/outputs; exact budget accounting with no partial spend; every tool response ≤ 16,000 bytes (large ones paged). |
 | M2 | apply → revert returns the exact original hash | **Pass** (full-length hash compared). |
@@ -131,7 +131,7 @@ or multi-token triggers, behaviours outside the probe distribution, real LLM fin
 
 ```bash
 pip install -e '.[dev,hf,pdf]'
-pytest                                   # 66 tests, CPU, no network
+pytest                                   # 76 tests, CPU, no network
 wsp demo m1 && wsp demo m3               # M1 / M3 fixture demos
 wsp zoo build && wsp zoo baseline        # M5
 wsp features build                       # M6

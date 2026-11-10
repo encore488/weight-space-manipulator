@@ -20,7 +20,7 @@ Call (MCP tool arguments, or `wsp call workspace_info '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d"
+ "session_id": "sess_04f94eb4cf68"
 }
 ```
 
@@ -28,7 +28,7 @@ Result (real output from the induction fixture):
 
 ```json
 {
- "workspace_id": "ws_f49ed5640a2b",
+ "workspace_id": "ws_97c6759cac8b",
  "source": "fixture:induction_tf",
  "access_level": "weights+activations+outputs",
  "capabilities": [
@@ -42,8 +42,8 @@ Result (real output from the induction fixture):
   "remaining": 196
  },
  "applied_patches": [
-  "p_b4c4d027c65e9bec",
-  "p_bcf6a78805f41d36"
+  "p_b91197ce4594d918",
+  "p_bb44323a1eb5f4aa"
  ],
  "working_copy_hash": "ed5c84a209e1deb3",
  "is_base": false,

@@ -22,7 +22,7 @@ Call (MCP tool arguments, or `wsp call patch_list '<json>'`):
 
 ```json
 {
- "session_id": "sess_47aafe2f419d"
+ "session_id": "sess_04f94eb4cf68"
 }
 ```
 
@@ -32,12 +32,12 @@ Result (real output from the induction fixture):
 {
  "patches": [
   {
-   "patch_id": "p_610edaaea42a5287",
-   "workspace_id": "ws_f49ed5640a2b",
-   "parent": "p_bcf6a78805f41d36",
+   "patch_id": "p_f71b91ca6396e312",
+   "workspace_id": "ws_97c6759cac8b",
+   "parent": "p_bb44323a1eb5f4aa",
    "status": "tested",
-   "author": "agent:sess_47aafe2f419d",
-   "created_at": 1794171073.220352,
+   "author": "agent:sess_04f94eb4cf68",
+   "created_at": 1794278889.0984066,
    "params_changed": 1024,
    "pct_of_model": 2.66667,
    "ops": [
@@ -47,12 +47,12 @@ Result (real output from the induction fixture):
    "rationale": "example: shrink head 1.0 output by 5%"
   },
   {
-   "patch_id": "p_bcf6a78805f41d36",
-   "workspace_id": "ws_f49ed5640a2b",
-   "parent": "p_b4c4d027c65e9bec",
+   "patch_id": "p_bb44323a1eb5f4aa",
+   "workspace_id": "ws_97c6759cac8b",
+   "parent": "p_b91197ce4594d918",
    "status": "tested",
-   "author": "agent:sess_47aafe2f419d",
-   "created_at": 1794171064.6940787,
+   "author": "agent:sess_04f94eb4cf68",
+   "created_at": 1794278880.4874792,
    "params_changed": 1024,
    "pct_of_model": 2.66667,
    "ops": [
@@ -62,12 +62,12 @@ Result (real output from the induction fixture):
    "rationale": "doc patch B"
   },
   {
-   "patch_id": "p_b4c4d027c65e9bec",
-   "workspace_id": "ws_f49ed5640a2b",
+   "patch_id": "p_b91197ce4594d918",
+   "workspace_id": "ws_97c6759cac8b",
    "parent": null,
    "status": "tested",
-   "author": "agent:sess_47aafe2f419d",
-   "created_at": 1794171063.9440308,
+   "author": "agent:sess_04f94eb4cf68",
+   "created_at": 1794278879.6858296,
    "params_changed": 1024,
    "pct_of_model": 2.66667,
    "ops": [
@@ -78,9 +78,9 @@ Result (real output from the induction fixture):
   }
  ],
  "applied_stack": [
-  "p_b4c4d027c65e9bec",
-  "p_bcf6a78805f41d36",
-  "p_610edaaea42a5287"
+  "p_b91197ce4594d918",
+  "p_bb44323a1eb5f4aa",
+  "p_f71b91ca6396e312"
  ]
 }
 ```
