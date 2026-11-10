@@ -11,7 +11,7 @@ Raw JSON is next to this file. "Scripted agent" = deterministic code that uses o
 | M2 | apply → revert returns the exact original hash | **Pass** (full-length hash compared). |
 | M2 | patch on a freshly loaded base reproduces the final hash | **Pass.** |
 | M2 | stacking / reverting a middle patch is predictable | **Pass.** cascade and rebase semantics tested; see `docs/design/patch_semantics.md`. |
-| M3 | reproducible report for steps 1–2 (Qwen base vs. edit, baselines) | **Pending a GPU run** on Kaggle (`notebooks/kaggle_qwen_m3_demo.ipynb`). Pipeline verified end to end on CPU with a tiny random Qwen3.5 + the real tokenizer + real MATH-500 data. |
+| M3 | reproducible report for steps 1–2 (Qwen base vs. edit, baselines) | **First run done (5 problems), on Kaggle T4s:** [`m3_qwen_demo.md`](m3_qwen_demo.md). Edited vs base: token-limit hits 0/5 vs 3/5, accuracy 3/5 vs 1/5. Same direction as the paper, not significant at n = 5. The diff tool recovers the edit as rank-1 in exactly the two `down_proj` tensors. Penalty baselines didn't help; the temperature baseline hit GPU OOM (fixed in notebook v2). |
 | M3 | step 3: agent with 50-pass budget on practice data attempts its own fix, all actions in the UI log | **Pass on the fixture analogue**; Qwen version not run (above). |
 | M4 | export blocked without approval; flagged patches surfaced; policy limits enforced | **Pass** (`test_m4_safety.py`). |
 | M5 | ≥ a few hundred networks; baseline agent across all 3 task types; publish scores | **Pass.** 392 networks; baseline scores below. |

@@ -22,7 +22,12 @@ Everything runs locally on CPU in seconds; a GPU is only needed for large models
 
 ## Try it in five minutes
 
-**1. Install** (Python ≥ 3.11; [uv](https://docs.astral.sh/uv/) picks a suitable Python for you):
+**1. Install** (Python ≥ 3.11; [uv](https://docs.astral.sh/uv/) picks a suitable Python for you). If you don't
+have uv yet, install it, then open a new terminal (or run `source $HOME/.local/bin/env`) so the shell can find it:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
 ```bash
 uv tool install "wsp-toolkit[agent] @ git+https://github.com/encore488/weight-space-manipulator"
@@ -111,9 +116,10 @@ can only ask for less. Every tool call is logged append-only and visible in the 
 This is v0.2 of a personal research project. Expect rough edges:
 
 - The challenges and zoo use **small networks** (up to ~40K parameters), so you can see everything on CPU. The big-model
-  path (Hugging Face, e.g. Qwen3.5-0.8B) is implemented and tested on the real architecture at tiny size. A first,
-  small-subset comparison of the paper's Qwen3.5-0.8B edit against the base model is running on a Kaggle GPU; results
-  will land in `docs/reports/`.
+  path (Hugging Face, e.g. Qwen3.5-0.8B) works: a first 5-problem MATH-500 run on Kaggle T4s compared the paper's
+  edited Qwen3.5-0.8B with the base model. The edited model hit the 32k-token limit on 0/5 problems (base: 3/5) and
+  solved 3/5 (base: 1/5). That's the same direction as the paper, but far too few problems to confirm it:
+  [`docs/reports/m3_qwen_demo.md`](docs/reports/m3_qwen_demo.md).
 - Feature labels come from a simple rule-based labeler with measured fidelity, not an LLM.
 - Runs from MCP clients with shell access are *self-reported*: such an agent could read answer files on disk. Use
   `wsp agent run` for comparable numbers.
