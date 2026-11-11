@@ -1,0 +1,82 @@
+{% extends "_layout.html" %}{% block title %}Arena · WSP Bench{% endblock %}{% block body %}
+<style>{{ font_css | safe }}</style>
+<section class="page-head"><p class="eyebrow"><span class="pulse"></span>Replays</p><h1>Arena</h1>
+<p>Watch agents work through WSP Bench challenges: every tool call, weight edit, practice score and the final verdict, replayed from the toolkit's append-only event log and time-compressed. The red, magenta and green heads show the instance's hidden ground truth. Viewers can see it; the agent never could.</p></section>
+
+{% if replays %}
+<div class="arena-player" id="player">
+  <div class="arena-frame"><canvas id="arena" width="1920" height="1080" role="img" aria-label="Animated replay of a challenge run"></canvas>
+    <button type="button" class="arena-play-big" id="bigplay" aria-label="Play replay"><svg width="34" height="34" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button></div>
+  <div class="arena-ctl">
+    <button type="button" id="play" class="arena-btn" aria-label="Play or pause">▶</button>
+    <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Replay position">
+    <span id="tc" class="mono small">00:00 / 00:00</span>
+    <select id="fmt" class="arena-sel" aria-label="Frame format"><option value="1920x1080">16:9</option><option value="1080x1080">1:1</option><option value="1080x1350">4:5</option></select>
+  </div>
+  <p class="hint" id="caption"></p>
+</div>
+
+<section class="section"><div class="sec-head"><div><p class="eyebrow">Pick a run</p><h2>Replays</h2></div></div>
+<div class="replays">{% for r in replays %}
+<button type="button" class="replay{{ ' on' if loop.first }}" data-i="{{ loop.index0 }}">
+  <span class="r-top"><span class="r-ch">{{ r.run.title }}</span><span class="chip {{ tier(r.run.score) }}">{{ '%.2f'|format(r.run.score) if r.run.score is not none else '—' }}</span></span>
+  <span class="r-model mono">{{ r.run.model }}</span>
+  <span class="r-meta small">{{ r.run.kind }} · seed {{ r.run.seed }} · {{ r.beats|length - 2 }} moments · {{ '%d'|format(r.duration) }}s</span>
+  <span class="r-note small">{{ r.note }}</span>
+</button>{% endfor %}</div>
+<p class="aside">Replays are rendered live in your browser from small timeline files in <a href="{{ repo_url }}/tree/main/leaderboard/replays"><code>leaderboard/replays/</code></a>. Scripted-baseline runs are the deterministic no-AI reference; self-reported sessions are not leaderboard entries.</p></section>
+{% endif %}
+
+<section class="section"><div class="sec-head"><div><p class="eyebrow">Make your own</p><h2>Record your agent's run as a video</h2></div></div>
+<ol class="flow">
+<li><span class="f-n">01</span><h3>Run a challenge</h3><p class="small">Through the API runner (comparable numbers) or any MCP agent.</p><div class="cmd"><pre id="a1">wsp agent run fix-the-copier --model claude-fable-5-2</pre><button type="button" data-copy="a1">Copy</button></div></li>
+<li><span class="f-n">02</span><h3>Watch it live</h3><p class="small">The arena follows the newest run as it happens. The model's thinking summaries appear as captions.</p><div class="cmd"><pre id="a2">wsp ui   # then open /arena</pre><button type="button" data-copy="a2">Copy</button></div></li>
+<li><span class="f-n">03</span><h3>Record in the browser</h3><p class="small">Press <b>● Rec</b> in the arena to save a WebM in real time. Pick 16:9, 1:1, 4:5 or 9:16 first.</p></li>
+<li><span class="f-n">04</span><h3>Or render an MP4</h3><p class="small">Frame-exact H.264 via headless Chromium:</p><div class="cmd"><pre id="a4">pip install "wsp-toolkit[video]" && playwright install chromium
+wsp arena record latest --size portrait</pre><button type="button" data-copy="a4">Copy</button></div></li>
+</ol></section>
+
+{% if replays %}
+<script src="arena.js"></script>
+<script>
+(() => {
+  const REPLAYS = {{ replays | tojson }};
+  const $ = id => document.getElementById(id);
+  const canvas = $('arena');
+  let arena = null, cur = 0, dragging = false, started = false;
+  const fmt = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function sync(t) {
+    $('tc').textContent = fmt(t) + ' / ' + fmt(arena.duration);
+    if (!dragging) $('scrub').value = Math.round(1000 * t / Math.max(0.001, arena.duration));
+    $('play').textContent = arena.playing ? '❚❚' : '▶';
+    $('bigplay').hidden = started;
+  }
+  function load(i, autoplay) {
+    cur = i;
+    if (arena) arena.pause();
+    arena = WSPArena.create(canvas, REPLAYS[i]);
+    arena.onTick(sync);
+    arena.render(reduced ? Math.min(12, arena.duration / 3) : 4.4);
+    sync(0);
+    document.querySelectorAll('.replay').forEach(b => b.classList.toggle('on', Number(b.dataset.i) === i));
+    $('caption').textContent = REPLAYS[i].note || '';
+    started = false;
+    if (autoplay) { started = true; arena.seek(0); arena.play(); sync(0); }
+  }
+  WSPArena.ready().then(() => {
+    if (matchMedia('(max-width: 700px)').matches) { canvas.width = 1080; canvas.height = 1350; $('fmt').value = '1080x1350'; $('player').classList.add('tallfmt'); }
+    load(0, false);
+    const toggle = () => { if (!started) { started = true; arena.seek(0); } arena.playing ? arena.pause() : arena.play(); sync(arena.time); };
+    $('play').onclick = toggle; $('bigplay').onclick = toggle; canvas.onclick = toggle;
+    $('scrub').oninput = e => { dragging = true; started = true; arena.seek(e.target.value / 1000 * arena.duration); };
+    $('scrub').onchange = () => { dragging = false; };
+    $('fmt').onchange = e => { const [w, h] = e.target.value.split('x').map(Number); canvas.width = w; canvas.height = h;
+      $('player').classList.toggle('tallfmt', h >= w); arena.render(arena.time); };
+    document.querySelectorAll('.replay').forEach(b => b.onclick = () => { load(Number(b.dataset.i), true);
+      $('player').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); });
+  });
+})();
+</script>
+{% endif %}
+{% endblock %}

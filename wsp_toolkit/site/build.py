@@ -26,7 +26,7 @@ ISSUE_URL = f"{REPO_URL}/issues/new?template=leaderboard-submission.yml"
 PAPER_URL = "https://rikiyat.github.io/blog/weight-space-programming/"
 
 
-def build(tk, submissions: Path, out: Path, verify: bool = True, log=print) -> dict:
+def build(tk, submissions: Path, out: Path, verify: bool = True, log=print, replays: Path | None = None) -> dict:
     from ..core import leaderboard as LB
 
     subs = LB.load_dir(submissions) if submissions.exists() else []
@@ -68,7 +68,23 @@ def build(tk, submissions: Path, out: Path, verify: bool = True, log=print) -> d
     ctx = {"challenges": [{"id": k, **c} for k, c in CHALLENGES.items()], "board": board, "version": __version__,
            "bench": BENCH_VERSION, "repo_url": REPO_URL, "issue_url": ISSUE_URL, "paper_url": PAPER_URL,
            "baseline": SCRIPTED_BASELINE, "short": {k: k.replace("-", " ") for k in CHALLENGES}}
-    for page in ("index.html", "leaderboard.html", "submit.html"):
+    # arena: animated replays rendered in the browser from timeline files (leaderboard/replays/*.json)
+    from ..core.arena import FONTS, STATIC, font_css
+    reps = []
+    for f in sorted(replays.glob("*.json")) if replays and replays.exists() else []:
+        try:
+            reps.append(json.loads(f.read_text()))
+        except ValueError as e:
+            log(f"skipping replay {f.name}: {e}")
+    shutil.copy(STATIC / "arena.js", out / "arena.js")
+    (out / "fonts").mkdir(exist_ok=True)
+    for _fam, _w, fn in FONTS:
+        shutil.copy(STATIC / "fonts" / fn, out / "fonts" / fn)
+    ctx["replays"] = reps
+    ctx["font_css"] = font_css(base="fonts/")
+    ctx["tier"] = lambda v: "t-none" if v is None else "t-hi" if v >= 0.9 else "t-good" if v >= 0.6 else \
+        "t-mid" if v >= 0.3 else "t-low"
+    for page in ("index.html", "leaderboard.html", "arena.html", "submit.html"):
         (out / page).write_text(env.get_template(page).render(**ctx, page=page))
     (out / ".nojekyll").write_text("")
     log(f"site written to {out} ({len(accepted)} entries, {len(rejected)} rejected)")

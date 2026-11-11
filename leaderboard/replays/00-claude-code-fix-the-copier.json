@@ -1,0 +1,392 @@
+{
+ "version": 1,
+ "run": {
+  "id": "cr_c3736de3b670",
+  "challenge": "fix-the-copier",
+  "title": "Fix the broken copier",
+  "level": 2,
+  "kind": "repair",
+  "model": "claude-code",
+  "harness": "mcp (self-reported)",
+  "seed": 283472,
+  "score": 0.9841,
+  "detail": {
+   "copy_accuracy": 0.9841,
+   "counting_accuracy": 1.0,
+   "patches_applied": 1,
+   "reference": "healthy model copies ~0.98; damaged instances copy < 0.3"
+  },
+  "finished": true,
+  "access": "weights+activations+outputs",
+  "budget_per_session": 50,
+  "sessions": 1,
+  "params": {},
+  "summary": "A transformer that copied sequences perfectly has been damaged. Repair it with weight edits.",
+  "scoring": "copy accuracy of the final working copy on hidden data (\u00d7 counting accuracy if counting < 0.95)"
+ },
+ "arch": {
+  "kind": "transformer",
+  "layers": 2,
+  "heads": 4,
+  "vocab": 32,
+  "dual": false
+ },
+ "initial": {
+  "damaged": {
+   "1.2": "scale",
+   "1.3": "scale",
+   "1.0": "scale",
+   "1.1": "scale"
+  }
+ },
+ "budget_total": 50,
+ "beats": [
+  {
+   "type": "intro",
+   "dur": 4.5,
+   "t": 0.0
+  },
+  {
+   "type": "note",
+   "src": "narrate",
+   "text": "Plan: measure how badly copying is broken, then read the attention weights directly. Weight statistics are free; forward passes are not, so I will look before I probe.",
+   "rt": 0.0,
+   "dur": 3.36,
+   "t": 4.5
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 3.58,
+   "tools": 1,
+   "budget_used": 8,
+   "tool": "suite_run_practice",
+   "type": "practice",
+   "split": "practice",
+   "score": 0.02951,
+   "dur": 2.6,
+   "t": 7.86
+  },
+  {
+   "type": "note",
+   "src": "narrate",
+   "text": "Practice copy accuracy is 0.03: almost totally broken. Checking the per-head output norms in both attention layers next (free, no forward passes).",
+   "rt": 12.1,
+   "dur": 3.12,
+   "t": 10.46
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 13.4,
+   "tools": 2,
+   "budget_used": 8,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "heads",
+    "layer": 0,
+    "proj": "o"
+   },
+   "label": "blocks.0.attn.o_proj.weight",
+   "dur": 1.7,
+   "t": 13.58
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 14.75,
+   "tools": 3,
+   "budget_used": 8,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "heads",
+    "layer": 0,
+    "proj": "v"
+   },
+   "label": "blocks.0.attn.v_proj.weight",
+   "dur": 1.0,
+   "t": 15.28
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 16.15,
+   "tools": 4,
+   "budget_used": 8,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "heads",
+    "layer": 0,
+    "proj": "q"
+   },
+   "label": "blocks.0.attn.q_proj.weight",
+   "dur": 1.0,
+   "t": 16.28
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 17.49,
+   "tools": 5,
+   "budget_used": 8,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "heads",
+    "layer": 0,
+    "proj": "k"
+   },
+   "label": "blocks.0.attn.k_proj.weight",
+   "dur": 1.0,
+   "t": 17.28
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 18.95,
+   "tools": 6,
+   "budget_used": 8,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "heads",
+    "layer": 1,
+    "proj": "o"
+   },
+   "label": "blocks.1.attn.o_proj.weight",
+   "dur": 1.0,
+   "t": 18.28
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 20.38,
+   "tools": 7,
+   "budget_used": 8,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "heads",
+    "layer": 1,
+    "proj": "v"
+   },
+   "label": "blocks.1.attn.v_proj.weight",
+   "dur": 1.0,
+   "t": 19.28
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 21.75,
+   "tools": 8,
+   "budget_used": 8,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "heads",
+    "layer": 1,
+    "proj": "q"
+   },
+   "label": "blocks.1.attn.q_proj.weight",
+   "dur": 1.0,
+   "t": 20.28
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 23.06,
+   "tools": 9,
+   "budget_used": 8,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "heads",
+    "layer": 1,
+    "proj": "k"
+   },
+   "label": "blocks.1.attn.k_proj.weight",
+   "dur": 1.0,
+   "t": 21.28
+  },
+  {
+   "type": "note",
+   "src": "narrate",
+   "text": "Found it: all four layer-1 heads have output norms of 0.25 to 0.78, versus about 3 in layer 0. In layer 0 each head's output norm matches its value norm (ratio about 1.0), so a healthy layer-1 head should be near its value norm of 4.2 to 4.7. That means the h\u2026",
+   "rt": 36.75,
+   "dur": 4.0,
+   "t": 22.28
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 48.14,
+   "tools": 10,
+   "budget_used": 8,
+   "tool": "edit_apply",
+   "type": "edit",
+   "patch_id": "p_82e08a7aab93ab69",
+   "reapply": false,
+   "targets": [
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      0
+     ],
+     "op": "scale",
+     "factor": 5.32
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      1
+     ],
+     "op": "scale",
+     "factor": 19.1
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      2
+     ],
+     "op": "scale",
+     "factor": 16.6
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      3
+     ],
+     "op": "scale",
+     "factor": 10.9
+    }
+   ],
+   "ops": [
+    "scale"
+   ],
+   "text": "Layer-1 heads' o_proj norms (0.78, 0.25, 0.25, 0.41) are far below their v_proj norms (4.2 to 4.7); in healthy layer 0 the two match within 6%. Rescale each head's output block so its norm equals its value norm.",
+   "params": 4096,
+   "test": {
+    "before": 0.02995,
+    "after": 0.9799
+   },
+   "dur": 4.2,
+   "t": 26.28
+  },
+  {
+   "type": "note",
+   "src": "narrate",
+   "text": "The automatic regression check says practice copying went from 0.03 to 0.98, about where a healthy model sits. Next I'll confirm it on fresh practice inputs and check that counting still works.",
+   "rt": 58.39,
+   "dur": 3.64,
+   "t": 30.48
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 60.41,
+   "tools": 11,
+   "budget_used": 16,
+   "tool": "suite_run_practice",
+   "type": "practice",
+   "split": "practice",
+   "score": 0.9542,
+   "dur": 2.6,
+   "t": 34.12
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 61.97,
+   "tools": 12,
+   "budget_used": 17,
+   "tool": "run_forward",
+   "type": "forward",
+   "tokens": [
+    0,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "dur": 2.0,
+   "t": 36.72
+  },
+  {
+   "type": "note",
+   "src": "narrate",
+   "text": "Practice is 0.95 and counting is intact: after t12 the model predicts t13 with p = 0.994. One last check: does layer 1 still attend like an induction circuit?",
+   "rt": 68.99,
+   "dur": 3.26,
+   "t": 38.72
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 70.37,
+   "tools": 13,
+   "budget_used": 18,
+   "tool": "probe_attention",
+   "type": "attention",
+   "tokens": [
+    0,
+    21,
+    6,
+    14,
+    27,
+    9,
+    2,
+    21,
+    6,
+    14,
+    27,
+    9,
+    2
+   ],
+   "layers": [
+    1
+   ],
+   "dur": 3.2,
+   "t": 41.98
+  },
+  {
+   "type": "note",
+   "src": "narrate",
+   "text": "Confirmed: on the second copy of the segment, each layer-1 head puts 0.75 to 1.0 of its attention on the token right after the earlier occurrence. That's a textbook induction circuit, so the routing was never broken, only the output scale. 18 of 50 forward pa\u2026",
+   "rt": 77.51,
+   "dur": 4.0,
+   "t": 45.18
+  },
+  {
+   "type": "submit",
+   "dur": 7.0,
+   "tools": 13,
+   "budget_used": 18,
+   "t": 49.18
+  },
+  {
+   "type": "outro",
+   "dur": 5.0,
+   "t": 56.18
+  }
+ ],
+ "duration": 61.18,
+ "site": "encore488.github.io/weight-space-manipulator",
+ "note": "A self-reported Claude Code session that drove the toolkit with wsp call and narrated as it went (random seed; not a leaderboard entry)."
+}

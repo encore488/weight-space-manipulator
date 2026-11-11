@@ -12,6 +12,7 @@ Routes:
 from __future__ import annotations
 
 import json
+import re
 import time
 from pathlib import Path
 
@@ -85,6 +86,51 @@ def create_app(tk: Toolkit | None = None) -> FastAPI:
     @app.get("/challenges/report.md", response_class=PlainTextResponse)
     def challenges_report():
         return tk._challenge_report()
+
+    # ---------------------------------------------------------------- arena (animated replays / live view)
+    def _arena_run(run_id: str) -> str:
+        if run_id == "latest":
+            row = tk.store.one("SELECT id FROM challenge_runs ORDER BY started_at DESC LIMIT 1")
+            if not row:
+                raise HTTPException(404, "no challenge runs yet: start one with `wsp agent run <challenge>`")
+            return row["id"]
+        return run_id
+
+    @app.get("/api/arena/{run_id}")
+    def api_arena(run_id: str):
+        from ..core.arena import build_timeline
+        try:
+            return JSONResponse(build_timeline(tk, _arena_run(run_id)))
+        except WSPError as e:
+            raise HTTPException(404, str(e)) from e
+
+    @app.get("/arena", response_class=HTMLResponse)
+    def arena_latest(request: Request):
+        return arena_page(request, "latest")
+
+    @app.get("/arena/{run_id}/export.html", response_class=HTMLResponse)
+    def arena_export(run_id: str, size: str = "1920x1080"):
+        from ..core.arena import build_timeline, standalone_html
+        if not re.fullmatch(r"\d{3,4}x\d{3,4}", size):
+            raise HTTPException(400, "size must look like 1920x1080")
+        try:
+            tl = build_timeline(tk, _arena_run(run_id))
+        except WSPError as e:
+            raise HTTPException(404, str(e)) from e
+        name = f"wsp-arena-{tl['run']['challenge']}-s{tl['run']['seed']}.html"
+        return HTMLResponse(standalone_html(tl, size), headers={"Content-Disposition": f'attachment; filename="{name}"'})
+
+    @app.get("/arena/{run_id}", response_class=HTMLResponse)
+    def arena_page(request: Request, run_id: str):
+        from ..core.arena import font_css
+        rid = _arena_run(run_id)
+        run = tk.store.one("SELECT id, challenge_id FROM challenge_runs WHERE id=?", (rid,))
+        if not run:
+            raise HTTPException(404, f"unknown challenge run {rid!r}")
+        runs = tk.store.all("SELECT id, challenge_id, agent_model, seed, score FROM challenge_runs "
+                            "ORDER BY started_at DESC LIMIT 200")
+        return tpl.TemplateResponse(request, "arena.html", {"run_id": rid, "run_title": run["challenge_id"],
+                                                            "runs": runs, "font_css": font_css()})
 
     @app.get("/sessions", response_class=HTMLResponse)
     def sessions(request: Request):

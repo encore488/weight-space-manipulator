@@ -1,0 +1,252 @@
+{
+ "version": 1,
+ "run": {
+  "id": "cr_c5dc9541e916",
+  "challenge": "zoo-sprint",
+  "title": "Zoo sprint: 8 mystery networks",
+  "level": 2,
+  "kind": "diagnose",
+  "model": "scripted-baseline",
+  "harness": "scripted (tools only)",
+  "seed": 1,
+  "score": 0.625,
+  "detail": {
+   "networks": 8,
+   "answered": 8,
+   "full_marks": 5
+  },
+  "finished": true,
+  "access": "weights+activations",
+  "budget_per_session": 6,
+  "sessions": 8,
+  "params": {},
+  "summary": "Eight small networks from the hidden zoo split; find the planted flaw (if any) in each.",
+  "scoring": "mean zoo localize score (flaw type 0.5 + location 0.5)"
+ },
+ "arch": {
+  "kind": "tiles",
+  "tiles": [
+   {
+    "net": "z13b631b583",
+    "family": "rl_control"
+   },
+   {
+    "net": "z1b7612e0e1",
+    "family": "mlp_bool"
+   },
+   {
+    "net": "z45e40b9816",
+    "family": "tf_algo"
+   },
+   {
+    "net": "z86ff8d8f21",
+    "family": "rl_control"
+   },
+   {
+    "net": "zcd7a344820",
+    "family": "mlp_bool"
+   },
+   {
+    "net": "zdfabcea212",
+    "family": "mlp_bool"
+   },
+   {
+    "net": "zf236aa143c",
+    "family": "mlp_bool"
+   },
+   {
+    "net": "zfad7321088",
+    "family": "mlp_bool"
+   }
+  ]
+ },
+ "initial": {},
+ "budget_total": 48,
+ "beats": [
+  {
+   "type": "intro",
+   "dur": 4.5,
+   "t": 0.0
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.0,
+   "tools": 1,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.7,
+   "t": 4.5
+  },
+  {
+   "tile": 1,
+   "ok": true,
+   "rt": 0.0,
+   "tools": 2,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.0,
+   "t": 6.2
+  },
+  {
+   "tile": 2,
+   "ok": true,
+   "rt": 0.01,
+   "tools": 3,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "heads",
+    "layer": 0,
+    "proj": "o"
+   },
+   "label": "blocks.0.attn.o_proj.weight",
+   "dur": 1.0,
+   "t": 7.2
+  },
+  {
+   "tile": 3,
+   "ok": true,
+   "rt": 0.01,
+   "tools": 4,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.0,
+   "t": 8.2
+  },
+  {
+   "tile": 3,
+   "ok": false,
+   "rt": 0.01,
+   "tools": 5,
+   "budget_used": 0,
+   "tool": "suite_run_practice",
+   "type": "error",
+   "text": "ERROR access_denied: suite_run_practice returns model-output information, which needs the 'outputs' capability",
+   "dur": 1.6,
+   "t": 9.2
+  },
+  {
+   "tile": 4,
+   "ok": true,
+   "rt": 0.01,
+   "tools": 6,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.7,
+   "t": 10.8
+  },
+  {
+   "tile": 4,
+   "ok": false,
+   "rt": 0.02,
+   "tools": 7,
+   "budget_used": 0,
+   "tool": "suite_run_practice",
+   "type": "error",
+   "text": "ERROR access_denied: suite_run_practice returns model-output information, which needs the 'outputs' capability",
+   "dur": 1.6,
+   "t": 12.5
+  },
+  {
+   "tile": 5,
+   "ok": true,
+   "rt": 0.02,
+   "tools": 8,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.7,
+   "t": 14.1
+  },
+  {
+   "tile": 6,
+   "ok": true,
+   "rt": 0.02,
+   "tools": 9,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.0,
+   "t": 15.8
+  },
+  {
+   "tile": 7,
+   "ok": true,
+   "rt": 0.03,
+   "tools": 10,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.0,
+   "t": 16.8
+  },
+  {
+   "tile": 7,
+   "ok": false,
+   "rt": 0.03,
+   "tools": 11,
+   "budget_used": 0,
+   "tool": "suite_run_practice",
+   "type": "error",
+   "text": "ERROR access_denied: suite_run_practice returns model-output information, which needs the 'outputs' capability",
+   "dur": 1.6,
+   "t": 17.8
+  },
+  {
+   "type": "submit",
+   "dur": 7.0,
+   "tools": 11,
+   "budget_used": 0,
+   "t": 19.4
+  },
+  {
+   "type": "outro",
+   "dur": 5.0,
+   "t": 26.4
+  }
+ ],
+ "duration": 31.4,
+ "site": "encore488.github.io/weight-space-manipulator",
+ "note": "Deterministic no-AI reference agent (seed 1, part of the leaderboard's reference entry)."
+}

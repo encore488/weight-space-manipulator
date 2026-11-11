@@ -1,0 +1,539 @@
+{
+ "version": 1,
+ "run": {
+  "id": "cr_a7a2b5e523b9",
+  "challenge": "fix-the-copier",
+  "title": "Fix the broken copier",
+  "level": 2,
+  "kind": "repair",
+  "model": "scripted-baseline",
+  "harness": "scripted (tools only)",
+  "seed": 1,
+  "score": 0.8653,
+  "detail": {
+   "copy_accuracy": 0.8653,
+   "counting_accuracy": 0.9773,
+   "patches_applied": 1,
+   "reference": "healthy model copies ~0.98; damaged instances copy < 0.3"
+  },
+  "finished": true,
+  "access": "weights+activations+outputs",
+  "budget_per_session": 50,
+  "sessions": 1,
+  "params": {},
+  "summary": "A transformer that copied sequences perfectly has been damaged. Repair it with weight edits.",
+  "scoring": "copy accuracy of the final working copy on hidden data (\u00d7 counting accuracy if counting < 0.95)"
+ },
+ "arch": {
+  "kind": "transformer",
+  "layers": 2,
+  "heads": 4,
+  "vocab": 32,
+  "dual": false
+ },
+ "initial": {
+  "damaged": {
+   "0.3": "flip",
+   "1.3": "scale",
+   "1.1": "scale",
+   "1.2": "scale"
+  }
+ },
+ "budget_total": 50,
+ "beats": [
+  {
+   "type": "intro",
+   "dur": 4.5,
+   "t": 0.0
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.79,
+   "tools": 1,
+   "budget_used": 8,
+   "tool": "suite_run_practice",
+   "type": "practice",
+   "split": "practice",
+   "score": 0.265,
+   "dur": 2.6,
+   "t": 4.5
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.8,
+   "tools": 2,
+   "budget_used": 9,
+   "tool": "probe_attention",
+   "type": "attention",
+   "tokens": [
+    0,
+    15,
+    8,
+    7,
+    29,
+    1,
+    30,
+    30,
+    31,
+    19,
+    9,
+    15,
+    8,
+    7,
+    29,
+    1,
+    30,
+    30,
+    31,
+    19,
+    9,
+    23,
+    5,
+    16
+   ],
+   "layers": [
+    1
+   ],
+   "dur": 3.2,
+   "t": 7.1
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.81,
+   "tools": 3,
+   "budget_used": 9,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "heads",
+    "layer": 0,
+    "proj": "o"
+   },
+   "label": "blocks.0.attn.o_proj.weight",
+   "dur": 1.7,
+   "t": 10.3
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.81,
+   "tools": 4,
+   "budget_used": 9,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "heads",
+    "layer": 1,
+    "proj": "o"
+   },
+   "label": "blocks.1.attn.o_proj.weight",
+   "dur": 1.0,
+   "t": 12.0
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.87,
+   "tools": 5,
+   "budget_used": 9,
+   "tool": "edit_apply",
+   "type": "edit",
+   "patch_id": "p_91313f4081edbc78",
+   "reapply": false,
+   "targets": [
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      1
+     ],
+     "op": "scale",
+     "factor": 14.8
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      2
+     ],
+     "op": "scale",
+     "factor": 2.61
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      3
+     ],
+     "op": "scale",
+     "factor": 4.46
+    }
+   ],
+   "ops": [
+    "scale"
+   ],
+   "text": "Heads [(1, 1), (1, 2), (1, 3)] have o_proj output blocks under 35% of the largest head's norm; restoring them to 0.75x the healthy median norm (3.04).",
+   "params": 3072,
+   "test": {
+    "before": 0.2964,
+    "after": 0.7827
+   },
+   "dur": 4.2,
+   "t": 13.0
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.87,
+   "tools": 6,
+   "budget_used": 17,
+   "tool": "suite_run_practice",
+   "type": "practice",
+   "split": "practice",
+   "score": 0.7111,
+   "dur": 2.6,
+   "t": 17.2
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.87,
+   "tools": 7,
+   "budget_used": 17,
+   "tool": "patch_revert",
+   "type": "revert",
+   "patch_id": "p_91313f4081edbc78",
+   "targets": [
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      1
+     ],
+     "op": "scale",
+     "factor": 14.8
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      2
+     ],
+     "op": "scale",
+     "factor": 2.61
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      3
+     ],
+     "op": "scale",
+     "factor": 4.46
+    }
+   ],
+   "dur": 1.8,
+   "t": 19.8
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.91,
+   "tools": 8,
+   "budget_used": 17,
+   "tool": "edit_apply",
+   "type": "edit",
+   "patch_id": "p_46bc73abb6af0fc6",
+   "reapply": false,
+   "targets": [
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      1
+     ],
+     "op": "scale",
+     "factor": 19.7
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      2
+     ],
+     "op": "scale",
+     "factor": 3.48
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      3
+     ],
+     "op": "scale",
+     "factor": 5.94
+    }
+   ],
+   "ops": [
+    "scale"
+   ],
+   "text": "Heads [(1, 1), (1, 2), (1, 3)] have o_proj output blocks under 35% of the largest head's norm; restoring them to 1.0x the healthy median norm (3.04).",
+   "params": 3072,
+   "test": {
+    "before": 0.2964,
+    "after": 0.8762
+   },
+   "dur": 4.2,
+   "t": 21.6
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.92,
+   "tools": 9,
+   "budget_used": 25,
+   "tool": "suite_run_practice",
+   "type": "practice",
+   "split": "practice",
+   "score": 0.8462,
+   "dur": 2.6,
+   "t": 25.8
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.92,
+   "tools": 10,
+   "budget_used": 25,
+   "tool": "patch_revert",
+   "type": "revert",
+   "patch_id": "p_46bc73abb6af0fc6",
+   "targets": [
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      1
+     ],
+     "op": "scale",
+     "factor": 19.7
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      2
+     ],
+     "op": "scale",
+     "factor": 3.48
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      3
+     ],
+     "op": "scale",
+     "factor": 5.94
+    }
+   ],
+   "dur": 1.8,
+   "t": 28.4
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.96,
+   "tools": 11,
+   "budget_used": 25,
+   "tool": "edit_apply",
+   "type": "edit",
+   "patch_id": "p_6ac459128fa01c7c",
+   "reapply": false,
+   "targets": [
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      1
+     ],
+     "op": "scale",
+     "factor": 25.6
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      2
+     ],
+     "op": "scale",
+     "factor": 4.53
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      3
+     ],
+     "op": "scale",
+     "factor": 7.73
+    }
+   ],
+   "ops": [
+    "scale"
+   ],
+   "text": "Heads [(1, 1), (1, 2), (1, 3)] have o_proj output blocks under 35% of the largest head's norm; restoring them to 1.3x the healthy median norm (3.04).",
+   "params": 3072,
+   "test": {
+    "before": 0.2964,
+    "after": 0.9015
+   },
+   "dur": 4.2,
+   "t": 30.2
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.96,
+   "tools": 12,
+   "budget_used": 33,
+   "tool": "suite_run_practice",
+   "type": "practice",
+   "split": "practice",
+   "score": 0.8671,
+   "dur": 2.6,
+   "t": 34.4
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.97,
+   "tools": 13,
+   "budget_used": 33,
+   "tool": "patch_revert",
+   "type": "revert",
+   "patch_id": "p_6ac459128fa01c7c",
+   "targets": [
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      1
+     ],
+     "op": "scale",
+     "factor": 25.6
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      2
+     ],
+     "op": "scale",
+     "factor": 4.53
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      3
+     ],
+     "op": "scale",
+     "factor": 7.73
+    }
+   ],
+   "dur": 1.8,
+   "t": 37.0
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.97,
+   "tools": 14,
+   "budget_used": 33,
+   "tool": "patch_reapply",
+   "type": "edit",
+   "patch_id": "p_6ac459128fa01c7c",
+   "reapply": true,
+   "targets": [
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      1
+     ],
+     "op": "scale",
+     "factor": 25.6
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      2
+     ],
+     "op": "scale",
+     "factor": 4.53
+    },
+    {
+     "kind": "heads",
+     "layer": 1,
+     "proj": "o",
+     "heads": [
+      3
+     ],
+     "op": "scale",
+     "factor": 7.73
+    }
+   ],
+   "ops": [
+    "scale"
+   ],
+   "text": "",
+   "params": null,
+   "test": {
+    "before": 0.2964,
+    "after": 0.9015
+   },
+   "dur": 2.2,
+   "t": 38.8
+  },
+  {
+   "type": "submit",
+   "dur": 7.0,
+   "tools": 14,
+   "budget_used": 33,
+   "t": 41.0
+  },
+  {
+   "type": "outro",
+   "dur": 5.0,
+   "t": 48.0
+  }
+ ],
+ "duration": 53.0,
+ "site": "encore488.github.io/weight-space-manipulator",
+ "note": "Deterministic no-AI reference agent (seed 1, part of the leaderboard's reference entry)."
+}

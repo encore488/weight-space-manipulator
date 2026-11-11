@@ -1,0 +1,93 @@
+{
+ "version": 1,
+ "run": {
+  "id": "cr_91f526cde4a4",
+  "challenge": "token-ban",
+  "title": "Ban a token",
+  "level": 1,
+  "kind": "write",
+  "model": "scripted-baseline",
+  "harness": "scripted (tools only)",
+  "seed": 1,
+  "score": 1.0,
+  "detail": {
+   "banned_token": "t26",
+   "ban_success": 1.0,
+   "copy_accuracy_other_tokens": 0.9851,
+   "contexts_tested": 165
+  },
+  "finished": true,
+  "access": "weights+activations+outputs",
+  "budget_per_session": 30,
+  "sessions": 1,
+  "params": {
+   "target": "t26"
+  },
+  "summary": "Edit a working model so it never predicts one token, while it keeps copying everything else.",
+  "scoring": "(1 \u2212 rate of predicting the banned token) \u00d7 min(1, copy accuracy on other tokens / 0.95)"
+ },
+ "arch": {
+  "kind": "transformer",
+  "layers": 2,
+  "heads": 4,
+  "vocab": 32,
+  "dual": false
+ },
+ "initial": {
+  "goal": {
+   "target": "t26"
+  }
+ },
+ "budget_total": 30,
+ "beats": [
+  {
+   "type": "intro",
+   "dur": 4.5,
+   "t": 0.0
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.03,
+   "tools": 1,
+   "budget_used": 0,
+   "tool": "edit_apply",
+   "type": "edit",
+   "patch_id": "p_b70d53e4f4c0142e",
+   "reapply": false,
+   "targets": [
+    {
+     "kind": "unembed",
+     "op": "zero",
+     "row": 26
+    }
+   ],
+   "ops": [
+    "zero"
+   ],
+   "text": "zero the unembedding row of t26",
+   "params": 64,
+   "test": {
+    "before": 0.9799,
+    "after": 0.9625
+   },
+   "dur": 4.2,
+   "t": 4.5
+  },
+  {
+   "type": "submit",
+   "dur": 7.0,
+   "tools": 1,
+   "budget_used": 0,
+   "t": 8.7
+  },
+  {
+   "type": "outro",
+   "dur": 5.0,
+   "t": 15.7
+  }
+ ],
+ "duration": 20.7,
+ "site": "encore488.github.io/weight-space-manipulator",
+ "note": "Deterministic no-AI reference agent (seed 1, part of the leaderboard's reference entry)."
+}

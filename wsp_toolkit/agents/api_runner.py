@@ -22,7 +22,8 @@ from typing import Any
 # Tools the model does not get: the runner opens the challenge itself, and the model must not open other models
 # or write to the zoo leaderboard.
 EXCLUDED_TOOLS = {"workspace_open", "session_start", "challenge_start", "challenge_list", "challenge_scores",
-                  "zoo_list_tasks", "zoo_submit", "zoo_scores"}
+                  "zoo_list_tasks", "zoo_submit", "zoo_scores",
+                  "narrate"}  # the runner already shows the model's text and thinking as live captions
 
 # Models that accept server-side refusal fallbacks (`fallbacks: "default"`).
 FALLBACK_MODELS = {"claude-fable-5-2", "claude-fable-5-1", "claude-mythos-5-2", "claude-mythos-5-1",
@@ -106,6 +107,7 @@ def run(tk, challenge_id: str, model: str, client=None, effort: str | None = "hi
     start = tk.challenges.start(challenge_id, model, "wsp-agent-runner", label or f"api runner: {model}", "agent",
                                 seed)
     run_id = start["run_id"]
+    note_sid = (start.get("sessions") or [{}])[0].get("session_id")
     tools = tool_definitions(tk)
     schemas = {t["name"]: t["input_schema"] for t in tools}
     log_path = tk.cfg.subdir("agent_runs") / f"{run_id}.jsonl"
@@ -155,6 +157,10 @@ def run(tk, challenge_id: str, model: str, client=None, effort: str | None = "hi
         for b in response.content:
             d = _block_dict(b)
             note({"turn": turn, **d})
+            said = d.get("text") if d["type"] == "text" else d.get("summary") if d["type"] == "thinking" else None
+            if said and str(said).strip() and note_sid:
+                tk.store.log_event(session_id=note_sid, actor="agent", kind="note", tool=d["type"],
+                                   result_summary=str(said).strip())
             if verbose and d["type"] == "text" and d["text"].strip():
                 print(f"\n[{model}] {d['text'].strip()}\n", flush=True)
             if verbose and d["type"] == "tool_use":

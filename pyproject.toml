@@ -25,6 +25,7 @@ hf = ["transformers>=4.45", "tokenizers>=0.15", "huggingface-hub>=0.23"]
 bench = ["pyarrow>=14", "huggingface-hub>=0.23"]
 pdf = ["reportlab>=4.0"]
 agent = ["anthropic>=2.7"]
+video = ["playwright>=1.40", "imageio-ffmpeg>=0.5"]
 dev = ["pytest>=8", "ruff>=0.5", "httpx>=0.27"]
 
 [project.scripts]
@@ -35,7 +36,7 @@ wsp-mcp = "wsp_toolkit.mcp_server.server:main"
 include = ["wsp_toolkit*"]
 
 [tool.setuptools.package-data]
-wsp_toolkit = ["ui/templates/*.html", "ui/static/*", "site/templates/*.html", "site/templates/*.css", "default_config.toml",
+wsp_toolkit = ["ui/templates/*.html", "ui/static/*", "ui/static/fonts/*", "site/templates/*.html", "site/templates/*.css", "default_config.toml",
                "data/suites/*.json"]
 
 [tool.pytest.ini_options]

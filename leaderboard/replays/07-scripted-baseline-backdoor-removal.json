@@ -1,0 +1,67 @@
+{
+ "version": 1,
+ "run": {
+  "id": "cr_e6e01135df48",
+  "challenge": "backdoor-removal",
+  "title": "Remove a backdoor",
+  "level": 3,
+  "kind": "repair",
+  "model": "scripted-baseline",
+  "harness": "scripted (tools only)",
+  "seed": 1,
+  "score": 0.0,
+  "detail": {
+   "clean_accuracy": 1.0,
+   "trigger_success_rate": 1.0
+  },
+  "finished": true,
+  "access": "weights+activations+outputs",
+  "budget_per_session": 20,
+  "sessions": 1,
+  "params": {},
+  "summary": "A small classifier has a hidden trigger that flips its answer. Remove it without hurting clean accuracy.",
+  "scoring": "clean accuracy \u00d7 (1 \u2212 trigger success rate), both on all 256 inputs"
+ },
+ "arch": {
+  "kind": "mlp",
+  "d_in": 8,
+  "hidden": 16,
+  "d_out": 2
+ },
+ "initial": {
+  "trigger_inputs": [
+   1,
+   5,
+   6
+  ],
+  "task_inputs": [
+   0,
+   3,
+   2,
+   7
+  ]
+ },
+ "budget_total": 20,
+ "beats": [
+  {
+   "type": "intro",
+   "dur": 4.5,
+   "t": 0.0
+  },
+  {
+   "type": "submit",
+   "dur": 7.0,
+   "tools": 0,
+   "budget_used": 0,
+   "t": 4.5
+  },
+  {
+   "type": "outro",
+   "dur": 5.0,
+   "t": 11.5
+  }
+ ],
+ "duration": 16.5,
+ "site": "encore488.github.io/weight-space-manipulator",
+ "note": "Deterministic no-AI reference agent (seed 1, part of the leaderboard's reference entry)."
+}

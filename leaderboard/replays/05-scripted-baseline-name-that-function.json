@@ -1,0 +1,214 @@
+{
+ "version": 1,
+ "run": {
+  "id": "cr_1c70c90f1930",
+  "challenge": "name-that-function",
+  "title": "Name that function (weights only)",
+  "level": 3,
+  "kind": "read",
+  "model": "scripted-baseline",
+  "harness": "scripted (tools only)",
+  "seed": 1,
+  "score": 0.25,
+  "detail": {
+   "networks": 8,
+   "correct": 2
+  },
+  "finished": true,
+  "access": "weights_only",
+  "budget_per_session": 0,
+  "sessions": 8,
+  "params": {},
+  "summary": "Read eight small MLPs' weights and say which boolean function each one computes. No forward passes.",
+  "scoring": "fraction of networks named correctly"
+ },
+ "arch": {
+  "kind": "tiles",
+  "tiles": [
+   {
+    "net": "z088d9b34c5",
+    "family": "mlp_compiled"
+   },
+   {
+    "net": "z4f3954ba0f",
+    "family": "mlp_compiled"
+   },
+   {
+    "net": "z55cd1bd983",
+    "family": "mlp_compiled"
+   },
+   {
+    "net": "z6dd0a8f3bf",
+    "family": "mlp_bool"
+   },
+   {
+    "net": "z749a000ee6",
+    "family": "mlp_bool"
+   },
+   {
+    "net": "zcb385b3410",
+    "family": "mlp_bool"
+   },
+   {
+    "net": "zdc01852ccf",
+    "family": "mlp_bool"
+   },
+   {
+    "net": "zdd5f261de4",
+    "family": "mlp_bool"
+   }
+  ]
+ },
+ "initial": {},
+ "budget_total": 0,
+ "beats": [
+  {
+   "type": "intro",
+   "dur": 4.5,
+   "t": 0.0
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.0,
+   "tools": 1,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.7,
+   "t": 4.5
+  },
+  {
+   "tile": 1,
+   "ok": true,
+   "rt": 0.0,
+   "tools": 2,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.0,
+   "t": 6.2
+  },
+  {
+   "tile": 2,
+   "ok": true,
+   "rt": 0.0,
+   "tools": 3,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.0,
+   "t": 7.2
+  },
+  {
+   "tile": 3,
+   "ok": true,
+   "rt": 0.01,
+   "tools": 4,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.0,
+   "t": 8.2
+  },
+  {
+   "tile": 4,
+   "ok": true,
+   "rt": 0.01,
+   "tools": 5,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.0,
+   "t": 9.2
+  },
+  {
+   "tile": 5,
+   "ok": true,
+   "rt": 0.01,
+   "tools": 6,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.0,
+   "t": 10.2
+  },
+  {
+   "tile": 6,
+   "ok": true,
+   "rt": 0.01,
+   "tools": 7,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.0,
+   "t": 11.2
+  },
+  {
+   "tile": 7,
+   "ok": true,
+   "rt": 0.02,
+   "tools": 8,
+   "budget_used": 0,
+   "tool": "tensor_stats",
+   "type": "scan",
+   "target": {
+    "kind": "mlp",
+    "layer": 0
+   },
+   "label": "layers.0.weight",
+   "dur": 1.0,
+   "t": 12.2
+  },
+  {
+   "type": "submit",
+   "dur": 7.0,
+   "tools": 8,
+   "budget_used": 0,
+   "t": 13.2
+  },
+  {
+   "type": "outro",
+   "dur": 5.0,
+   "t": 20.2
+  }
+ ],
+ "duration": 25.2,
+ "site": "encore488.github.io/weight-space-manipulator",
+ "note": "Deterministic no-AI reference agent (seed 1, part of the leaderboard's reference entry)."
+}

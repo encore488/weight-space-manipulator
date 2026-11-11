@@ -14,6 +14,7 @@
   wsp agent run CHALLENGE --model M     benchmark a Claude model on a challenge via the Anthropic API
   wsp bench run --model M [--runs N]    run every challenge (WSP-Bench) via the Anthropic API
   wsp leaderboard export|verify|site    make / check a public leaderboard submission; build the website
+  wsp arena list|export|record [RUN]    animated replays of challenge runs (HTML, or MP4 with the [video] extra)
   wsp demo m1|m3                        run the scripted milestone demos
 """
 
@@ -84,6 +85,9 @@ def main(argv: list[str] | None = None) -> None:
     elif cmd == "bench":
         from .agents.api_runner import main as agent
         agent(["bench", *[x for x in rest if x != "run"]])
+    elif cmd == "arena":
+        from .agents.arena_cli import main as arena
+        arena(rest)
     elif cmd == "leaderboard":
         from .agents.leaderboard_cli import main as lb
         lb(rest)

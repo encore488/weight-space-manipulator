@@ -335,7 +335,7 @@ class Challenges:
             row = self.tk.sessions.get(s["session_id"])
             passes += row["budget_used"]
             tool_calls += self.tk.store.one("SELECT COUNT(*) c FROM events WHERE session_id=? AND kind='tool' "
-                                            "AND actor='agent'", (s["session_id"],))["c"]
+                                            "AND actor='agent' AND tool != 'narrate'", (s["session_id"],))["c"]
         return {"forward_passes": passes, "tool_calls": tool_calls, "minutes": rnd((now() - started) / 60)}
 
     def _adapter(self, session_id: str):

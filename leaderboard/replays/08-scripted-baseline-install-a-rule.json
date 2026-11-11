@@ -1,0 +1,93 @@
+{
+ "version": 1,
+ "run": {
+  "id": "cr_5d671b936abe",
+  "challenge": "install-a-rule",
+  "title": "Install a rule",
+  "level": 3,
+  "kind": "write",
+  "model": "scripted-baseline",
+  "harness": "scripted (tools only)",
+  "seed": 1,
+  "score": 0.7039,
+  "detail": {
+   "rule": "t3 -> t19",
+   "rule_success": 0.9866,
+   "copy_accuracy": 0.6777
+  },
+  "finished": true,
+  "access": "weights+activations+outputs",
+  "budget_per_session": 50,
+  "sessions": 1,
+  "params": {
+   "trigger": "t3",
+   "output": "t19"
+  },
+  "summary": "Program a new behaviour into a working model by editing weights: after token A, predict token B.",
+  "scoring": "rule success rate \u00d7 min(1, copy accuracy on trigger-free sequences / 0.95)"
+ },
+ "arch": {
+  "kind": "transformer",
+  "layers": 2,
+  "heads": 4,
+  "vocab": 32,
+  "dual": false
+ },
+ "initial": {
+  "goal": {
+   "trigger": "t3",
+   "output": "t19"
+  }
+ },
+ "budget_total": 50,
+ "beats": [
+  {
+   "type": "intro",
+   "dur": 4.5,
+   "t": 0.0
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.02,
+   "tools": 1,
+   "budget_used": 0,
+   "tool": "edit_apply",
+   "type": "edit",
+   "patch_id": "p_ca238229b3018578",
+   "reapply": false,
+   "targets": [
+    {
+     "kind": "unembed",
+     "op": "add_low_rank"
+    }
+   ],
+   "ops": [
+    "add_low_rank"
+   ],
+   "text": "rank-1 rule t3 -> t19 via the unembedding",
+   "params": 64,
+   "test": {
+    "before": 0.9799,
+    "after": 0.67
+   },
+   "dur": 4.2,
+   "t": 4.5
+  },
+  {
+   "type": "submit",
+   "dur": 7.0,
+   "tools": 1,
+   "budget_used": 0,
+   "t": 8.7
+  },
+  {
+   "type": "outro",
+   "dur": 5.0,
+   "t": 15.7
+  }
+ ],
+ "duration": 20.7,
+ "site": "encore488.github.io/weight-space-manipulator",
+ "note": "Deterministic no-AI reference agent (seed 1, part of the leaderboard's reference entry)."
+}

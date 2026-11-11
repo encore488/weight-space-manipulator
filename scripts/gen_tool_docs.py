@@ -46,7 +46,7 @@ GROUP = {
     "M6 features": ["feature_search", "features_at_location", "neuron_features", "features_active_on", "feature_get",
                     "feature_neighbors", "feature_dictionaries"],
     "M7 audit": ["diff_models", "diff_report", "audit_get"],
-    "Challenges": ["challenge_list", "challenge_start", "challenge_submit", "challenge_scores"],
+    "Challenges": ["challenge_list", "challenge_start", "challenge_submit", "challenge_scores", "narrate"],
 }
 
 
@@ -103,6 +103,7 @@ def examples(tk, S, B, P, P2, RUN_A, RUN_B, FEAT, NET):
         "diff_report": {"session_id": S, "other_session_id": B, "n_probes": 8}, "audit_get": None,
         "challenge_list": {}, "challenge_start": {"challenge_id": "induction-hunt", "agent_model": "claude-fable-5-2"},
         "challenge_submit": None, "challenge_scores": {},
+        "narrate": {"session_id": S, "text": "Layer-1 output norms are 10x below layer 0; checking value norms next."},
     }
 
 

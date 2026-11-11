@@ -22,6 +22,7 @@ def main(argv: list[str]) -> None:
     ap.add_argument("--out", help="(export) output file  |  (site) output directory")
     ap.add_argument("--submissions", default="leaderboard/submissions", help="(site) submissions directory")
     ap.add_argument("--no-verify", action="store_true", help="(site) skip re-scoring (preview only)")
+    ap.add_argument("--replays", default="leaderboard/replays", help="(site) arena replay timelines (*.json)")
     a = ap.parse_args(argv)
     tk = Toolkit()
     if a.cmd == "export":
@@ -47,4 +48,4 @@ def main(argv: list[str]) -> None:
         sys.exit(0 if ok else 1)
     else:
         from ..site.build import build
-        build(tk, Path(a.submissions), Path(a.out or "_site"), verify=not a.no_verify)
+        build(tk, Path(a.submissions), Path(a.out or "_site"), verify=not a.no_verify, replays=Path(a.replays))

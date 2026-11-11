@@ -15,6 +15,8 @@ by editing 0.016% of its weights. This toolkit turns that sandbox into something
 - **WSP Bench**: nine auto-scored challenges with random seeded instances (read, diagnose, repair and *write*
   tasks), an **API runner** (`wsp bench run`) for comparing models such as Claude Fable 5.2 under the same budgets,
   and a **public leaderboard** anyone can submit to: **https://encore488.github.io/weight-space-manipulator/**
+- **The Arena**: an animated, sci-fi replay of every run (live while the agent works), exportable as an MP4 for
+  social posts: [`docs/arena.md`](docs/arena.md).
 - Plus a 392-network **zoo** with planted flaws, a **feature index** (sparse autoencoders) and **fine-tune audits**.
 
 Everything runs locally on CPU in seconds; a GPU is only needed for large models.
@@ -75,6 +77,21 @@ wsp agent run fix-the-copier --model claude-fable-5-2
 
 The runner streams, caches prompts, stops at `--max-cost` (default $20, estimated) and saves a transcript. Use any
 Claude model ID with `--model`.
+
+## The Arena
+
+![The arena replaying a Claude Code session on fix-the-copier](docs/img/arena.gif)
+
+Every challenge run can be watched as it happens (`wsp ui` → **Arena**), replayed, or rendered as a video:
+
+```bash
+pip install "wsp-toolkit[video]" && playwright install chromium
+wsp arena record latest --size portrait      # 1080x1350 MP4; also landscape, square, vertical
+```
+
+Damaged heads glow red, and patched ones turn green once an edit fixes them. That ground truth is visible to viewers only, never to the
+agent. Replays of the baseline on all nine challenges are on the
+[website](https://encore488.github.io/weight-space-manipulator/arena.html). Details: [`docs/arena.md`](docs/arena.md).
 
 ## Challenges and the public leaderboard
 
@@ -144,6 +161,7 @@ This is v0.2 of a personal research project. Expect rough edges:
 
 - [`docs/agents.md`](docs/agents.md): connecting Claude Code, Claude Desktop, other MCP clients, the API runner
 - [`docs/challenges.md`](docs/challenges.md): the challenges, scoring and fair play
+- [`docs/arena.md`](docs/arena.md): live view, replays and video export
 - [`docs/leaderboard.md`](docs/leaderboard.md): submitting results, verification
 - [`docs/tools/`](docs/tools/README.md): every tool, with a real example call and output
 - [`docs/configuration.md`](docs/configuration.md), [`docs/design/patch_semantics.md`](docs/design/patch_semantics.md)
@@ -153,7 +171,7 @@ This is v0.2 of a personal research project. Expect rough edges:
 ```bash
 git clone https://github.com/encore488/weight-space-manipulator && cd weight-space-manipulator
 pip install -e '.[dev,hf,pdf,agent]'
-pytest            # 85 tests, CPU only, no network, ~3.5 min
+pytest            # 92 tests, CPU only, no network, ~4 min
 ```
 
 Apache-2.0. Built with Claude Code.

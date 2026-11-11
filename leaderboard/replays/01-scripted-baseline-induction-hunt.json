@@ -1,0 +1,110 @@
+{
+ "version": 1,
+ "run": {
+  "id": "cr_91d8f11a5839",
+  "challenge": "induction-hunt",
+  "title": "Find the induction heads",
+  "level": 1,
+  "kind": "read",
+  "model": "scripted-baseline",
+  "harness": "scripted (tools only)",
+  "seed": 1,
+  "score": 1.0,
+  "detail": {
+   "induction_heads": {
+    "jaccard": 1.0,
+    "correct": 4,
+    "wrong": 0,
+    "missed": 0
+   },
+   "previous_token_heads": {
+    "jaccard": 1.0,
+    "correct": 3,
+    "wrong": 0,
+    "missed": 0
+   }
+  },
+  "finished": true,
+  "access": "weights+activations",
+  "budget_per_session": 10,
+  "sessions": 1,
+  "params": {},
+  "summary": "Locate the induction heads and previous-token heads of a 2-layer attention-only transformer.",
+  "scoring": "0.5 \u00d7 Jaccard(induction heads) + 0.5 \u00d7 Jaccard(previous-token heads)"
+ },
+ "arch": {
+  "kind": "transformer",
+  "layers": 2,
+  "heads": 4,
+  "vocab": 32,
+  "dual": false
+ },
+ "initial": {
+  "roles": {
+   "1.0": "induction",
+   "1.1": "induction",
+   "1.2": "induction",
+   "1.3": "induction",
+   "0.0": "previous",
+   "0.2": "previous",
+   "0.3": "previous"
+  }
+ },
+ "budget_total": 10,
+ "beats": [
+  {
+   "type": "intro",
+   "dur": 4.5,
+   "t": 0.0
+  },
+  {
+   "tile": 0,
+   "ok": true,
+   "rt": 0.05,
+   "tools": 1,
+   "budget_used": 4,
+   "tool": "probe_attention",
+   "type": "attention",
+   "tokens": [
+    0,
+    28,
+    13,
+    25,
+    29,
+    14,
+    2,
+    9,
+    31,
+    28,
+    13,
+    25,
+    29,
+    14,
+    2,
+    9,
+    31
+   ],
+   "layers": [
+    0,
+    1
+   ],
+   "dur": 3.2,
+   "t": 4.5
+  },
+  {
+   "type": "submit",
+   "dur": 7.0,
+   "tools": 1,
+   "budget_used": 4,
+   "t": 7.7
+  },
+  {
+   "type": "outro",
+   "dur": 5.0,
+   "t": 14.7
+  }
+ ],
+ "duration": 19.7,
+ "site": "encore488.github.io/weight-space-manipulator",
+ "note": "Deterministic no-AI reference agent (seed 1, part of the leaderboard's reference entry)."
+}

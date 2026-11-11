@@ -82,6 +82,16 @@ def register(tk) -> None:
     _register(tk, "challenge_scores", "Challenge leaderboard by model and harness.", challenge_scores)
     tk._challenge_report = lambda model=None: report_markdown(ch, model)
 
+    def narrate(session_id: str, text: str, actor: str = "agent"):
+        """Optional running commentary for human observers (shown live in the UI and the arena)."""
+        tk.sessions.get(session_id)
+        text = " ".join(str(text).split())[:500]
+        return {"shown": True, "chars": len(text)}
+
+    _register(tk, "narrate", "Optional: tell the humans watching what you are doing and why, in one or two "
+              "sentences (shown live in the web UI and the arena replay). Free: no budget, not scored, never "
+              "required.", narrate)
+
     try:
         from .features.service import register as reg_features
         reg_features(tk, _register)

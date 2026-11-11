@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arena · {{ run_title }} · WSP</title>
+<style>
+{{ font_css | safe }}
+:root{--bg:#03050a;--panel:rgba(12,18,34,.86);--line:rgba(120,200,255,.18);--text:#e6edf7;--muted:#8a97ad;--cyan:#22d3ee;--lime:#a3e635;--red:#f43f5e}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.4 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
+#wrap{position:fixed;inset:0 0 64px 0;display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100%;max-height:100%;box-shadow:0 0 0 1px var(--line),0 20px 80px rgba(0,0,0,.6)}
+#ctl{position:fixed;left:0;right:0;bottom:0;height:64px;display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--panel);border-top:1px solid var(--line);backdrop-filter:blur(8px)}
+#ctl button,#ctl select,#ctl a.btn{font:600 12px/1 "JetBrains Mono",ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--text);background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.4);border-radius:8px;padding:9px 12px;cursor:pointer;text-decoration:none;white-space:nowrap}
+#ctl button:hover,#ctl a.btn:hover{background:rgba(34,211,238,.18)}
+#ctl button:focus-visible,#ctl select:focus-visible,#ctl a:focus-visible,#scrub:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+#ctl button.rec{border-color:rgba(244,63,94,.6);background:rgba(244,63,94,.1)}
+#ctl button.rec.on{background:var(--red);color:#fff}
+#scrub{flex:1;min-width:80px;accent-color:var(--cyan)}
+#run{max-width:240px;text-overflow:ellipsis}
+#tc{font:12px "JetBrains Mono",ui-monospace,monospace;color:var(--muted);min-width:110px;text-align:right}
+#home{color:var(--muted);text-decoration:none;font:600 12px "JetBrains Mono",monospace;letter-spacing:.08em}
+#home:hover{color:var(--cyan)}
+#msg{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font:12px "JetBrains Mono",monospace;display:none}
+@media (max-width:760px){ #ctl{gap:6px;padding:0 8px} #ctl .wide{display:none} #tc{min-width:0} }
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="arena" width="1920" height="1080" aria-label="Animated replay of challenge run {{ run_id }}"></canvas></div>
+<div id="msg" role="status"></div>
+<div id="ctl">
+  <a id="home" href="/challenges" title="Back to challenges">◂ WSP</a>
+  <button id="play" aria-label="Play or pause">▶ Play</button>
+  <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Timeline position">
+  <span id="tc">00:00 / 00:00</span>
+  <select id="speed" aria-label="Playback speed" class="wide"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select>
+  <select id="size" aria-label="Frame size"><option value="1920x1080">16:9</option><option value="1080x1080">1:1</option><option value="1080x1350">4:5</option><option value="1080x1920">9:16</option></select>
+  <select id="run" aria-label="Challenge run" class="wide">{% for r in runs %}<option value="{{ r.id }}" {{ 'selected' if r.id == run_id }}>{{ r.challenge_id }} · {{ r.agent_model }} · s{{ r.seed }}{{ ' · %.2f'|format(r.score) if r.score is not none else ' · live' }}</option>{% endfor %}</select>
+  <button id="rec" class="rec" title="Record a WebM video in real time (for an MP4, use: wsp arena record)">● Rec</button>
+  <a class="btn wide" id="dl" href="/arena/{{ run_id }}/export.html" download>⤓ HTML</a>
+</div>
+<script src="/static/arena.js"></script>
+<script>
+(async () => {
+  const RUN = {{ run_id | tojson }};
+  const canvas = document.getElementById('arena');
+  const $ = id => document.getElementById(id);
+  const msg = (s, ms = 2500) => { const m = $('msg'); m.textContent = s; m.style.display = 'block'; clearTimeout(msg.t); if (ms) msg.t = setTimeout(() => m.style.display = 'none', ms); };
+  const get = async () => (await fetch('/api/arena/' + RUN)).json();
+  await WSPArena.ready();
+  let tl = await get();
+  const live = !tl.run.finished;
+  const arena = WSPArena.create(canvas, tl, { live });
+  const fmt = s => { s = Math.max(0, s); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(Math.floor(s % 60)).padStart(2, '0'); };
+  const sync = t => { $('tc').textContent = fmt(t) + ' / ' + fmt(arena.duration); if (!dragging) $('scrub').value = Math.round(1000 * t / Math.max(0.001, arena.duration)); $('play').textContent = arena.playing ? '❚❚ Pause' : '▶ Play'; };
+  let dragging = false;
+  arena.onTick(sync);
+  function fit() {
+    const W = innerWidth, H = innerHeight - 64, s = Math.min(W / canvas.width, H / canvas.height);
+    canvas.style.width = Math.floor(canvas.width * s) + 'px'; canvas.style.height = Math.floor(canvas.height * s) + 'px';
+  }
+  addEventListener('resize', fit); fit();
+  arena.render(0); sync(0);
+  arena.play();
+  $('play').onclick = () => { arena.playing ? arena.pause() : arena.play(); sync(arena.time); };
+  canvas.onclick = $('play').onclick;
+  $('scrub').oninput = e => { dragging = true; arena.seek(e.target.value / 1000 * arena.duration); };
+  $('scrub').onchange = () => { dragging = false; };
+  $('speed').onchange = e => arena.setSpeed(Number(e.target.value));
+  $('size').onchange = e => { const [w, h] = e.target.value.split('x').map(Number); canvas.width = w; canvas.height = h; fit(); arena.render(arena.time); };
+  $('run').onchange = e => { location.href = '/arena/' + e.target.value; };
+  $('dl').onclick = () => { $('dl').href = '/arena/' + RUN + '/export.html?size=' + $('size').value; };
+  addEventListener('keydown', e => {
+    if (e.key === ' ' && e.target.tagName !== 'BUTTON') { e.preventDefault(); $('play').onclick(); }
+    if (e.key === 'ArrowRight') arena.seek(arena.time + 5);
+    if (e.key === 'ArrowLeft') arena.seek(arena.time - 5);
+  });
+  if (live) {
+    msg('Live: following the run as it happens', 3000);
+    const poll = async () => {
+      try { const next = await get(); if (next.beats.length !== tl.beats.length || next.run.finished !== tl.run.finished) { tl = next; arena.setTimeline(tl); if (tl.run.finished) arena.setLive(false); } } catch (e) {}
+      if (!tl.run.finished) setTimeout(poll, 1500);
+    };
+    setTimeout(poll, 1500);
+  }
+  // real-time recording with MediaRecorder (WebM; MP4 where the browser supports it)
+  let rec = null;
+  $('rec').onclick = () => {
+    if (rec) { rec.stop(); return; }
+    if (!canvas.captureStream || typeof MediaRecorder === 'undefined') { msg('This browser cannot record canvas video. Use: wsp arena record ' + RUN, 6000); return; }
+    const types = ['video/mp4;codecs=avc1', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+    const type = types.find(t => MediaRecorder.isTypeSupported(t)) || '';
+    const chunks = [];
+    rec = new MediaRecorder(canvas.captureStream(30), { mimeType: type, videoBitsPerSecond: 12e6 });
+    rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+    rec.onstop = () => {
+      const ext = type.includes('mp4') ? 'mp4' : 'webm';
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(chunks, { type: type || 'video/webm' }));
+      a.download = `wsp-arena-${tl.run.challenge}-s${tl.run.seed}.${ext}`; a.click();
+      $('rec').classList.remove('on'); $('rec').textContent = '● Rec'; rec = null; msg('Saved ' + a.download);
+    };
+    arena.pause(); arena.setSpeed(1); $('speed').value = '1'; arena.seek(0);
+    rec.start(250); arena.play();
+    $('rec').classList.add('on'); $('rec').textContent = '■ Stop';
+    msg('Recording in real time… it stops by itself at the end', 4000);
+    const watch = () => { if (!rec) return; if (!arena.playing && arena.time >= arena.duration - 0.05) rec.stop(); else setTimeout(watch, 200); };
+    setTimeout(watch, 500);
+  };
+})();
+</script>
+</body>
+</html>

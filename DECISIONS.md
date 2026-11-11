@@ -283,3 +283,38 @@ Entries marked **[REVIEW]** are the ones most likely to need your input.
 7. **Score tolerance ±0.05** in verification: instances include small trained models whose weights can differ across
    platforms and PyTorch versions. Locally, re-scoring from scratch reproduced all 27 baseline runs exactly.
 8. The scripted baseline (seeds 1–3) is the first leaderboard entry, labelled as a reference, not an AI.
+
+## 12. Arena: animated replays and video export (2026-11-11)
+
+1. **One renderer for everything.** `ui/static/arena.js` draws a frame as a pure function of `(timeline, t)`. The
+   live view in `wsp ui`, the website's replays, standalone HTML exports and frame-exact MP4s all use it, so a video
+   always matches what the UI shows. The timeline is built from the append-only event log (`core/arena.py`), not
+   from a separate recording.
+2. **Time is compressed, order is not.** Each event becomes a beat with a fixed on-screen duration (scan 1.7 s, or
+   1.0 s when it repeats the previous scan; edit 4.2 s; practice 2.6 s; and so on), so a 2-minute or a 0.2-second
+   run both play in about a minute. The header's *run clock* shows the real elapsed time of the current step.
+   **[REVIEW]**
+3. **Viewers see the ground truth; agents never do.** Damaged heads (red), sign-flipped heads (magenta), true head
+   roles, planted triggers and banned tokens come from the instance's hidden truth. Every frame says so. "Patched"
+   (green) means an applied edit targets a damaged head with an operation that could fix it, e.g. a factor > 1 for a
+   shrunk head or a factor < 0 for a flipped one. Otherwise the head shows "changed" (amber). The final score is the
+   real verdict. **[REVIEW]**
+4. **Attention arcs are illustrative.** The `probe_attention` beat draws the ideal induction pattern for the probed
+   tokens (each repeated token attends to the token after its earlier copy). The event log keeps only a result hash,
+   not the attention values. Everything else on screen (scores, budgets, edits, targets, rationales) is real data
+   from the log.
+5. **New `narrate` tool.** Agents can post one or two sentences of commentary, shown as live captions. It is free
+   and unscored, and it doesn't count as a tool call in usage statistics. The API runner leaves it out, because it
+   already logs the model's text and thinking summaries as `note` events. **Privacy note:** these captions are
+   stored in the local database and are part of any exported timeline or video. **[REVIEW]**
+6. **Video export.** `wsp arena record` renders every frame in headless Chromium and pipes it to ffmpeg (H.264, CRF
+   18 by default). Playwright and imageio-ffmpeg are an optional `[video]` extra, so the base install stays small.
+   The browser's **● Rec** button (MediaRecorder; WebM, or MP4 where supported) needs nothing extra but records in
+   real time. Sizes: 16:9, 1:1, 4:5 (best for the LinkedIn feed) and 9:16.
+7. **Fonts are vendored** (Orbitron and JetBrains Mono, both SIL OFL, licences next to the files), so exports and
+   videos look identical offline.
+8. **Website replays** come from small timeline files committed in `leaderboard/replays/`: one per scripted-baseline
+   challenge (seed 1) and one self-reported Claude Code session (`claude-code`, random seed 283472, score 0.984). I
+   drove that session myself through `wsp call`, using only the tools and narrating as I went. It is labelled as
+   self-reported and is not a leaderboard entry. Caveat, as in the milestone report: I wrote the challenge
+   generator, so I knew what *kinds* of damage exist, though not this instance's. **[REVIEW]**
