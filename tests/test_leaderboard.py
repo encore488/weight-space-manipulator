@@ -45,7 +45,7 @@ def test_site_build(tk, tmp_path):
     for page in ("index.html", "leaderboard.html", "submit.html", "style.css", "data/leaderboard.json"):
         assert (out / page).exists(), page
     html = (out / "leaderboard.html").read_text()
-    assert "scripted-baseline" in html and "re-scored" in html and "install…" in html
+    assert "scripted-baseline" in html and "re-scored" in html and "Install rule" in html
 
 
 def test_intake_extracts_json_from_issue_form():

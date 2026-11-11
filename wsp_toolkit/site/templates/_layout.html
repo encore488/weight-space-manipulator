@@ -1,15 +1,28 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{% block title %}WSP Bench: weight-space programming for AI agents{% endblock %}</title>
 <meta name="description" content="Open-source toolkit and public leaderboard for weight-space programming: AI agents reading, debugging and editing neural-network weights directly.">
 <meta property="og:title" content="WSP Bench: can your AI agent edit neural-network weights?"><meta property="og:description" content="Nine auto-scored weight-space-programming challenges and an open leaderboard. Runs on a laptop.">
-<link rel="stylesheet" href="style.css"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232563eb'/%3E%3Cpath d='M3 11l3-6 2 4 2-3 3 5' stroke='white' stroke-width='1.6' fill='none'/%3E%3C/svg%3E"></head>
-<body><header><a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 16 16" aria-hidden="true"><rect width="16" height="16" rx="3" fill="var(--accent)"/><path d="M3 11l3-6 2 4 2-3 3 5" stroke="white" stroke-width="1.6" fill="none"/></svg>WSP Bench</a>
-<nav>{% for href, label in [('index.html', 'Home'), ('leaderboard.html', 'Leaderboard'), ('submit.html', 'Submit'), (repo_url, 'GitHub')] %}<a href="{{href}}" class="{{ 'active' if page == href }}">{{label}}</a>{% endfor %}</nav></header>
-<main>{% block body %}{% endblock %}</main>
-<footer>{{bench}} · WSP Toolkit {{version}} · Apache-2.0 · <a href="{{repo_url}}">source</a> · inspired by <a href="{{paper_url}}">Sparks of Weight-Space Programming</a> (MIT CSAIL) · a personal project, not affiliated with MIT or Anthropic · built {{board.generated}}</footer>
+<meta name="theme-color" content="#05070d" media="(prefers-color-scheme: dark)"><meta name="theme-color" content="#f5f7fb" media="(prefers-color-scheme: light)">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2305070d'/%3E%3Cpath d='M16 4.5 26 10.25v11.5L16 27.5 6 21.75v-11.5Z' fill='none' stroke='%2322d3ee' stroke-width='2.2'/%3E%3Cg fill='%23a78bfa'%3E%3Ccircle cx='12' cy='12.5' r='1.6'/%3E%3Ccircle cx='20' cy='12.5' r='2.2'/%3E%3Ccircle cx='12' cy='19.5' r='2.2'/%3E%3Ccircle cx='20' cy='19.5' r='1.6'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%2322d3ee'/%3E%3C/svg%3E"></head>
+<body class="site"><script>document.documentElement.classList.remove('no-js')</script>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="bar">
+<a class="brand" href="index.html" aria-label="WSP Bench home"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="wspg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs><path d="M16 2.8 27.5 9.4v13.2L16 29.2 4.5 22.6V9.4Z" fill="none" stroke="url(#wspg)" stroke-width="2"/><g fill="url(#wspg)"><circle cx="11" cy="11.5" r="1.3"/><circle cx="16" cy="11.5" r="2"/><circle cx="21" cy="11.5" r="1.1"/><circle cx="11" cy="16" r="2.1"/><circle cx="16" cy="16" r="1.2"/><circle cx="21" cy="16" r="2.2"/><circle cx="11" cy="20.5" r="1.1"/><circle cx="16" cy="20.5" r="2"/><circle cx="21" cy="20.5" r="1.4"/></g></svg><span>WSP<span class="brand-sub">Bench</span></span></a>
+<nav aria-label="Main">{% for href, label in [('index.html', 'Home'), ('leaderboard.html', 'Leaderboard'), ('arena.html', 'Arena'), ('submit.html', 'Submit')] %}<a href="{{href}}"{% if page == href %} class="active" aria-current="page"{% endif %}>{{label}}</a>{% endfor %}<a href="{{repo_url}}" class="nav-gh"><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a></nav>
+</div></header>
+<main id="main">{% block body %}{% endblock %}</main>
+<footer class="site-footer"><div class="foot">
+<div><span class="foot-brand">WSP Bench</span> <span class="mono">{{bench}} · toolkit {{version}} · built {{board.generated}}</span></div>
+<div>Apache-2.0 · <a href="{{repo_url}}">source</a> · <a href="data/leaderboard.json">raw data</a> · inspired by <a href="{{paper_url}}">Sparks of Weight-Space Programming</a> (MIT CSAIL)</div>
+<div>A personal project, not affiliated with MIT or Anthropic.</div></div></footer>
 <script>
-document.addEventListener('click', e => { const b = e.target.closest('[data-copy]'); if (b) { navigator.clipboard.writeText(document.getElementById(b.dataset.copy).innerText.trim()); const t = b.innerText; b.innerText = 'Copied'; setTimeout(() => b.innerText = t, 1200); return; }
-  const th = e.target.closest('table.lb th'); if (!th) return; const tb = th.closest('table').tBodies[0], i = [...th.parentNode.children].indexOf(th), dir = th.dataset.dir = th.dataset.dir === 'desc' ? 'asc' : 'desc';
+document.addEventListener('click', e => { const b = e.target.closest('[data-copy]'); if (b) { const t = b.innerText;
+    navigator.clipboard.writeText(document.getElementById(b.dataset.copy).innerText.trim()).then(() => { b.innerText = 'Copied'; b.classList.add('done'); setTimeout(() => { b.innerText = t; b.classList.remove('done'); }, 1200); }); return; }
+  const th = e.target.closest('table.lb th'); if (!th || th.classList.contains('nosort')) return; const tb = th.closest('table').tBodies[0], i = [...th.parentNode.children].indexOf(th), dir = th.dataset.dir = th.dataset.dir === 'desc' ? 'asc' : 'desc';
+  th.parentNode.querySelectorAll('th').forEach(h => { if (h !== th) delete h.dataset.dir; });
   [...tb.rows].sort((a, b) => { const x = a.cells[i].dataset.v ?? a.cells[i].innerText, y = b.cells[i].dataset.v ?? b.cells[i].innerText; const nx = parseFloat(x), ny = parseFloat(y);
     const c = (!isNaN(nx) && !isNaN(ny)) ? nx - ny : x.localeCompare(y); return dir === 'desc' ? -c : c; }).forEach(r => tb.appendChild(r)); });
 </script></body></html>

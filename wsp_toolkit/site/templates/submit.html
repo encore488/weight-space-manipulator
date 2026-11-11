@@ -1,17 +1,21 @@
 {% extends "_layout.html" %}{% block title %}Submit · WSP Bench{% endblock %}{% block body %}
-<section class="hero"><h1>Submit your results</h1><p>Anyone can add an entry. You run the challenges on your own machine and with your own API key, then send the results file. A GitHub Action re-scores it before it appears here.</p></section>
-<ol class="steps-list">
-<li><b>Install and prepare</b> (once): <div class="cmd"><pre id="s1">uv tool install "wsp-toolkit[agent] @ git+{{repo_url}}"
-wsp challenge prepare</pre><button data-copy="s1">Copy</button></div></li>
-<li><b>Run the challenges.</b> The full benchmark through the Anthropic API (one run of each of the nine challenges; add <code>--runs 3</code> for steadier numbers):
-<div class="cmd"><pre id="s2">wsp bench run --model claude-fable-5-2 --max-cost 5</pre><button data-copy="s2">Copy</button></div>
-<code>--max-cost</code> is a per-run cap on the <i>estimated</i> API cost in USD. Any Claude model ID works. Using another agent or harness (e.g. Claude Code via MCP)? Start each challenge with <code>challenge_start</code> and pass your model's name as <code>agent_model</code>.</li>
-<li><b>Export</b> your runs into one file: <div class="cmd"><pre id="s3">wsp leaderboard export --model claude-fable-5-2 --by your-github-handle --notes "effort high"</pre><button data-copy="s3">Copy</button></div></li>
-<li><b>Check it locally</b> (optional, same check the bot runs): <div class="cmd"><pre id="s4">wsp leaderboard verify wsp-submission-claude-fable-5-2.json</pre><button data-copy="s4">Copy</button></div></li>
-<li><b>Submit</b>: <a class="btn primary" href="{{issue_url}}">Open the submission form</a> and paste the file's contents. The bot re-scores it and comments the result; the maintainer then adds it to the leaderboard. Files over ~60,000 characters won't fit in the form: open a pull request that adds the file to <code>leaderboard/submissions/</code> instead.</li></ol>
-<h2>Rules</h2><ul>
+<section class="page-head"><p class="eyebrow">Open to everyone</p><h1>Submit your results</h1><p>Anyone can add an entry. You run the challenges on your own machine and with your own API key, then send the results file. A GitHub Action re-scores it before it appears here.</p></section>
+<ol class="timeline">
+<li><div class="t-body"><h2>Install and prepare <span class="t-tag">once</span></h2><div class="cmd"><pre id="s1">uv tool install "wsp-toolkit[agent] @ git+{{repo_url}}"
+wsp challenge prepare</pre><button type="button" data-copy="s1">Copy</button></div></div></li>
+<li><div class="t-body"><h2>Run the challenges</h2><p>The full benchmark through the Anthropic API (one run of each of the nine challenges; add <code>--runs 3</code> for steadier numbers):</p>
+<div class="cmd"><pre id="s2">wsp bench run --model claude-fable-5-2 --max-cost 5</pre><button type="button" data-copy="s2">Copy</button></div>
+<p class="hint"><code>--max-cost</code> is a per-run cap on the <i>estimated</i> API cost in USD. Any Claude model ID works. Using another agent or harness (e.g. Claude Code via MCP)? Start each challenge with <code>challenge_start</code> and pass your model's name as <code>agent_model</code>.</p></div></li>
+<li><div class="t-body"><h2>Export your runs into one file</h2><div class="cmd"><pre id="s3">wsp leaderboard export --model claude-fable-5-2 --by your-github-handle --notes "effort high"</pre><button type="button" data-copy="s3">Copy</button></div></div></li>
+<li><div class="t-body"><h2>Check it locally <span class="t-tag">optional</span></h2><p>The same check the bot runs:</p><div class="cmd"><pre id="s4">wsp leaderboard verify wsp-submission-claude-fable-5-2.json</pre><button type="button" data-copy="s4">Copy</button></div></div></li>
+<li><div class="t-body"><h2>Submit</h2><p>Open the submission form and paste the file's contents. The bot re-scores it and comments the result; the maintainer then adds it to the leaderboard.</p>
+<p><a class="btn primary" href="{{issue_url}}">Open the submission form <span aria-hidden="true">→</span></a></p>
+<p class="hint">Files over ~60,000 characters won't fit in the form: open a pull request that adds the file to <code>leaderboard/submissions/</code> instead.</p></div></li></ol>
+
+<section class="section"><div class="sec-head"><div><p class="eyebrow">Fair play</p><h2>Rules</h2></div></div>
+<ul class="rules">
 <li>Don't edit the exported file. Re-scoring will catch changed scores, edits or answers.</li>
 <li>Report what you ran: the model ID, and in <code>--notes</code> anything unusual (effort, extra tools, prompts).</li>
 <li>Agents should use only the toolkit's tools. Reading instance files from disk or regenerating instances from the code defeats the point; please don't.</li>
-<li>Submitting means your results file (model name, handle, scores, edits) is published in the repository under Apache-2.0.</li></ul>
+<li>Submitting means your results file (model name, handle, scores, edits) is published in the repository under Apache-2.0.</li></ul></section>
 {% endblock %}

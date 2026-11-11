@@ -1,14 +1,22 @@
 {% extends "_layout.html" %}{% import "_board.html" as b with context %}{% block title %}Leaderboard · WSP Bench{% endblock %}{% block body %}
-<section class="hero"><h1>Leaderboard</h1><p>{{bench}}: nine challenges, each scored 0–1. <b>WSP-Bench</b> is their mean; a challenge an entry didn't run counts 0 (entries without all nine are marked <i>partial</i>). Click a column to sort; hover a score to see how many runs it averages.</p></section>
-{{ b.table(board.entries) }}
-<h2>How to read it</h2><ul>
-<li><span class="badge ok">re-scored ✓</span>: this site's build rebuilt every run's instance from its seed, replayed the submitted edits and answers, and got the same score (within ±0.05; instances are small trained models and differ slightly across platforms).</li>
-<li><b>Harness</b>: <code>wsp-agent-runner</code> means the model got only the toolkit's tools through the Anthropic API. <code>mcp (self-reported)</code> means an MCP client such as Claude Code, which may also have had shell access. <i>unlocked</i> means the server wasn't locked to the challenge.</li>
-<li><b>What re-scoring can't check:</b> which model produced the run, and whether budgets were respected. Those come from the submitter's own log. Treat entries as honest self-reports whose scores are reproducible.</li>
-<li><code>{{baseline}}</code> is deterministic code using the same tools: a reference point, not an AI.</li></ul>
-<p><a href="data/leaderboard.json">Raw data (JSON)</a> · <a href="{{repo_url}}/tree/main/leaderboard/submissions">submission files</a></p>
-{% if board.rejected %}<h2>Not accepted in this build</h2><table><tr><th>File</th><th>Reason</th></tr>{% for r in board.rejected %}<tr><td><code>{{r.file}}</code></td><td>{{r.reason}}</td></tr>{% endfor %}</table>{% endif %}
-{% for c in challenges %}<h2 id="{{c.id}}">{{c.title}} <span class="level">level {{c.level}}</span></h2><p class="muted" style="margin-top:0">{{c.scoring}}</p>
-{% set rows = board.by_challenge[c.id] %}{% if rows %}<table class="lb"><thead><tr><th>Model</th><th class="num">Score</th><th class="num">Runs</th><th>Harness</th></tr></thead><tbody>
-{% for e in rows %}<tr><td><code>{{e.agent_model}}</code></td><td class="num score">{{'%.3f'|format(e.per_challenge[c.id])}}</td><td class="num">{{e.runs_per_challenge[c.id]}}</td><td style="font-size:12px">{{e.harness}}</td></tr>{% endfor %}</tbody></table>{% else %}<p class="muted">No runs yet.</p>{% endif %}{% endfor %}
+<section class="page-head"><p class="eyebrow"><span class="pulse" aria-hidden="true"></span>{{bench}} · {{ board.entries|length }} entr{{ 'y' if board.entries|length == 1 else 'ies' }}</p><h1>Leaderboard</h1>
+<p>Nine challenges, each scored 0–1. <b>WSP-Bench</b> is their mean; a challenge an entry didn't run counts 0 (entries without all nine are marked <i>partial</i>). Click a column to sort; hover a score to see how many runs it averages.</p>
+<div class="legend" aria-label="Score colours"><span class="chip t-hi">≥ 0.90</span><span class="chip t-good">≥ 0.60</span><span class="chip t-mid">≥ 0.30</span><span class="chip t-low">&lt; 0.30</span></div></section>
+{{ b.table(board.entries, None, True) }}
+
+<section class="section"><div class="sec-head"><div><p class="eyebrow">Reading the table</p><h2>What the columns mean</h2></div></div>
+<div class="notes-grid">
+<div class="feat"><h3><span class="badge ok"><svg width="11" height="11" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>re-scored</span></h3><p>This site's build rebuilt every run's instance from its seed, replayed the submitted edits and answers, and got the same score (within ±0.05; instances are small trained models and differ slightly across platforms).</p></div>
+<div class="feat"><h3>Harness</h3><p><code>wsp-agent-runner</code> means the model got only the toolkit's tools through the Anthropic API. <code>mcp (self-reported)</code> means an MCP client such as Claude Code, which may also have had shell access. <i>unlocked</i> means the server wasn't locked to the challenge.</p></div>
+<div class="feat"><h3>What re-scoring can't check</h3><p>Which model produced the run, and whether budgets were respected. Those come from the submitter's own log. Treat entries as honest self-reports whose scores are reproducible.</p></div>
+<div class="feat"><h3>The reference entry</h3><p><code>{{baseline}}</code> is deterministic code using the same tools: a reference point, not an AI.</p></div>
+</div>
+<p class="aside"><a href="data/leaderboard.json">Raw data (JSON)</a> · <a href="{{repo_url}}/tree/main/leaderboard/submissions">submission files</a> · <a href="submit.html">add your model →</a></p></section>
+{% if board.rejected %}<section class="section"><h2>Not accepted in this build</h2><div class="board"><table><thead><tr><th>File</th><th>Reason</th></tr></thead><tbody>{% for r in board.rejected %}<tr><td><code>{{r.file}}</code></td><td>{{r.reason}}</td></tr>{% endfor %}</tbody></table></div></section>{% endif %}
+
+<section class="section"><div class="sec-head"><div><p class="eyebrow">Per challenge</p><h2>Scores by challenge</h2></div></div>
+<div class="per-grid">{% for c in challenges %}<article class="pc k-{{c.kind}}" id="{{c.id}}"><div class="cc-top"><span class="lvl l{{c.level}}">L{{c.level}}</span><span class="kind">{{c.kind}}</span></div>
+<h3>{{c.title}}</h3><p class="scoring"><span>Scoring</span> {{c.scoring}}</p>
+{% set rows = board.by_challenge[c.id] %}{% if rows %}<div class="board"><table class="lb mini"><thead><tr><th>Model</th><th class="num">Score</th><th class="num">Runs</th><th>Harness</th></tr></thead><tbody>
+{% for e in rows %}<tr><td><code class="model-id">{{e.agent_model}}</code></td><td class="num" data-v="{{e.per_challenge[c.id]}}">{{ b.chip(e.per_challenge[c.id], '%.3f') }}</td><td class="num mono">{{e.runs_per_challenge[c.id]}}</td><td class="small">{{e.harness}}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="muted">No runs yet.</p>{% endif %}</article>{% endfor %}</div></section>
 {% endblock %}
