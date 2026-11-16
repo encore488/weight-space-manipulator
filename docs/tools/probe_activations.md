@@ -28,7 +28,7 @@ Call (MCP tool arguments, or `wsp call probe_activations '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "inputs": [
   [
    0,
@@ -46,7 +46,7 @@ Call (MCP tool arguments, or `wsp call probe_activations '<json>'`):
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
@@ -83,7 +83,7 @@ Result (real output from the induction fixture):
    "norm_by_position": [
     28.49,
     26.53,
-    28.59,
+    28.58,
     26.16,
     24.35,
     20.27
@@ -114,11 +114,11 @@ Result (real output from the induction fixture):
      "top_units": [
       [
        19,
-       -6.465
+       -6.466
       ],
       [
        63,
-       -6.259
+       -6.26
       ],
       [
        43,
@@ -126,7 +126,7 @@ Result (real output from the induction fixture):
       ],
       [
        44,
-       5.293
+       5.292
       ]
      ]
     }

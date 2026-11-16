@@ -23,12 +23,12 @@ Call (MCP tool arguments, or `wsp call tensor_stats '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "tensor": "blocks.1.attn.o_proj.weight"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
@@ -53,8 +53,8 @@ Result (real output from the induction fixture):
   "quantiles": {
    "p1": -0.2933,
    "p5": -0.2104,
-   "p25": -0.08995,
-   "p50": -0.00382,
+   "p25": -0.08996,
+   "p50": -0.003822,
    "p75": 0.0804,
    "p95": 0.2059,
    "p99": 0.2891
@@ -74,8 +74,8 @@ Result (real output from the induction fixture):
     660,
     514,
     356,
-    223,
-    111,
+    224,
+    110,
     43,
     20,
     2
@@ -114,7 +114,7 @@ Result (real output from the induction fixture):
    },
    {
     "index": 27,
-    "norm": 0.8107
+    "norm": 0.8108
    },
    {
     "index": 11,
@@ -166,13 +166,12 @@ Result (real output from the induction fixture):
    },
    {
     "index": 22,
-    "norm": 0.6646
+    "norm": 0.6647
    },
    {
     "index": 23,
-    "norm": 0.6711
+    "norm": 0.671
    },
    {
-  
   ... (truncated for the docs)
 ```

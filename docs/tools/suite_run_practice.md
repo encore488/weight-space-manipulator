@@ -25,22 +25,22 @@ Call (MCP tool arguments, or `wsp call suite_run_practice '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "suite_id": "induction_practice",
  "limit": 2
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "run_id": "run_a40927ee7de2ae51",
+ "run_id": "run_0000000000000006",
  "suite": "induction_practice",
  "split": "practice",
  "kind": "practice",
- "patch_id": "p_de781df671b58006",
- "model_hash": "ed5c84a209e1deb3",
+ "patch_id": "p_0000000000000002",
+ "model_hash": "cdd2f8c2c3088c78",
  "settings": {
   "temperature": 0.0,
   "top_p": 1.0,
@@ -60,13 +60,13 @@ Result (real output from the induction fixture):
   "token_accuracy": 1.0
  },
  "env": {
-  "python": "3.13.18",
-  "torch": "2.15.0+cpu",
-  "platform": "Linux-6.18.44-fc-v338-x86_64-with-glibc2.39",
-  "wsp_toolkit": "0.2.0",
+  "python": "3.12.12",
+  "torch": "2.9.1+cpu",
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "wsp_toolkit": "0.3.0",
   "network": "blocked (thread)",
   "eval_batch_size": 1,
-  "transformers": "5.22.2"
+  "transformers": "5.23.0"
  },
  "cached": false,
  "details": [

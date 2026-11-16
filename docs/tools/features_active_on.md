@@ -26,7 +26,7 @@ Call (MCP tool arguments, or `wsp call features_active_on '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "inputs": [
   [
    0,
@@ -42,7 +42,7 @@ Call (MCP tool arguments, or `wsp call features_active_on '<json>'`):
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
@@ -67,18 +67,18 @@ Result (real output from the induction fixture):
    ],
    "hooks": {
     "L1.resid_post": {
-     "dict_id": "fd_1a07c473b1",
-     "unexplained_fraction_this_input": 0.3224,
+     "dict_id": "fd_95fe6301b7",
+     "unexplained_fraction_this_input": 0.3223,
      "dictionary_unexplained_fraction": 0.4545,
      "positions": [
       {
        "position": 0,
        "features": [
         {
-         "feature_id": "fd_1a07c473b1:0",
+         "feature_id": "fd_95fe6301b7:0",
          "label": "position 0",
-         "activation": 1.052,
-         "fidelity": 0.5255
+         "activation": 1.053,
+         "fidelity": 0.5199
         }
        ]
       },
@@ -86,10 +86,10 @@ Result (real output from the induction fixture):
        "position": 1,
        "features": [
         {
-         "feature_id": "fd_1a07c473b1:5",
+         "feature_id": "fd_95fe6301b7:5",
          "label": "current token is 't5'",
-         "activation": 0.5552,
-         "fidelity": 0.2997
+         "activation": 0.5607,
+         "fidelity": 0.2986
         }
        ]
       },
@@ -97,10 +97,10 @@ Result (real output from the induction fixture):
        "position": 2,
        "features": [
         {
-         "feature_id": "fd_1a07c473b1:9",
+         "feature_id": "fd_95fe6301b7:9",
          "label": "current token is 't9'",
-         "activation": 0.5552,
-         "fidelity": 0.3543
+         "activation": 0.5575,
+         "fidelity": 0.3529
         }
        ]
       },
@@ -108,10 +108,10 @@ Result (real output from the induction fixture):
        "position": 3,
        "features": [
         {
-         "feature_id": "fd_1a07c473b1:15",
+         "feature_id": "fd_95fe6301b7:15",
          "label": "inside a counting sequence",
-         "activation": 0.223,
-         "fidelity": 0.2734
+         "activation": 0.2241,
+         "fidelity": 0.2738
         }
        ]
       },
@@ -119,9 +119,9 @@ Result (real output from the induction fixture):
        "position": 4,
        "features": [
         {
-         "feature_id": "fd_1a07c473b1:8",
+         "feature_id": "fd_95fe6301b7:8",
          "label": "current token is 't8'",
-         "activation": 0.4102,
+         "activation": 0.4096,
          "fidelity": 0.5087
         }
        ]
@@ -130,10 +130,10 @@ Result (real output from the induction fixture):
        "position": 5,
        "features": [
         {
-         "feature_id": "fd_1a07c473b1:2",
+         "feature_id": "fd_95fe6301b7:2",
          "label": "previous token is 't1'",
-         "activation": 0.6195,
-         "fidelity": 0.2652
+         "activation": 0.6122,
+         "fidelity": 0.2703
         }
        ]
       }
@@ -143,6 +143,6 @@ Result (real output from the induction fixture):
   }
  ],
  "budget": {
-  "used
+  "use
   ... (truncated for the docs)
 ```

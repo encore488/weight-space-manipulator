@@ -24,13 +24,13 @@ Call (MCP tool arguments, or `wsp call tensor_get '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "tensor": "blocks.1.attn.o_proj.weight",
  "slice": "0:2, 0:4"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
@@ -42,16 +42,16 @@ Result (real output from the induction fixture):
  ],
  "values": [
   [
-   0.02882,
+   0.02884,
    -0.03742,
    0.08833,
    -0.1229
   ],
   [
    -0.0173,
-   0.03086,
-   -0.1372,
-   -0.08463
+   0.03087,
+   -0.1373,
+   -0.08465
   ]
  ]
 }

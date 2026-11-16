@@ -25,17 +25,17 @@ Call (MCP tool arguments, or `wsp call diff_report '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
- "other_session_id": "sess_5d9e37323c38",
+ "session_id": "sess_000000000003",
+ "other_session_id": "sess_000000000004",
  "n_probes": 8
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "audit_id": "audit_8a23c654b2aa",
+ "audit_id": "audit_000000000001",
  "findings": [
   {
    "type": "behavior_change",
@@ -109,6 +109,6 @@ Result (real output from the induction fixture):
    "tensor": "blocks.1.attn.o_proj.weight",
    "rel_change": 0.8952,
    "rank_90": 26,
-   "text": "largest relative change in blocks.1.attn.o_proj.weight (0.8952); 90% of its delta energy 
+   "text": "largest relative change in blocks.1.attn.o_proj.weight (0.8952); 90% of its delta energy
   ... (truncated for the docs)
 ```

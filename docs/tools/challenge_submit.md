@@ -22,29 +22,29 @@ Call (MCP tool arguments, or `wsp call challenge_submit '<json>'`):
 
 ```json
 {
- "run_id": "cr_e2c1ebbd82e3",
+ "run_id": "cr_000000000002",
  "answer": {}
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "run_id": "cr_e2c1ebbd82e3",
+ "run_id": "cr_000000000002",
  "challenge": "blind-surgeon",
- "seed": 140298,
- "score": 0.128,
+ "seed": 42,
+ "score": 0.05246,
  "detail": {
-  "copy_accuracy": 0.1497,
-  "counting_accuracy": 0.8551,
+  "copy_accuracy": 0.05246,
+  "counting_accuracy": 1.0,
   "patches_applied": 0,
   "reference": "healthy model copies ~0.98; damaged instances copy < 0.3"
  },
  "usage": {
   "forward_passes": 0,
   "tool_calls": 0,
-  "minutes": 0.001505
+  "minutes": 0.0
  }
 }
 ```

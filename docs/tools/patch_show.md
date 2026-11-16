@@ -21,19 +21,19 @@ Call (MCP tool arguments, or `wsp call patch_show '<json>'`):
 
 ```json
 {
- "patch_id": "p_8b4e424ecd90b3a7"
+ "patch_id": "p_0000000000000001"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "patch_id": "p_8b4e424ecd90b3a7",
- "workspace_id": "ws_f5367d180411",
- "base_model_hash": "1b441d92f299953d64ee9a233753978c72dfc1a7e848b0baabfba39741ba072e",
+ "patch_id": "p_0000000000000001",
+ "workspace_id": "ws_000000000002",
+ "base_model_hash": "610d318e08449718477580a7d3db31b8b5f8d93d77605b0fb6e6fc355bc5e75b",
  "parent_patch": null,
- "model_hash_before": "1b441d92f299953d64ee9a233753978c72dfc1a7e848b0baabfba39741ba072e",
+ "model_hash_before": "610d318e08449718477580a7d3db31b8b5f8d93d77605b0fb6e6fc355bc5e75b",
  "operations": [
   {
    "op": "scale",
@@ -50,46 +50,46 @@ Result (real output from the induction fixture):
    "delta_norm": 0.3993,
    "rel_change": 0.04664,
    "max_abs_delta": 0.03495,
-   "hash_before": "cf1798b3c6ed74297f2078be991a1b9ad8ab0f7a71e2000074999b203546e785",
-   "hash_after": "0fb63f3bd6516a6e7420722769b2e92009e5cc48546cbe88d27da6bf180f237c"
+   "hash_before": "726a42b19b8ef2cf95b2c9c98198a4643818c752d43293d100da4dcd5e0d1529",
+   "hash_after": "a598236735a06432056bf5d2c072c572b6941509dfcacbba155a2ab8d87f1cdb"
   }
  ],
  "params_changed": 1024,
  "pct_of_model": 2.66667,
  "rationale": "doc patch A",
- "author": "agent:sess_87aaa3b360e8",
- "created_at": 1794315523.5216708,
+ "author": "agent:sess_000000000003",
+ "created_at": 0.0,
  "evals": [
-  "run_ea10fc137eed9140",
-  "run_462a0f74236e0f0b",
-  "run_feb94c01de7cdb8d",
-  "run_18118843b5084e85"
+  "run_0000000000000002",
+  "run_0000000000000003",
+  "run_0000000000000004",
+  "run_0000000000000005"
  ],
- "model_hash_after": "ec8aee16b0d759b7fc66d7492914b77098aa99b1143ba1cd3ce3e4874b734707",
+ "model_hash_after": "61c0c7aa6ceb6c1376efdd99432a5fddf2c46f025f06d658b3e0f8a94a2c3e0a",
  "status": "tested",
  "flags": [],
  "approvals": [],
  "eval_runs": [
   {
-   "run_id": "run_18118843b5084e85",
+   "run_id": "run_0000000000000003",
+   "suite": "counting_regression",
+   "on": "patched",
+   "metrics": "hidden at this access level"
+  },
+  {
+   "run_id": "run_0000000000000005",
    "suite": "induction_regression",
    "on": "patched",
    "metrics": "hidden at this access level"
   },
   {
-   "run_id": "run_462a0f74236e0f0b",
-   "suite": "counting_regression",
-   "on": "patched",
-   "metrics": "hidden at this access level"
-  },
-  {
-   "run_id": "run_ea10fc137eed9140",
+   "run_id": "run_0000000000000002",
    "suite": "counting_regression",
    "on": "base",
    "metrics": "hidden at this access level"
   },
   {
-   "run_id": "run_feb94c01de7cdb8d",
+   "run_id": "run_0000000000000004",
    "suite": "induction_regression",
    "on": "base",
    "metrics": "hidden at this access level"

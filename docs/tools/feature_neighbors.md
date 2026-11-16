@@ -22,16 +22,16 @@ Call (MCP tool arguments, or `wsp call feature_neighbors '<json>'`):
 
 ```json
 {
- "feature_id": "fd_adc2dceaaa:13",
+ "feature_id": "fd_e2bae00b39:13",
  "k": 2
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "feature_id": "fd_adc2dceaaa:13",
+ "feature_id": "fd_e2bae00b39:13",
  "label": "previous token is '<bos>'",
  "fidelity": 0.7059,
  "unexplained_fraction": 0.4985,
@@ -40,27 +40,27 @@ Result (real output from the induction fixture):
  "upstream": [],
  "downstream": [
   [
-   "fd_1a07c473b1:22",
-   0.5249
+   "fd_95fe6301b7:22",
+   0.5221
   ],
   [
-   "fd_1a07c473b1:29",
-   0.1389
+   "fd_95fe6301b7:29",
+   0.1357
   ],
   [
-   "fd_1a07c473b1:0",
-   0.09628
+   "fd_95fe6301b7:0",
+   0.09634
   ]
  ],
  "similar_in_dictionary": [
   {
-   "feature_id": "fd_adc2dceaaa:0",
+   "feature_id": "fd_e2bae00b39:0",
    "label": "first token (BOS / position 0)",
    "cosine": 0.4012,
    "fidelity": 0.9796
   },
   {
-   "feature_id": "fd_adc2dceaaa:22",
+   "feature_id": "fd_e2bae00b39:22",
    "label": "position 21",
    "cosine": 0.2613,
    "fidelity": 0.7956

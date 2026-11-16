@@ -31,11 +31,11 @@ Call (MCP tool arguments, or `wsp call sensitive_register '<json>'`):
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "id": "sens_c0a0d1eaa0",
+ "id": "sens_0000000001",
  "kind": "tensor",
  "target": "unembed.weight",
  "model_hash": "*"

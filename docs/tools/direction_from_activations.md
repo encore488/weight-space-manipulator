@@ -26,7 +26,7 @@ Call (MCP tool arguments, or `wsp call direction_from_activations '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "positive_inputs": [
   [
    0,
@@ -49,11 +49,11 @@ Call (MCP tool arguments, or `wsp call direction_from_activations '<json>'`):
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "direction": "dir_6363ebea184f10a3",
+ "direction": "dir_8790d7a4ab48c95d",
  "hook": "L1.resid_post",
  "dim": 64,
  "raw_norm": 26.86,
@@ -63,7 +63,7 @@ Result (real output from the induction fixture):
  "top_units": [
   [
    56,
-   9.46
+   9.462
   ],
   [
    19,
@@ -79,15 +79,15 @@ Result (real output from the induction fixture):
   ],
   [
    43,
-   -5.828
+   -5.827
   ],
   [
    33,
-   -5.79
+   -5.791
   ],
   [
    5,
-   5.356
+   5.357
   ],
   [
    51,

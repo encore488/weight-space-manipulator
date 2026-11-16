@@ -28,7 +28,7 @@ Call (MCP tool arguments, or `wsp call probe_attention '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "inputs": [
   [
    0,
@@ -49,7 +49,7 @@ Call (MCP tool arguments, or `wsp call probe_attention '<json>'`):
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
@@ -78,15 +78,15 @@ Result (real output from the induction fixture):
   {
    "input": 0,
    "head": "1.2",
-   "mean_entropy": 0.3745,
-   "attn_to_first": 0.5794,
+   "mean_entropy": 0.3747,
+   "attn_to_first": 0.5793,
    "mean_attn_by_offset": [
-    0.2414,
+    0.2415,
     0.2045,
     0.6997,
-    0.2091,
-    0.05123,
-    0.0002942
+    0.209,
+    0.05124,
+    0.0002941
    ],
    "top_keys_by_query": [
     [
@@ -107,7 +107,7 @@ Result (real output from the induction fixture):
       ],
       [
        1,
-       0.02087
+       0.02086
       ]
      ]
     ],
@@ -116,11 +116,11 @@ Result (real output from the induction fixture):
      [
       [
        0,
-       0.8761
+       0.876
       ],
       [
        2,
-       0.08784
+       0.08793
       ]
      ]
     ],
@@ -129,11 +129,11 @@ Result (real output from the induction fixture):
      [
       [
        0,
-       0.5186
+       0.5181
       ],
       [
        3,
-       0.3388
+       0.3393
       ]
      ]
     ],
@@ -142,7 +142,7 @@ Result (real output from the induction fixture):
      [
       [
        2,
-       0.785
+       0.7848
       ],
       [
        1,
@@ -159,7 +159,7 @@ Result (real output from the induction fixture):
       ],
       [
        0,
-       0.0002942
+       0.0002941
       ]
      ]
     ]

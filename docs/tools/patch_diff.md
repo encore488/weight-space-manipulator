@@ -22,17 +22,17 @@ Call (MCP tool arguments, or `wsp call patch_diff '<json>'`):
 
 ```json
 {
- "patch_a": "p_8b4e424ecd90b3a7",
- "patch_b": "p_de781df671b58006"
+ "patch_a": "p_0000000000000001",
+ "patch_b": "p_0000000000000002"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "a": "p_8b4e424ecd90b3a7",
- "b": "p_de781df671b58006",
+ "a": "p_0000000000000001",
+ "b": "p_0000000000000002",
  "only_in_a": [],
  "only_in_b": [],
  "shared": [

@@ -23,7 +23,7 @@ Call (MCP tool arguments, or `wsp call direction_readout '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "direction": {
   "tensor": "blocks.1.attn.o_proj.weight",
   "svd": 0,
@@ -33,19 +33,19 @@ Call (MCP tool arguments, or `wsp call direction_readout '<json>'`):
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
  "direction": "left singular vector 0 of blocks.1.attn.o_proj.weight",
  "through_final_norm_scale": false,
- "logit_mean": 0.01227,
- "logit_std": 0.154,
+ "logit_mean": 0.01228,
+ "logit_std": 0.1539,
  "promotes": [
   {
    "token": "t3",
    "id": 3,
-   "logit": 0.3257
+   "logit": 0.3258
   },
   {
    "token": "t30",
@@ -60,19 +60,19 @@ Result (real output from the induction fixture):
   {
    "token": "t1",
    "id": 1,
-   "logit": 0.2309
+   "logit": 0.2308
   },
   {
    "token": "t6",
    "id": 6,
-   "logit": 0.1923
+   "logit": 0.1924
   }
  ],
  "suppresses": [
   {
    "token": "t17",
    "id": 17,
-   "logit": -0.3237
+   "logit": -0.3236
   },
   {
    "token": "t19",
@@ -87,12 +87,12 @@ Result (real output from the induction fixture):
   {
    "token": "t15",
    "id": 15,
-   "logit": -0.1785
+   "logit": -0.1786
   },
   {
    "token": "t24",
    "id": 24,
-   "logit": -0.1711
+   "logit": -0.1713
   }
  ]
 }

@@ -22,16 +22,16 @@ Call (MCP tool arguments, or `wsp call result_page '<json>'`):
 
 ```json
 {
- "handle": "res_10341050ccea288ea5ed",
+ "handle": "res_00000000000000000001",
  "page": 1
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "handle": "res_10341050ccea288ea5ed",
+ "handle": "res_00000000000000000001",
  "page": 1,
  "pages": 8,
  "paged_field": "heads",
@@ -44,9 +44,9 @@ Result (real output from the induction fixture):
     0.1196,
     0.1261,
     0.0101,
-    0.09077,
-    0.03121,
-    0.07024,
+    0.09081,
+    0.03122,
+    0.07026,
     0.1131,
     0.05956
    ],
@@ -66,11 +66,11 @@ Result (real output from the induction fixture):
      [
       [
        0,
-       0.961
+       0.9611
       ],
       [
        1,
-       0.03897
+       0.03889
       ]
      ]
     ],
@@ -83,11 +83,11 @@ Result (real output from the induction fixture):
       ],
       [
        1,
-       0.2365
+       0.2364
       ],
       [
        0,
-       0.06765
+       0.06776
       ]
      ]
     ],
@@ -100,7 +100,7 @@ Result (real output from the induction fixture):
       ],
       [
        2,
-       0.01178
+       0.01177
       ],
       [
        1,
@@ -113,11 +113,11 @@ Result (real output from the induction fixture):
      [
       [
        3,
-       0.8647
+       0.8649
       ],
       [
        1,
-       0.1001
+       0.1
       ],
       [
        2,
@@ -130,7 +130,7 @@ Result (real output from the induction fixture):
      [
       [
        0,
-       0.5024
+       0.5025
       ],
       [
        1,
@@ -138,7 +138,7 @@ Result (real output from the induction fixture):
       ],
       [
        2,
-       0.04733
+       0.04727
       ]
      ]
     ],
@@ -147,15 +147,15 @@ Result (real output from the induction fixture):
      [
       [
        0,
-       0.8724
+       0.8723
       ],
       [
        2,
-       0.106
+       0.1061
       ],
       [
        1,
-       0.01309
+       0.0131
       ]
      ]
     ],
@@ -168,11 +168,11 @@ Result (real output from the induction fixture):
       ],
       [
        1,
-       0.02282
+       0.0228
       ],
       [
        0,
-       0.01837
+       0.01839
       ]
      ]
     ],
@@ -185,11 +185,11 @@ Result (real output from the induction fixture):
       ],
       [
        5,
-       0.007873
+       0.007869
       ],
       [
        1,
-       0.007805
+       0.007797
       ]
      ]
     ],
@@ -198,16 +198,16 @@ Result (real output from the induction fixture):
      [
       [
        0,
-       0.5987
+       0.5989
       ],
       [
        2,
-       0.1794
+       0.1792
       ],
       [
        4,
        0.1555
       ]
-     
+     ]
   ... (truncated for the docs)
 ```

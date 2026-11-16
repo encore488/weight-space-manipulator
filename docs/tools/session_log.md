@@ -21,36 +21,36 @@ Call (MCP tool arguments, or `wsp call session_log '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8"
+ "session_id": "sess_000000000003"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
  "events": [
   {
    "id": 1,
-   "ts": 1794315523.5122378,
+   "ts": 0.0,
    "actor": "agent",
    "kind": "tool",
    "tool": "workspace_open",
    "ok": true,
-   "summary": "workspace_id=ws_f5367d180411, session_id=sess_87aaa3b360e8, access_level=weights+activations+outputs, capabilities=[3], budget={...}, model_kind=tiny_transforme"
+   "summary": "workspace_id=ws_000000000002, session_id=sess_000000000003, access_level=weights+activations+outputs, capabilities=[3], budget={...}, model_kind=tiny_transforme"
   },
   {
    "id": 3,
-   "ts": 1794315523.527085,
+   "ts": 0.0,
    "actor": "agent",
    "kind": "edit",
    "tool": "edit_apply",
    "ok": true,
-   "summary": "applied p_8b4e424ecd90b3a7 (1024 params)"
+   "summary": "applied p_0000000000000001 (1024 params)"
   },
   {
    "id": 4,
-   "ts": 1794315524.571487,
+   "ts": 0.0,
    "actor": "system",
    "kind": "eval",
    "tool": "patch_test",
@@ -59,25 +59,25 @@ Result (real output from the induction fixture):
   },
   {
    "id": 5,
-   "ts": 1794315524.5723703,
+   "ts": 0.0,
    "actor": "agent",
    "kind": "tool",
    "tool": "edit_apply",
    "ok": true,
-   "summary": "patch_id=p_8b4e424ecd90b3a7, status=draft, params_changed=1024, pct_of_model=2.667, tensors=[1], model_hash_after=ec8aee16b0d759b7, sensitive_flags=[0], stack=["
+   "summary": "patch_id=p_0000000000000001, status=draft, params_changed=1024, pct_of_model=2.667, tensors=[1], model_hash_after=61c0c7aa6ceb6c13, sensitive_flags=[0], stack=["
   },
   {
    "id": 6,
-   "ts": 1794315524.581606,
+   "ts": 0.0,
    "actor": "agent",
    "kind": "edit",
    "tool": "edit_apply",
    "ok": true,
-   "summary": "applied p_de781df671b58006 (1024 params)"
+   "summary": "applied p_0000000000000002 (1024 params)"
   },
   {
    "id": 7,
-   "ts": 1794315524.6395986,
+   "ts": 0.0,
    "actor": "system",
    "kind": "eval",
    "tool": "patch_test",
@@ -86,11 +86,11 @@ Result (real output from the induction fixture):
   },
   {
    "id": 8,
-   "ts": 1794315524.6423345,
+   "ts": 0.0,
    "actor": "agent",
    "kind": "tool",
    "tool": "edit_apply",
    "ok": true,
-   "summa
+   "summary": "patch_id=p_0000000000000002, status=draft, params_changed=1024, pct_of_model=2.667, tensors=[1],
   ... (truncated for the docs)
 ```

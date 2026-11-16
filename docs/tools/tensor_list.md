@@ -22,12 +22,12 @@ Call (MCP tool arguments, or `wsp call tensor_list '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "filter": "blocks\\.1"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {

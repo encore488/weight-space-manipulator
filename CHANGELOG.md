@@ -3,6 +3,10 @@
 Notable changes to WSP Toolkit / WSP Bench, newest first. The weekly update on GitHub Releases and in the
 newsletter summarises this file. Plans for upcoming versions are in [ROADMAP.md](ROADMAP.md).
 
+## Unreleased
+
+- Regenerating the tool reference keeps example IDs, timestamps, and challenge seeds stable.
+
 ## 0.3.0 (2026-11-15)
 
 The first release built for PyPI (`pip install wsp-toolkit` once it's published).

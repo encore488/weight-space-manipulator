@@ -24,17 +24,17 @@ Call (MCP tool arguments, or `wsp call session_start '<json>'`):
 
 ```json
 {
- "workspace_id": "ws_f5367d180411",
+ "workspace_id": "ws_000000000002",
  "budget": 10
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "workspace_id": "ws_f5367d180411",
- "session_id": "sess_83369be129be",
+ "workspace_id": "ws_000000000002",
+ "session_id": "sess_000000000002",
  "access_level": "weights+activations+outputs",
  "capabilities": [
   "activations",

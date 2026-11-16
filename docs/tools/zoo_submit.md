@@ -33,7 +33,7 @@ Call (MCP tool arguments, or `wsp call zoo_submit '<json>'`):
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {

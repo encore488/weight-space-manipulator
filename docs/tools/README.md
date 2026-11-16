@@ -2,6 +2,8 @@
 
 Every tool returns JSON capped at `limits.max_response_bytes` (default 16000 bytes); bigger results come back as `{truncated, handle, pages, preview}` — fetch the rest with [`result_page`](result_page.md). Errors are `{error, code, hint?}` (over MCP they set `isError`).
 
+Example IDs and timestamps are stable placeholders. Elapsed time is zeroed.
+
 ## M1 inspect & probe
 
 | Tool | Purpose | Who |
