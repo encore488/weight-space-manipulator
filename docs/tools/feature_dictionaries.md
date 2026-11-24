@@ -20,18 +20,18 @@ Call (MCP tool arguments, or `wsp call feature_dictionaries '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8"
+ "session_id": "sess_000000000003"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
  "dictionaries": [
   {
-   "id": "fd_adc2dceaaa",
-   "model_hash": "1b441d92f299953d64ee9a233753978c72dfc1a7e848b0baabfba39741ba072e",
+   "id": "fd_e2bae00b39",
+   "model_hash": "610d318e08449718477580a7d3db31b8b5f8d93d77605b0fb6e6fc355bc5e75b",
    "hook": "L0.resid_post",
    "size": 32,
    "parent_dict": null,
@@ -39,13 +39,13 @@ Result (real output from the induction fixture):
    "mean_l0": 2.613
   },
   {
-   "id": "fd_1a07c473b1",
-   "model_hash": "1b441d92f299953d64ee9a233753978c72dfc1a7e848b0baabfba39741ba072e",
+   "id": "fd_95fe6301b7",
+   "model_hash": "610d318e08449718477580a7d3db31b8b5f8d93d77605b0fb6e6fc355bc5e75b",
    "hook": "L1.resid_post",
    "size": 32,
    "parent_dict": null,
    "unexplained_fraction": 0.4545,
-   "mean_l0": 4.134
+   "mean_l0": 4.091
   }
  ]
 }

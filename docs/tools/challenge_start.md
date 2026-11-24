@@ -25,17 +25,18 @@ Call (MCP tool arguments, or `wsp call challenge_start '<json>'`):
 ```json
 {
  "challenge_id": "induction-hunt",
- "agent_model": "claude-fable-5-2"
+ "agent_model": "claude-fable-5-2",
+ "seed": 42
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "run_id": "cr_984485fc2f09",
+ "run_id": "cr_000000000001",
  "challenge": "induction-hunt",
- "seed": 978416,
+ "seed": 42,
  "title": "Find the induction heads",
  "brief": "The model is a 2-layer, 4-heads-per-layer attention-only transformer trained on token sequences in which a random segment is repeated (plus 'counting' sequences). Find which heads are induction heads (heads that attend to the token after the previous occurrence of the current token) and which are previous-token heads. Heads are named 'L.H' (layer L, head H). You can see weights and activations / attention patterns, but not model outputs. You have 10 forward passes.",
  "parameters": {},
@@ -44,7 +45,7 @@ Result (real output from the induction fixture):
  "sessions": [
   {
    "role": "model",
-   "session_id": "sess_85b9beeb2473"
+   "session_id": "sess_000000000005"
   }
  ],
  "answer_format": {

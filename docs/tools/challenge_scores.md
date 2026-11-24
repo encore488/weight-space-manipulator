@@ -23,7 +23,7 @@ Call (MCP tool arguments, or `wsp call challenge_scores '<json>'`):
 {}
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
@@ -34,8 +34,8 @@ Result (real output from the induction fixture):
    "harness": "mcp (self-reported)",
    "locked": false,
    "runs": 1,
-   "best": 0.128,
-   "mean": 0.128,
+   "best": 0.05246,
+   "mean": 0.05246,
    "mean_forward_passes": 0.0,
    "mean_tool_calls": 0.0
   }

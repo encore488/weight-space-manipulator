@@ -21,12 +21,12 @@ Call (MCP tool arguments, or `wsp call diff_models '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
- "other_session_id": "sess_5d9e37323c38"
+ "session_id": "sess_000000000003",
+ "other_session_id": "sess_000000000004"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {

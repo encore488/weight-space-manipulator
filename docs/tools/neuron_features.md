@@ -23,14 +23,14 @@ Call (MCP tool arguments, or `wsp call neuron_features '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "hook": "L0.resid_post",
  "unit": 3,
  "k": 2
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
@@ -38,21 +38,21 @@ Result (real output from the induction fixture):
  "unit": 3,
  "features": [
   {
-   "feature_id": "fd_adc2dceaaa:18",
+   "feature_id": "fd_e2bae00b39:18",
    "label": "previous token is 't25'",
    "fidelity": 0.2145,
    "decoder_weight_on_unit": -0.219,
-   "encoder_weight_from_unit": -0.02137,
-   "dict_id": "fd_adc2dceaaa",
+   "encoder_weight_from_unit": -0.02127,
+   "dict_id": "fd_e2bae00b39",
    "unexplained_fraction": 0.4985
   },
   {
-   "feature_id": "fd_adc2dceaaa:26",
+   "feature_id": "fd_e2bae00b39:26",
    "label": "current token is 't26'",
    "fidelity": 0.9623,
-   "decoder_weight_on_unit": -0.2073,
-   "encoder_weight_from_unit": -0.01693,
-   "dict_id": "fd_adc2dceaaa",
+   "decoder_weight_on_unit": -0.2072,
+   "encoder_weight_from_unit": -0.01696,
+   "dict_id": "fd_e2bae00b39",
    "unexplained_fraction": 0.4985
   }
  ]

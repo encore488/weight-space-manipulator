@@ -22,7 +22,7 @@ Call (MCP tool arguments, or `wsp call challenge_list '<json>'`):
 {}
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {

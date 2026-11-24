@@ -21,12 +21,12 @@ Call (MCP tool arguments, or `wsp call narrate '<json>'`):
 
 ```json
 {
- "session_id": "sess_5e16e3e6270a",
+ "session_id": "sess_000000000003",
  "text": "Layer-1 output norms are 10x below layer 0; checking value norms next."
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {

@@ -26,7 +26,7 @@ Call (MCP tool arguments, or `wsp call run_forward '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "inputs": [
   "<bos> t3 t5 t7 t3 t5"
  ],
@@ -34,7 +34,7 @@ Call (MCP tool arguments, or `wsp call run_forward '<json>'`):
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
@@ -63,7 +63,7 @@ Result (real output from the induction fixture):
       {
        "token": "t7",
        "id": 7,
-       "p": 0.7444
+       "p": 0.7445
       },
       {
        "token": "t3",
@@ -73,7 +73,7 @@ Result (real output from the induction fixture):
       {
        "token": "t28",
        "id": 28,
-       "p": 0.04185
+       "p": 0.04184
       }
      ]
     }

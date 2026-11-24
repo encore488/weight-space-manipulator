@@ -25,13 +25,13 @@ Call (MCP tool arguments, or `wsp call tensor_compare '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "tensor": "blocks.0.attn.q_proj.weight",
  "other_tensor": "blocks.1.attn.q_proj.weight"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
@@ -42,12 +42,12 @@ Result (real output from the induction fixture):
   64,
   64
  ],
- "cosine": -0.0301,
+ "cosine": -0.03011,
  "rel_diff_norm": 1.495,
- "max_abs_diff": 0.5863,
+ "max_abs_diff": 0.5864,
  "frac_changed": 1.0,
  "identical": false,
- "top_k_subspace_overlap": 0.05386,
+ "top_k_subspace_overlap": 0.05387,
  "diff_energy_top1": 0.08028
 }
 ```

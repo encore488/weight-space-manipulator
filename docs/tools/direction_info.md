@@ -21,7 +21,7 @@ Call (MCP tool arguments, or `wsp call direction_info '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "direction": {
   "token": "t5",
   "matrix": "unembed"
@@ -29,11 +29,11 @@ Call (MCP tool arguments, or `wsp call direction_info '<json>'`):
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "id": "dir_1c1d3af5a2245a1b",
+ "id": "dir_8c09925eacf603f0",
  "description": "unembed row of token 't5' (5)",
  "dim": 64,
  "top_entries": [

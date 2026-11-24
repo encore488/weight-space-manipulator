@@ -22,12 +22,12 @@ Call (MCP tool arguments, or `wsp call compare_runs '<json>'`):
 
 ```json
 {
- "run_a": "run_70db04baf18a45ad",
- "run_b": "run_75a1d2aeaf2b1be9"
+ "run_a": "run_0000000000000009",
+ "run_b": "run_0000000000000001"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {

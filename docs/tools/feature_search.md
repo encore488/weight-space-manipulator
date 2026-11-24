@@ -27,47 +27,47 @@ Call (MCP tool arguments, or `wsp call feature_search '<json>'`):
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
  "query": "previous token",
  "results": [
   {
-   "feature_id": "fd_adc2dceaaa:13",
+   "feature_id": "fd_e2bae00b39:13",
    "label": "previous token is '<bos>'",
    "fidelity": 0.7059,
    "sensitive": false,
-   "dict_id": "fd_adc2dceaaa",
+   "dict_id": "fd_e2bae00b39",
    "unexplained_fraction": 0.4985,
    "match_score": 8.159
   },
   {
-   "feature_id": "fd_1a07c473b1:22",
+   "feature_id": "fd_95fe6301b7:22",
    "label": "previous token is '<bos>'",
-   "fidelity": 0.3863,
+   "fidelity": 0.3746,
    "sensitive": false,
-   "dict_id": "fd_1a07c473b1",
+   "dict_id": "fd_95fe6301b7",
    "unexplained_fraction": 0.4545,
-   "match_score": 8.127
+   "match_score": 8.126
   },
   {
-   "feature_id": "fd_adc2dceaaa:25",
+   "feature_id": "fd_e2bae00b39:25",
    "label": "previous token is 't24'",
    "fidelity": 0.303,
    "sensitive": false,
-   "dict_id": "fd_adc2dceaaa",
+   "dict_id": "fd_e2bae00b39",
    "unexplained_fraction": 0.4985,
    "match_score": 8.119
   }
  ],
  "dictionaries": {
-  "fd_adc2dceaaa": {
+  "fd_e2bae00b39": {
    "hook": "L0.resid_post",
    "size": 32,
    "unexplained_fraction": 0.4985
   },
-  "fd_1a07c473b1": {
+  "fd_95fe6301b7": {
    "hook": "L1.resid_post",
    "size": 32,
    "unexplained_fraction": 0.4545

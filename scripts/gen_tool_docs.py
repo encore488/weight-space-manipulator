@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import inspect
 import json
+import re
 import sys
 import tempfile
 import typing
@@ -48,6 +49,44 @@ GROUP = {
     "M7 audit": ["diff_models", "diff_report", "audit_get"],
     "Challenges": ["challenge_list", "challenge_start", "challenge_submit", "challenge_scores", "narrate"],
 }
+
+EXAMPLE_SEED = 42
+VOLATILE_ID = re.compile(r"\b(sess|ws|p|run|cr|sens|audit|res)_([0-9a-f]{10,20})\b")
+AUDIT_DATE = re.compile(r"(?m)^(- Generated: )\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?= by WSP Toolkit)")
+
+
+class ExampleFormatter:
+    """Keep call and result references consistent across an entire docs run."""
+
+    def __init__(self) -> None:
+        self.ids: dict[str, str] = {}
+        self.counts: dict[str, int] = {}
+
+    def replace_id(self, match: re.Match[str]) -> str:
+        original = match.group()
+        if original not in self.ids:
+            prefix, digits = match.groups()
+            count = self.counts.get(prefix, 0) + 1
+            self.counts[prefix] = count
+            self.ids[original] = f"{prefix}_{count:0{len(digits)}x}"
+        return self.ids[original]
+
+    def normalize(self, value):
+        if isinstance(value, dict):
+            return {
+                key: type(item)(0) if key in {"created_at", "ts", "minutes"} and type(item) in (int, float)
+                else self.normalize(item)
+                for key, item in value.items()
+            }
+        if isinstance(value, (list, tuple)):
+            return [self.normalize(item) for item in value]
+        if isinstance(value, str):
+            text = VOLATILE_ID.sub(self.replace_id, value)
+            return AUDIT_DATE.sub(r"\g<1>1970-01-01 00:00:00", text)
+        return value
+
+    def dumps(self, value) -> str:
+        return json.dumps(self.normalize(value), indent=1)
 
 
 def examples(tk, S, B, P, P2, RUN_A, RUN_B, FEAT, NET):
@@ -101,15 +140,15 @@ def examples(tk, S, B, P, P2, RUN_A, RUN_B, FEAT, NET):
         "feature_dictionaries": {"session_id": S},
         "diff_models": {"session_id": S, "other_session_id": B},
         "diff_report": {"session_id": S, "other_session_id": B, "n_probes": 8}, "audit_get": None,
-        "challenge_list": {}, "challenge_start": {"challenge_id": "induction-hunt", "agent_model": "claude-fable-5-2"},
+        "challenge_list": {}, "challenge_start": {"challenge_id": "induction-hunt", "agent_model": "claude-fable-5-2",
+                                                  "seed": EXAMPLE_SEED},
         "challenge_submit": None, "challenge_scores": {},
         "narrate": {"session_id": S, "text": "Layer-1 output norms are 10x below layer 0; checking value norms next."},
     }
 
 
-def trunc(obj, n=1800):
-    s = json.dumps(obj, indent=1)
-    return s if len(s) <= n else s[:n] + "\n  ... (truncated for the docs)"
+def trunc(s, n=1800):
+    return s if len(s) <= n else s[:n].rstrip() + "\n  ... (truncated for the docs)"
 
 
 def main():
@@ -135,9 +174,11 @@ def main():
     out_dir = ROOT / "docs" / "tools"
     out_dir.mkdir(parents=True, exist_ok=True)
     cap = tk.limits["max_response_bytes"]
+    formatter = ExampleFormatter()
     index = ["# Tool reference", "", f"Every tool returns JSON capped at `limits.max_response_bytes` (default {cap} "
              "bytes); bigger results come back as `{truncated, handle, pages, preview}` — fetch the rest with "
-             "[`result_page`](result_page.md). Errors are `{error, code, hint?}` (over MCP they set `isError`).", ""]
+             "[`result_page`](result_page.md). Errors are `{error, code, hint?}` (over MCP they set `isError`).", "",
+             "Example IDs and timestamps are stable placeholders. Elapsed time is zeroed.", ""]
     for group, names in GROUP.items():
         index += [f"## {group}", "", "| Tool | Purpose | Who |", "|---|---|---|"]
         for name in names:
@@ -169,7 +210,8 @@ def main():
                 big = call("probe_attention", {"session_id": S, "inputs": [[0] + list(range(1, 12)) * 2] * 6})
                 args = {"handle": big.get("handle", "res_..."), "page": 1}
             if name == "challenge_submit":
-                rid = call("challenge_start", {"challenge_id": "blind-surgeon", "agent_model": "docs-example"})["run_id"]
+                rid = call("challenge_start", {"challenge_id": "blind-surgeon", "agent_model": "docs-example",
+                                               "seed": EXAMPLE_SEED})["run_id"]
                 args = {"run_id": rid, "answer": {}}
             if name == "audit_get":
                 aid = call("diff_report", {"session_id": S, "other_session_id": B, "n_probes": 4})["audit_id"]
@@ -182,9 +224,9 @@ def main():
                 actor = "human" if name in HUMAN_ONLY else "agent"
                 res = call(name, args, actor)
                 L += ["Call (MCP tool arguments, or `wsp call " + name + " '<json>'`):", "", "```json",
-                      json.dumps(args, indent=1), "```", "", "Result (real output from the induction fixture):", "",
-                      "```json", trunc(res), "```"]
-            (out_dir / f"{name}.md").write_text("\n".join(L) + "\n")
+                      formatter.dumps(args), "```", "", "Result (fixture output with stable example IDs and times):", "",
+                      "```json", trunc(formatter.dumps(res)), "```"]
+            (out_dir / f"{name}.md").write_text("\n".join(L) + "\n", encoding="utf-8", newline="\n")
         index.append("")
     index += ["## Direction specs", "", "Many tools take a `direction`: see "
               "[`wsp_toolkit/core/directions.py`](../../wsp_toolkit/core/directions.py) — `{\"id\": \"dir_…\"}`, "
@@ -194,7 +236,7 @@ def main():
               "\"head\"|\"slice\"?, \"factor\"}` · `{\"op\": \"zero\", ...}` · `{\"op\": \"set_slice\", \"tensor\", "
               "\"slice\", \"values\"}` · `{\"op\": \"add_low_rank\", \"tensor\", \"u\": [dir], \"v\": [dir], "
               "\"coeffs\"?}` or explicit `U`/`V` · `graft_subspace` (stub)."]
-    (out_dir / "README.md").write_text("\n".join(index) + "\n")
+    (out_dir / "README.md").write_text("\n".join(index) + "\n", encoding="utf-8", newline="\n")
     print(f"wrote {len(list(out_dir.glob('*.md')))} files to {out_dir}")
 
 

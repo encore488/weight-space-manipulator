@@ -22,7 +22,7 @@ Call (MCP tool arguments, or `wsp call direction_cosine '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "a": {
   "token": "t5"
  },
@@ -32,12 +32,12 @@ Call (MCP tool arguments, or `wsp call direction_cosine '<json>'`):
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
  "a": "unembed row of token 't5' (5)",
  "b": "unembed row of token 't6' (6)",
- "cosine": -0.04801
+ "cosine": -0.04799
 }
 ```

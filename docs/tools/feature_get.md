@@ -21,16 +21,16 @@ Call (MCP tool arguments, or `wsp call feature_get '<json>'`):
 
 ```json
 {
- "feature_id": "fd_adc2dceaaa:13"
+ "feature_id": "fd_e2bae00b39:13"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "feature_id": "fd_adc2dceaaa:13",
- "dict_id": "fd_adc2dceaaa",
+ "feature_id": "fd_e2bae00b39:13",
+ "dict_id": "fd_e2bae00b39",
  "sensitive": false,
  "hook": "L0.resid_post",
  "idx": 13,
@@ -82,7 +82,7 @@ Result (real output from the induction fixture):
     "t7"
    ],
    "position": 1,
-   "activation": 0.6606,
+   "activation": 0.6604,
    "sequence_tag": "induction"
   },
   {
@@ -91,7 +91,7 @@ Result (real output from the induction fixture):
     "t7"
    ],
    "position": 1,
-   "activation": 0.6606,
+   "activation": 0.6604,
    "sequence_tag": "counting"
   }
  ],
@@ -102,7 +102,7 @@ Result (real output from the induction fixture):
   ],
   [
    29,
-   -0.244
+   -0.2439
   ],
   [
    48,
@@ -129,7 +129,7 @@ Result (real output from the induction fixture):
    -0.2077
   ]
  ],
- "direction_id": "dir_72362eafd2542633",
+ "direction_id": "dir_de5d5ae3e1493b3d",
  "readout": {
   "promotes": [
    "t14",
@@ -148,16 +148,16 @@ Result (real output from the induction fixture):
  },
  "downstream": [
   [
-   "fd_1a07c473b1:22",
-   0.5249
+   "fd_95fe6301b7:22",
+   0.5221
   ],
   [
-   "fd_1a07c473b1:29",
-   0.1389
+   "fd_95fe6301b7:29",
+   0.1357
   ],
   [
-   "fd_1a07c473b1:0",
-   0.09628
+   "fd_95fe6301b7:0",
+   0.09634
   ]
  ],
  "dictionary_unexplained_fraction": 0.4985

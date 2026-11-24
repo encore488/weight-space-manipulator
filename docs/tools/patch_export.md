@@ -23,15 +23,15 @@ Call (MCP tool arguments, or `wsp call patch_export '<json>'`):
 
 ```json
 {
- "patch_id": "p_8b4e424ecd90b3a7"
+ "patch_id": "p_0000000000000001"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "error": "export blocked: patch p_8b4e424ecd90b3a7 in the chain is 'tested', not 'approved'",
+ "error": "export blocked: patch p_0000000000000001 in the chain is 'tested', not 'approved'",
  "code": "export_blocked",
  "hint": "a human must approve it in the UI after it is tested"
 }

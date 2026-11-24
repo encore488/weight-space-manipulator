@@ -24,14 +24,14 @@ Call (MCP tool arguments, or `wsp call tensor_svd '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "tensor": "blocks.1.attn.o_proj.weight",
  "head": 2,
  "k": 2
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
@@ -46,15 +46,15 @@ Result (real output from the induction fixture):
   1.527,
   1.395
  ],
- "energy_top_k": 0.2332,
+ "energy_top_k": 0.2331,
  "effective_rank": 14.19,
  "stable_rank": 7.865,
  "components": [
   {
    "index": 0,
    "sigma": 1.527,
-   "left_direction": "dir_a0758e962eb09fe6",
-   "right_direction": "dir_3bd4ac71bdf21df1",
+   "left_direction": "dir_9fdfec8e1020271c",
+   "right_direction": "dir_9cf748fa0f6ba595",
    "left_top_entries": [
     [
      25,
@@ -74,7 +74,7 @@ Result (real output from the induction fixture):
     ],
     [
      26,
-     -0.2268
+     -0.2269
     ],
     [
      48,
@@ -84,11 +84,11 @@ Result (real output from the induction fixture):
    "right_top_entries": [
     [
      7,
-     0.4996
+     0.4995
     ],
     [
      3,
-     -0.4104
+     -0.4105
     ],
     [
      1,
@@ -111,8 +111,8 @@ Result (real output from the induction fixture):
   {
    "index": 1,
    "sigma": 1.395,
-   "left_direction": "dir_4b8d79dcfddc90d0",
-   "right_direction": "dir_96f55046d70561c5",
+   "left_direction": "dir_ea75ee62dfb3d372",
+   "right_direction": "dir_27ae6219e2cfcc48",
    "left_top_entries": [
     [
      29,
@@ -136,7 +136,7 @@ Result (real output from the induction fixture):
     ],
     [
      35,
-     -0.2154
+     -0.2155
     ]
    ],
    "right_top_entries": [
@@ -162,7 +162,7 @@ Result (real output from the induction fixture):
     ],
     [
      10,
-     -0.2642
+     -0.2641
     ]
    ]
   }

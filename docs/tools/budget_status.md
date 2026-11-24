@@ -20,15 +20,15 @@ Call (MCP tool arguments, or `wsp call budget_status '<json>'`):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8"
+ "session_id": "sess_000000000003"
 }
 ```
 
-Result (real output from the induction fixture):
+Result (fixture output with stable example IDs and times):
 
 ```json
 {
- "session_id": "sess_87aaa3b360e8",
+ "session_id": "sess_000000000003",
  "forward_passes": {
   "used": 4,
   "total": 200,
